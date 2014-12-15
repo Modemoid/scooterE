@@ -10,6 +10,7 @@
 #define TurnControl
 #define HeadLightControl
 #define i2c_Comm
+#define Strobe
 
 
 #include <avr/io.h>
@@ -20,14 +21,14 @@
 
 int main(void)
 {
-char butt, bt1;
+char butt,butt1, OutPort;
 
 	//настройка портов для кнопок
 	DDRC = 0b00110000;  //kb port
 	PORTC = 0b00001111; //kb port
 
 	//настройка портов для кнопок
-	DDRD = 0b11000000;  //kb port
+	DDRD = 0b11100000;  //kb port
 	PORTD = 0b00000000; //kb port
 	//PINx регистр чтения
 	//PORTx 1=pullup(in)
@@ -36,16 +37,28 @@ char butt, bt1;
 
     while(1)
     {	
+#ifdef TurnControl
 		butt = 	PINC&0b00000111;	
-		bt1 = butt;
 		switch (butt)
 			{
-				case 0b00000110: PORTD = 0b10000000;break;
-				case 0b00000101: PORTD = 0b00000000;break;
-				case 0b00000011: PORTD = 0b01000000;break;					
+				case 0b00000110: OutPort |= 0b10000000;break;
+				case 0b00000101: OutPort &= 0b00111111;break;
+				case 0b00000011: OutPort |= 0b01000000;break;					
 				default: ;
 			}
+#endif
+#ifdef Strobe
+	butt1 = 	PINC&0b00001000;
+	if (!butt1) 
+	{
+	OutPort |= 0b00100000;
+	}else {
+		OutPort &= 0b11011111;
+	}
 
+#endif
+			
+	PORTD = OutPort;		
 		
         //TODO:: Please write your application code 
     }

@@ -3,25 +3,25 @@ Light_control.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000092  00000000  00000000  00000054  2**1
+  0 .text         0000009c  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .stab         000006cc  00000000  00000000  000000e8  2**2
+  1 .stab         000006cc  00000000  00000000  000000f0  2**2
                   CONTENTS, READONLY, DEBUGGING
-  2 .stabstr      00000085  00000000  00000000  000007b4  2**0
+  2 .stabstr      00000085  00000000  00000000  000007bc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_aranges 00000080  00000000  00000000  00000840  2**3
+  3 .debug_aranges 00000080  00000000  00000000  00000848  2**3
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00000343  00000000  00000000  000008c0  2**0
+  4 .debug_info   00000352  00000000  00000000  000008c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 000000aa  00000000  00000000  00000c03  2**0
+  5 .debug_abbrev 000000aa  00000000  00000000  00000c1a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   0000028a  00000000  00000000  00000cad  2**0
+  6 .debug_line   0000028c  00000000  00000000  00000cc4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000024  00000000  00000000  00000f38  2**2
+  7 .debug_frame  00000024  00000000  00000000  00000f50  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000000b5  00000000  00000000  00000f5c  2**0
+  8 .debug_str    000000c3  00000000  00000000  00000f74  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    00000022  00000000  00000000  00001011  2**0
+  9 .debug_loc    00000022  00000000  00000000  00001037  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -59,7 +59,7 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	e2 e9       	ldi	r30, 0x92	; 146
+  38:	ec e9       	ldi	r30, 0x9C	; 156
   3a:	f0 e0       	ldi	r31, 0x00	; 0
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
@@ -82,7 +82,7 @@ Disassembly of section .text:
   54:	b1 07       	cpc	r27, r17
   56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
   58:	02 d0       	rcall	.+4      	; 0x5e <main>
-  5a:	19 c0       	rjmp	.+50     	; 0x8e <_exit>
+  5a:	1e c0       	rjmp	.+60     	; 0x98 <_exit>
 
 0000005c <__bad_interrupt>:
   5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
@@ -90,62 +90,76 @@ Disassembly of section .text:
 0000005e <main>:
 int main(void)
 {
-char butt, bt1;
+char butt,butt1, OutPort;
 
 	//настройка портов для кнопок
 	DDRC = 0b00110000;  //kb port
-  5e:	80 e3       	ldi	r24, 0x30	; 48
-  60:	84 bb       	out	0x14, r24	; 20
+  5e:	90 e3       	ldi	r25, 0x30	; 48
+  60:	94 bb       	out	0x14, r25	; 20
 	PORTC = 0b00001111; //kb port
-  62:	8f e0       	ldi	r24, 0x0F	; 15
-  64:	85 bb       	out	0x15, r24	; 21
+  62:	9f e0       	ldi	r25, 0x0F	; 15
+  64:	95 bb       	out	0x15, r25	; 21
 
 	//настройка портов для кнопок
-	DDRD = 0b11000000;  //kb port
-  66:	80 ec       	ldi	r24, 0xC0	; 192
-  68:	81 bb       	out	0x11, r24	; 17
+	DDRD = 0b11100000;  //kb port
+  66:	90 ee       	ldi	r25, 0xE0	; 224
+  68:	91 bb       	out	0x11, r25	; 17
 	PORTD = 0b00000000; //kb port
   6a:	12 ba       	out	0x12, r1	; 18
-    {	
-		butt = 	PINC&0b00000111;	
-		bt1 = butt;
-		switch (butt)
-			{
-				case 0b00000110: PORTD = 0b10000000;break;
-  6c:	20 e8       	ldi	r18, 0x80	; 128
-				case 0b00000101: PORTD = 0b00000000;break;
-				case 0b00000011: PORTD = 0b01000000;break;					
-  6e:	90 e4       	ldi	r25, 0x40	; 64
-	//DDRx 0=in 1=out
 	//конец настройки портов
 
     while(1)
     {	
+#ifdef TurnControl
 		butt = 	PINC&0b00000111;	
-  70:	83 b3       	in	r24, 0x13	; 19
-  72:	87 70       	andi	r24, 0x07	; 7
-		bt1 = butt;
+  6c:	93 b3       	in	r25, 0x13	; 19
+  6e:	97 70       	andi	r25, 0x07	; 7
 		switch (butt)
-  74:	85 30       	cpi	r24, 0x05	; 5
-  76:	39 f0       	breq	.+14     	; 0x86 <main+0x28>
-  78:	86 30       	cpi	r24, 0x06	; 6
-  7a:	19 f0       	breq	.+6      	; 0x82 <main+0x24>
-  7c:	83 30       	cpi	r24, 0x03	; 3
-  7e:	c1 f7       	brne	.-16     	; 0x70 <main+0x12>
-  80:	04 c0       	rjmp	.+8      	; 0x8a <main+0x2c>
+  70:	95 30       	cpi	r25, 0x05	; 5
+  72:	39 f0       	breq	.+14     	; 0x82 <main+0x24>
+  74:	96 30       	cpi	r25, 0x06	; 6
+  76:	19 f0       	breq	.+6      	; 0x7e <main+0x20>
+  78:	93 30       	cpi	r25, 0x03	; 3
+  7a:	31 f4       	brne	.+12     	; 0x88 <main+0x2a>
+  7c:	04 c0       	rjmp	.+8      	; 0x86 <main+0x28>
 			{
-				case 0b00000110: PORTD = 0b10000000;break;
-  82:	22 bb       	out	0x12, r18	; 18
-  84:	f5 cf       	rjmp	.-22     	; 0x70 <main+0x12>
-				case 0b00000101: PORTD = 0b00000000;break;
-  86:	12 ba       	out	0x12, r1	; 18
-  88:	f3 cf       	rjmp	.-26     	; 0x70 <main+0x12>
-				case 0b00000011: PORTD = 0b01000000;break;					
-  8a:	92 bb       	out	0x12, r25	; 18
-  8c:	f1 cf       	rjmp	.-30     	; 0x70 <main+0x12>
+				case 0b00000110: OutPort |= 0b10000000;break;
+  7e:	80 68       	ori	r24, 0x80	; 128
+  80:	03 c0       	rjmp	.+6      	; 0x88 <main+0x2a>
+				case 0b00000101: OutPort &= 0b00111111;break;
+  82:	8f 73       	andi	r24, 0x3F	; 63
+  84:	01 c0       	rjmp	.+2      	; 0x88 <main+0x2a>
+				case 0b00000011: OutPort |= 0b01000000;break;					
+  86:	80 64       	ori	r24, 0x40	; 64
+				default: ;
+			}
+#endif
+#ifdef Strobe
+	butt1 = 	PINC&0b00001000;
+  88:	93 b3       	in	r25, 0x13	; 19
+	if (!butt1) 
+  8a:	93 fd       	sbrc	r25, 3
+  8c:	02 c0       	rjmp	.+4      	; 0x92 <main+0x34>
+	{
+	OutPort |= 0b00100000;
+  8e:	80 62       	ori	r24, 0x20	; 32
+  90:	01 c0       	rjmp	.+2      	; 0x94 <main+0x36>
+	}else {
+		OutPort &= 0b11011111;
+  92:	8f 7d       	andi	r24, 0xDF	; 223
+	}
 
-0000008e <_exit>:
-  8e:	f8 94       	cli
+#endif
+			
+	PORTD = OutPort;		
+  94:	82 bb       	out	0x12, r24	; 18
+		
+        //TODO:: Please write your application code 
+    }
+  96:	ea cf       	rjmp	.-44     	; 0x6c <main+0xe>
 
-00000090 <__stop_program>:
-  90:	ff cf       	rjmp	.-2      	; 0x90 <__stop_program>
+00000098 <_exit>:
+  98:	f8 94       	cli
+
+0000009a <__stop_program>:
+  9a:	ff cf       	rjmp	.-2      	; 0x9a <__stop_program>
