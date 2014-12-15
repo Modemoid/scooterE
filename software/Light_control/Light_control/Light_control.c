@@ -6,10 +6,10 @@
  */ 
 
 #define F_CPU 1000000UL
-#define DEBUG
+//#define DEBUG
 #define TurnControl
 #define HeadLightControl
-#define i2c_Comm
+//#define i2c_Comm
 #define Strobe
 
 
@@ -57,7 +57,14 @@ char butt,butt1, OutPort;
 	}
 
 #endif
-			
+#ifdef HeadLightControl
+
+#endif
+#ifdef i2c_Comm
+
+
+#endif
+		
 	PORTD = OutPort;		
 		
         //TODO:: Please write your application code 
