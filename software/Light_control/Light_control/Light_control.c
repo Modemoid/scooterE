@@ -15,7 +15,7 @@
 #define PanelLight
 
 #define Strobe_TIME 100 //*0.15s = strobe output HI time after single button press
-
+#define debounce_delay
 
 #include <avr/io.h>
 #include <avr/delay.h>
@@ -24,6 +24,7 @@
 //gobal VAR
 char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
 char Strobe_on = 0; //for strobe
+char Strobe_count =0;//for strobe
 //End of globa var
 ISR(TIMER0_OVF_vect)
 {
@@ -40,6 +41,27 @@ ISR(TIMER0_OVF_vect)
 	Strobe_on = 0; 		
 	}
 #endif
+
+  #ifdef Strobe_Bink //разобраться - не работает
+  {
+	if (Strobe_on)
+	{
+		if (Strobe_count%5)
+		{ 
+			OutPort |= 0b00100000;
+		}else {
+			OutPort &= 0b11011111;	
+		}
+	Strobe_count++;
+	Strobe_on++;
+	if (Strobe_on >30)
+	{
+		Strobe_on =0;
+		OutPort &= 0b11011111;
+	}
+	}	  
+  }
+  #endif
 }
 
 
@@ -94,6 +116,9 @@ TIMSK|=(1<<TOIE0);
 
 #endif
 		
+#ifdef debounce_delay
+_delay_ms(100);
+#endif		
 	PORTD = OutPort;		
 		
         //TODO:: Please write your application code 

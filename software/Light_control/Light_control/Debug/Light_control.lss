@@ -3,27 +3,27 @@ Light_control.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000112  00000000  00000000  00000074  2**1
+  0 .text         0000011e  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          00000002  00800060  00800060  00000186  2**0
+  1 .bss          00000003  00800060  00800060  00000192  2**0
                   ALLOC
-  2 .stab         000006cc  00000000  00000000  00000188  2**2
+  2 .stab         000006cc  00000000  00000000  00000194  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000085  00000000  00000000  00000854  2**0
+  3 .stabstr      00000085  00000000  00000000  00000860  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_aranges 00000080  00000000  00000000  000008e0  2**3
+  4 .debug_aranges 00000080  00000000  00000000  000008e8  2**3
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000396  00000000  00000000  00000960  2**0
+  5 .debug_info   0000044b  00000000  00000000  00000968  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000000d2  00000000  00000000  00000cf6  2**0
+  6 .debug_abbrev 0000014f  00000000  00000000  00000db3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000029b  00000000  00000000  00000dc8  2**0
+  7 .debug_line   0000033b  00000000  00000000  00000f02  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000048  00000000  00000000  00001064  2**2
+  8 .debug_frame  00000048  00000000  00000000  00001240  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000000d8  00000000  00000000  000010ac  2**0
+  9 .debug_str    00000141  00000000  00000000  00001288  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000098  00000000  00000000  00001184  2**0
+ 10 .debug_loc    00000098  00000000  00000000  000013c9  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,7 +61,7 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	e2 e1       	ldi	r30, 0x12	; 18
+  38:	ee e1       	ldi	r30, 0x1E	; 30
   3a:	f1 e0       	ldi	r31, 0x01	; 1
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
@@ -80,19 +80,19 @@ Disassembly of section .text:
   50:	1d 92       	st	X+, r1
 
 00000052 <.do_clear_bss_start>:
-  52:	a2 36       	cpi	r26, 0x62	; 98
+  52:	a3 36       	cpi	r26, 0x63	; 99
   54:	b1 07       	cpc	r27, r17
   56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
   58:	28 d0       	rcall	.+80     	; 0xaa <main>
-  5a:	59 c0       	rjmp	.+178    	; 0x10e <_exit>
+  5a:	5f c0       	rjmp	.+190    	; 0x11a <_exit>
 
 0000005c <__bad_interrupt>:
   5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
 
 0000005e <__vector_9>:
-//gobal VAR
 char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
 char Strobe_on = 0; //for strobe
+char Strobe_count =0;//for strobe
 //End of globa var
 ISR(TIMER0_OVF_vect)
 {
@@ -105,33 +105,36 @@ ISR(TIMER0_OVF_vect)
   6a:	9f 93       	push	r25
  #ifndef Strobe_Bink
 	 if (Strobe_on)
-  6c:	80 91 60 00 	lds	r24, 0x0060
+  6c:	80 91 61 00 	lds	r24, 0x0061
   70:	88 23       	and	r24, r24
   72:	49 f0       	breq	.+18     	; 0x86 <__vector_9+0x28>
 	 {
  	 OutPort |= 0b00100000;
-  74:	90 91 61 00 	lds	r25, 0x0061
+  74:	90 91 62 00 	lds	r25, 0x0062
   78:	90 62       	ori	r25, 0x20	; 32
-  7a:	90 93 61 00 	sts	0x0061, r25
+  7a:	90 93 62 00 	sts	0x0062, r25
 	  Strobe_on++;
   7e:	8f 5f       	subi	r24, 0xFF	; 255
-  80:	80 93 60 00 	sts	0x0060, r24
+  80:	80 93 61 00 	sts	0x0061, r24
   84:	05 c0       	rjmp	.+10     	; 0x90 <__vector_9+0x32>
      }else {
 	 OutPort &= 0b11011111;
-  86:	80 91 61 00 	lds	r24, 0x0061
+  86:	80 91 62 00 	lds	r24, 0x0062
   8a:	8f 7d       	andi	r24, 0xDF	; 223
-  8c:	80 93 61 00 	sts	0x0061, r24
+  8c:	80 93 62 00 	sts	0x0062, r24
 	}
 	if (Strobe_on > Strobe_TIME)
-  90:	80 91 60 00 	lds	r24, 0x0060
+  90:	80 91 61 00 	lds	r24, 0x0061
   94:	85 36       	cpi	r24, 0x65	; 101
   96:	10 f0       	brcs	.+4      	; 0x9c <__vector_9+0x3e>
 	{
 	Strobe_on = 0; 		
-  98:	10 92 60 00 	sts	0x0060, r1
+  98:	10 92 61 00 	sts	0x0061, r1
+		OutPort &= 0b11011111;
 	}
-#endif
+	}	  
+  }
+  #endif
 }
   9c:	9f 91       	pop	r25
   9e:	8f 91       	pop	r24
@@ -201,19 +204,19 @@ TIMSK|=(1<<TOIE0);
   d8:	0c c0       	rjmp	.+24     	; 0xf2 <main+0x48>
 			{
 				case 0b00000110: OutPort |= 0b10000000;break;
-  da:	80 91 61 00 	lds	r24, 0x0061
+  da:	80 91 62 00 	lds	r24, 0x0062
   de:	80 68       	ori	r24, 0x80	; 128
-  e0:	80 93 61 00 	sts	0x0061, r24
+  e0:	80 93 62 00 	sts	0x0062, r24
   e4:	0b c0       	rjmp	.+22     	; 0xfc <main+0x52>
 				case 0b00000101: OutPort &= 0b00111111;break;
-  e6:	80 91 61 00 	lds	r24, 0x0061
+  e6:	80 91 62 00 	lds	r24, 0x0062
   ea:	8f 73       	andi	r24, 0x3F	; 63
-  ec:	80 93 61 00 	sts	0x0061, r24
+  ec:	80 93 62 00 	sts	0x0062, r24
   f0:	05 c0       	rjmp	.+10     	; 0xfc <main+0x52>
 				case 0b00000011: OutPort |= 0b01000000;break;					
-  f2:	80 91 61 00 	lds	r24, 0x0061
+  f2:	80 91 62 00 	lds	r24, 0x0062
   f6:	80 64       	ori	r24, 0x40	; 64
-  f8:	80 93 61 00 	sts	0x0061, r24
+  f8:	80 93 62 00 	sts	0x0062, r24
 				default: ;
 			}
 #endif
@@ -225,22 +228,34 @@ TIMSK|=(1<<TOIE0);
  100:	02 c0       	rjmp	.+4      	; 0x106 <main+0x5c>
 	{
 		Strobe_on = 1;
- 102:	90 93 60 00 	sts	0x0060, r25
-#ifdef i2c_Comm
+ 102:	90 93 61 00 	sts	0x0061, r25
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
 
-
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 106:	e7 ea       	ldi	r30, 0xA7	; 167
+ 108:	f1 e6       	ldi	r31, 0x61	; 97
+ 10a:	31 97       	sbiw	r30, 0x01	; 1
+ 10c:	f1 f7       	brne	.-4      	; 0x10a <main+0x60>
+ 10e:	00 c0       	rjmp	.+0      	; 0x110 <main+0x66>
+ 110:	00 00       	nop
 #endif
 		
+#ifdef debounce_delay
+_delay_ms(100);
+#endif		
 	PORTD = OutPort;		
- 106:	80 91 61 00 	lds	r24, 0x0061
- 10a:	82 bb       	out	0x12, r24	; 18
+ 112:	80 91 62 00 	lds	r24, 0x0062
+ 116:	82 bb       	out	0x12, r24	; 18
 		
         //TODO:: Please write your application code 
     }
- 10c:	dd cf       	rjmp	.-70     	; 0xc8 <main+0x1e>
+ 118:	d7 cf       	rjmp	.-82     	; 0xc8 <main+0x1e>
 
-0000010e <_exit>:
- 10e:	f8 94       	cli
+0000011a <_exit>:
+ 11a:	f8 94       	cli
 
-00000110 <__stop_program>:
- 110:	ff cf       	rjmp	.-2      	; 0x110 <__stop_program>
+0000011c <__stop_program>:
+ 11c:	ff cf       	rjmp	.-2      	; 0x11c <__stop_program>
