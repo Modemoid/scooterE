@@ -25,11 +25,15 @@
 #include <avr/interrupt.h>
 
 //gobal VAR
-char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
-char Strobe_on = 0; //for strobe
-char Strobe_count =0;//for strobe
+unsigned char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
+unsigned char Strobe_on = 0; //for strobe
+unsigned char Strobe_count =0;//for strobe
+unsigned char adc6;
+
+#ifdef adc7Use
 char adc7,adcstate; //For ADC ch6 vector
-int adc6;
+#endif
+
 //End of globa var
 ISR(TIMER0_OVF_vect)
 {
@@ -110,7 +114,7 @@ if 	(adcstate = 0)
 int main(void)
 {
 	
-char butt,butt1,swadc6;
+unsigned char butt,butt1,swadc6;
 //настройка 8бит таймера 
 TCCR0|=(1<<CS00)|(1<<CS01); // Тактировать с коэффициентом 64. 1 переполнение = 0.016384 сек
 TIMSK|=(1<<TOIE0);
@@ -144,7 +148,7 @@ TIMSK|=(1<<TOIE0);
 	//0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC6
 	//1<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC7
 	ADCSRA = (1<<ADEN|1<<ADSC|1<<ADFR|1<<ADIE|1<<ADPS0|1<<ADPS1|1<<ADPS2);
-	adcstate = 0;
+	//adcstate = 0;
 
 #endif
 
