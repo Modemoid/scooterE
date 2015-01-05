@@ -3,27 +3,27 @@ Light_control.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000001c8  00000000  00000000  00000074  2**1
+  0 .text         000002d0  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          00000005  00800060  00800060  0000023c  2**0
+  1 .bss          00000007  00800060  00800060  00000344  2**0
                   ALLOC
-  2 .stab         000006cc  00000000  00000000  0000023c  2**2
+  2 .stab         000006cc  00000000  00000000  00000344  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000085  00000000  00000000  00000908  2**0
+  3 .stabstr      00000085  00000000  00000000  00000a10  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_aranges 00000080  00000000  00000000  00000990  2**3
+  4 .debug_aranges 00000080  00000000  00000000  00000a98  2**3
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000004a0  00000000  00000000  00000a10  2**0
+  5 .debug_info   000004f4  00000000  00000000  00000b18  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000014f  00000000  00000000  00000eb0  2**0
+  6 .debug_abbrev 0000014f  00000000  00000000  0000100c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000035f  00000000  00000000  00000fff  2**0
+  7 .debug_line   00000381  00000000  00000000  0000115b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000070  00000000  00000000  00001360  2**2
+  8 .debug_frame  00000094  00000000  00000000  000014dc  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000015b  00000000  00000000  000013d0  2**0
+  9 .debug_str    00000174  00000000  00000000  00001570  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000e1  00000000  00000000  0000152b  2**0
+ 10 .debug_loc    0000011f  00000000  00000000  000016e4  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -35,7 +35,7 @@ Disassembly of section .text:
    6:	2a c0       	rjmp	.+84     	; 0x5c <__bad_interrupt>
    8:	29 c0       	rjmp	.+82     	; 0x5c <__bad_interrupt>
    a:	28 c0       	rjmp	.+80     	; 0x5c <__bad_interrupt>
-   c:	27 c0       	rjmp	.+78     	; 0x5c <__bad_interrupt>
+   c:	a7 c0       	rjmp	.+334    	; 0x15c <__vector_6>
    e:	26 c0       	rjmp	.+76     	; 0x5c <__bad_interrupt>
   10:	25 c0       	rjmp	.+74     	; 0x5c <__bad_interrupt>
   12:	25 c0       	rjmp	.+74     	; 0x5e <__vector_9>
@@ -43,7 +43,7 @@ Disassembly of section .text:
   16:	22 c0       	rjmp	.+68     	; 0x5c <__bad_interrupt>
   18:	21 c0       	rjmp	.+66     	; 0x5c <__bad_interrupt>
   1a:	20 c0       	rjmp	.+64     	; 0x5c <__bad_interrupt>
-  1c:	68 c0       	rjmp	.+208    	; 0xee <__vector_14>
+  1c:	8d c0       	rjmp	.+282    	; 0x138 <__vector_14>
   1e:	1e c0       	rjmp	.+60     	; 0x5c <__bad_interrupt>
   20:	1d c0       	rjmp	.+58     	; 0x5c <__bad_interrupt>
   22:	1c c0       	rjmp	.+56     	; 0x5c <__bad_interrupt>
@@ -61,8 +61,8 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	e8 ec       	ldi	r30, 0xC8	; 200
-  3a:	f1 e0       	ldi	r31, 0x01	; 1
+  38:	e0 ed       	ldi	r30, 0xD0	; 208
+  3a:	f2 e0       	ldi	r31, 0x02	; 2
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
   40:	0d 92       	st	X+, r0
@@ -80,11 +80,11 @@ Disassembly of section .text:
   50:	1d 92       	st	X+, r1
 
 00000052 <.do_clear_bss_start>:
-  52:	a5 36       	cpi	r26, 0x65	; 101
+  52:	a7 36       	cpi	r26, 0x67	; 103
   54:	b1 07       	cpc	r27, r17
   56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
-  58:	5c d0       	rcall	.+184    	; 0x112 <main>
-  5a:	b4 c0       	rjmp	.+360    	; 0x1c4 <_exit>
+  58:	dd d0       	rcall	.+442    	; 0x214 <main>
+  5a:	38 c1       	rjmp	.+624    	; 0x2cc <_exit>
 
 0000005c <__bad_interrupt>:
   5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
@@ -94,7 +94,7 @@ char adc7,adcstate=0; //For ADC ch6 vector
 #endif
 
 //End of globa var
-ISR(TIMER0_OVF_vect)
+ISR(TIMER0_OVF_vect) //used for strobe //ok. work
 {
   5e:	1f 92       	push	r1
   60:	0f 92       	push	r0
@@ -108,315 +108,482 @@ ISR(TIMER0_OVF_vect)
 
 #endif
 
-  #ifdef Strobe_Bink //разобраться - не работает //here
+  #ifdef Strobe_Bink //ok. work
  	 if (Strobe_on)
-  6e:	80 91 62 00 	lds	r24, 0x0062
+  6e:	80 91 64 00 	lds	r24, 0x0064
   72:	88 23       	and	r24, r24
-  74:	a1 f1       	breq	.+104    	; 0xde <__vector_9+0x80>
+  74:	09 f4       	brne	.+2      	; 0x78 <__vector_9+0x1a>
+  76:	58 c0       	rjmp	.+176    	; 0x128 <__vector_9+0xca>
 	  {
 		  Strobe_on++;
-  76:	98 2f       	mov	r25, r24
-  78:	9f 5f       	subi	r25, 0xFF	; 255
-  7a:	90 93 62 00 	sts	0x0062, r25
+  78:	98 2f       	mov	r25, r24
+  7a:	9f 5f       	subi	r25, 0xFF	; 255
+  7c:	90 93 64 00 	sts	0x0064, r25
 		  
-		 if (Strobe_on < Strobe_TIME && Strobe_on > (Strobe_TIME/4+Strobe_TIME/2)) //128 - 96
-  7e:	28 2f       	mov	r18, r24
-  80:	2f 50       	subi	r18, 0x0F	; 15
-  82:	24 30       	cpi	r18, 0x04	; 4
-  84:	28 f4       	brcc	.+10     	; 0x90 <__vector_9+0x32>
-
-			{
-				 	 
-					  OutPort &= 0b11011111;
-  86:	20 91 64 00 	lds	r18, 0x0064
-  8a:	2f 7d       	andi	r18, 0xDF	; 223
-  8c:	20 93 64 00 	sts	0x0064, r18
-			}
-		 if (Strobe_on < (Strobe_TIME/4+Strobe_TIME/2) && Strobe_on > (Strobe_TIME/2)) //96-64
-  90:	28 2f       	mov	r18, r24
-  92:	2a 50       	subi	r18, 0x0A	; 10
-  94:	24 30       	cpi	r18, 0x04	; 4
-  96:	28 f4       	brcc	.+10     	; 0xa2 <__vector_9+0x44>
+		 if (Strobe_on < Strobe_TIME && Strobe_on > (Strobe_TIME/4+Strobe_TIME/2+Strobe_TIME/8)) //128 - 112
+  80:	28 2f       	mov	r18, r24
+  82:	28 53       	subi	r18, 0x38	; 56
+  84:	27 30       	cpi	r18, 0x07	; 7
+  86:	28 f4       	brcc	.+10     	; 0x92 <__vector_9+0x34>
+		 {
+				 	 OutPort &= 0b11011111;
+  88:	20 91 66 00 	lds	r18, 0x0066
+  8c:	2f 7d       	andi	r18, 0xDF	; 223
+  8e:	20 93 66 00 	sts	0x0066, r18
+		 }
+		 if (Strobe_on < (Strobe_TIME/4+Strobe_TIME/2+Strobe_TIME/8) && Strobe_on > (Strobe_TIME/2+Strobe_TIME/4)) //112-96
+  92:	28 2f       	mov	r18, r24
+  94:	20 53       	subi	r18, 0x30	; 48
+  96:	27 30       	cpi	r18, 0x07	; 7
+  98:	28 f4       	brcc	.+10     	; 0xa4 <__vector_9+0x46>
 		 {
 			 	 	 OutPort |= 0b00100000;
-  98:	20 91 64 00 	lds	r18, 0x0064
-  9c:	20 62       	ori	r18, 0x20	; 32
-  9e:	20 93 64 00 	sts	0x0064, r18
+  9a:	20 91 66 00 	lds	r18, 0x0066
+  9e:	20 62       	ori	r18, 0x20	; 32
+  a0:	20 93 66 00 	sts	0x0066, r18
 		 }
-		 if (Strobe_on < (Strobe_TIME/2) && Strobe_on > (Strobe_TIME/4) ) //64-32
-  a2:	85 50       	subi	r24, 0x05	; 5
-  a4:	84 30       	cpi	r24, 0x04	; 4
-  a6:	28 f4       	brcc	.+10     	; 0xb2 <__vector_9+0x54>
+		 if (Strobe_on < (Strobe_TIME/2+Strobe_TIME/4) && Strobe_on > (Strobe_TIME/2) ) //96-64
+  a4:	28 2f       	mov	r18, r24
+  a6:	20 52       	subi	r18, 0x20	; 32
+  a8:	2f 30       	cpi	r18, 0x0F	; 15
+  aa:	28 f4       	brcc	.+10     	; 0xb6 <__vector_9+0x58>
 		 {
 			 OutPort &= 0b11011111;
-  a8:	80 91 64 00 	lds	r24, 0x0064
-  ac:	8f 7d       	andi	r24, 0xDF	; 223
-  ae:	80 93 64 00 	sts	0x0064, r24
+  ac:	20 91 66 00 	lds	r18, 0x0066
+  b0:	2f 7d       	andi	r18, 0xDF	; 223
+  b2:	20 93 66 00 	sts	0x0066, r18
 		 }		
-		 if (Strobe_on < Strobe_TIME/4) //32-0
-  b2:	95 30       	cpi	r25, 0x05	; 5
-  b4:	28 f4       	brcc	.+10     	; 0xc0 <__vector_9+0x62>
+		 if (Strobe_on < Strobe_TIME/2 && Strobe_on > (Strobe_TIME/4+Strobe_TIME/8)) //64-48
+  b6:	28 2f       	mov	r18, r24
+  b8:	28 51       	subi	r18, 0x18	; 24
+  ba:	27 30       	cpi	r18, 0x07	; 7
+  bc:	28 f4       	brcc	.+10     	; 0xc8 <__vector_9+0x6a>
 		 {
 			 	 	 OutPort |= 0b00100000;
-  b6:	80 91 64 00 	lds	r24, 0x0064
-  ba:	80 62       	ori	r24, 0x20	; 32
-  bc:	80 93 64 00 	sts	0x0064, r24
+  be:	20 91 66 00 	lds	r18, 0x0066
+  c2:	20 62       	ori	r18, 0x20	; 32
+  c4:	20 93 66 00 	sts	0x0066, r18
 		 }
-		 
+		 if (Strobe_on < (Strobe_TIME/4+Strobe_TIME/8) && Strobe_on > (Strobe_TIME/4) ) //48-32
+  c8:	28 2f       	mov	r18, r24
+  ca:	20 51       	subi	r18, 0x10	; 16
+  cc:	27 30       	cpi	r18, 0x07	; 7
+  ce:	28 f4       	brcc	.+10     	; 0xda <__vector_9+0x7c>
+		 {
+			 OutPort &= 0b11011111;
+  d0:	20 91 66 00 	lds	r18, 0x0066
+  d4:	2f 7d       	andi	r18, 0xDF	; 223
+  d6:	20 93 66 00 	sts	0x0066, r18
+		 }		
+		 if (Strobe_on < Strobe_TIME/4 && Strobe_on > (Strobe_TIME/8) )//32-16
+  da:	28 2f       	mov	r18, r24
+  dc:	28 50       	subi	r18, 0x08	; 8
+  de:	27 30       	cpi	r18, 0x07	; 7
+  e0:	28 f4       	brcc	.+10     	; 0xec <__vector_9+0x8e>
+		 {
+			 	 	 OutPort |= 0b00100000;
+  e2:	20 91 66 00 	lds	r18, 0x0066
+  e6:	20 62       	ori	r18, 0x20	; 32
+  e8:	20 93 66 00 	sts	0x0066, r18
+		 }
+		 if (Strobe_on < (Strobe_TIME/8) && Strobe_on > (Strobe_TIME/16) ) //16-8
+  ec:	84 50       	subi	r24, 0x04	; 4
+  ee:	83 30       	cpi	r24, 0x03	; 3
+  f0:	28 f4       	brcc	.+10     	; 0xfc <__vector_9+0x9e>
+		 {
+			 OutPort &= 0b11011111;
+  f2:	80 91 66 00 	lds	r24, 0x0066
+  f6:	8f 7d       	andi	r24, 0xDF	; 223
+  f8:	80 93 66 00 	sts	0x0066, r24
+		 }
+		 if (Strobe_on < Strobe_TIME/16) //8-0
+  fc:	94 30       	cpi	r25, 0x04	; 4
+  fe:	28 f4       	brcc	.+10     	; 0x10a <__vector_9+0xac>
+		 {
+			 OutPort |= 0b00100000;
+ 100:	80 91 66 00 	lds	r24, 0x0066
+ 104:	80 62       	ori	r24, 0x20	; 32
+ 106:	80 93 66 00 	sts	0x0066, r24
+		 }
 		 if (Strobe_on > Strobe_TIME) //strobe turn off
-  c0:	95 31       	cpi	r25, 0x15	; 21
-  c2:	38 f0       	brcs	.+14     	; 0xd2 <__vector_9+0x74>
+ 10a:	91 34       	cpi	r25, 0x41	; 65
+ 10c:	38 f0       	brcs	.+14     	; 0x11c <__vector_9+0xbe>
 		 {
 			
 			 Strobe_on = 0;
-  c4:	10 92 62 00 	sts	0x0062, r1
+ 10e:	10 92 64 00 	sts	0x0064, r1
 			  OutPort &= 0b11011111;
-  c8:	80 91 64 00 	lds	r24, 0x0064
-  cc:	8f 7d       	andi	r24, 0xDF	; 223
-  ce:	80 93 64 00 	sts	0x0064, r24
+ 112:	80 91 66 00 	lds	r24, 0x0066
+ 116:	8f 7d       	andi	r24, 0xDF	; 223
+ 118:	80 93 66 00 	sts	0x0066, r24
 		 }
 		
 	  
  	 }
   #endif
   	if (Strobe_on > Strobe_TIME)
-  d2:	80 91 62 00 	lds	r24, 0x0062
-  d6:	85 31       	cpi	r24, 0x15	; 21
-  d8:	10 f0       	brcs	.+4      	; 0xde <__vector_9+0x80>
+ 11c:	80 91 64 00 	lds	r24, 0x0064
+ 120:	81 34       	cpi	r24, 0x41	; 65
+ 122:	10 f0       	brcs	.+4      	; 0x128 <__vector_9+0xca>
   	{
 	  	Strobe_on = 0;
-  da:	10 92 62 00 	sts	0x0062, r1
+ 124:	10 92 64 00 	sts	0x0064, r1
   	}
-}
-  de:	9f 91       	pop	r25
-  e0:	8f 91       	pop	r24
-  e2:	2f 91       	pop	r18
-  e4:	0f 90       	pop	r0
-  e6:	0f be       	out	0x3f, r0	; 63
-  e8:	0f 90       	pop	r0
-  ea:	1f 90       	pop	r1
-  ec:	18 95       	reti
+} 
+ 128:	9f 91       	pop	r25
+ 12a:	8f 91       	pop	r24
+ 12c:	2f 91       	pop	r18
+ 12e:	0f 90       	pop	r0
+ 130:	0f be       	out	0x3f, r0	; 63
+ 132:	0f 90       	pop	r0
+ 134:	1f 90       	pop	r1
+ 136:	18 95       	reti
 
-000000ee <__vector_14>:
-ISR(ADC_vect)
+00000138 <__vector_14>:
+ISR(ADC_vect) //buttons 
 {
-  ee:	1f 92       	push	r1
-  f0:	0f 92       	push	r0
-  f2:	0f b6       	in	r0, 0x3f	; 63
-  f4:	0f 92       	push	r0
-  f6:	11 24       	eor	r1, r1
-  f8:	8f 93       	push	r24
+ 138:	1f 92       	push	r1
+ 13a:	0f 92       	push	r0
+ 13c:	0f b6       	in	r0, 0x3f	; 63
+ 13e:	0f 92       	push	r0
+ 140:	11 24       	eor	r1, r1
+ 142:	8f 93       	push	r24
 #ifndef adc7Use	
 	adc6 = ADCL;
-  fa:	84 b1       	in	r24, 0x04	; 4
-  fc:	80 93 63 00 	sts	0x0063, r24
+ 144:	84 b1       	in	r24, 0x04	; 4
+ 146:	80 93 65 00 	sts	0x0065, r24
 	adc6 = ADCH;
- 100:	85 b1       	in	r24, 0x05	; 5
- 102:	80 93 63 00 	sts	0x0063, r24
+ 14a:	85 b1       	in	r24, 0x05	; 5
+ 14c:	80 93 65 00 	sts	0x0065, r24
 	}
 #endif	
 	
 	
 	
 }
- 106:	8f 91       	pop	r24
- 108:	0f 90       	pop	r0
- 10a:	0f be       	out	0x3f, r0	; 63
- 10c:	0f 90       	pop	r0
- 10e:	1f 90       	pop	r1
- 110:	18 95       	reti
+ 150:	8f 91       	pop	r24
+ 152:	0f 90       	pop	r0
+ 154:	0f be       	out	0x3f, r0	; 63
+ 156:	0f 90       	pop	r0
+ 158:	1f 90       	pop	r1
+ 15a:	18 95       	reti
 
-00000112 <main>:
+0000015c <__vector_6>:
+ISR(TIMER1_COMPA_vect)//turn signal blink 
+{
+ 15c:	1f 92       	push	r1
+ 15e:	0f 92       	push	r0
+ 160:	0f b6       	in	r0, 0x3f	; 63
+ 162:	0f 92       	push	r0
+ 164:	11 24       	eor	r1, r1
+ 166:	8f 93       	push	r24
+ 168:	9f 93       	push	r25
+if (T1temp == 0)
+ 16a:	80 91 60 00 	lds	r24, 0x0060
+ 16e:	88 23       	and	r24, r24
+ 170:	29 f5       	brne	.+74     	; 0x1bc <__vector_6+0x60>
+{
+	if (turnOn == 0b00000001 )
+ 172:	80 91 61 00 	lds	r24, 0x0061
+ 176:	81 30       	cpi	r24, 0x01	; 1
+ 178:	31 f4       	brne	.+12     	; 0x186 <__vector_6+0x2a>
+	{
+		OutPort |=0b10000000;
+ 17a:	90 91 66 00 	lds	r25, 0x0066
+ 17e:	90 68       	ori	r25, 0x80	; 128
+ 180:	90 93 66 00 	sts	0x0066, r25
+ 184:	10 c0       	rjmp	.+32     	; 0x1a6 <__vector_6+0x4a>
+	}
+	if (turnOn == 0b00000010)
+ 186:	82 30       	cpi	r24, 0x02	; 2
+ 188:	31 f4       	brne	.+12     	; 0x196 <__vector_6+0x3a>
+	{
+		OutPort |=0b01000000;
+ 18a:	80 91 66 00 	lds	r24, 0x0066
+ 18e:	80 64       	ori	r24, 0x40	; 64
+ 190:	80 93 66 00 	sts	0x0066, r24
+ 194:	0f c0       	rjmp	.+30     	; 0x1b4 <__vector_6+0x58>
+	}
+	if (turnOn == 0b00000011)
+ 196:	83 30       	cpi	r24, 0x03	; 3
+ 198:	31 f4       	brne	.+12     	; 0x1a6 <__vector_6+0x4a>
+	{
+		OutPort |= 0b11000000;
+ 19a:	80 91 66 00 	lds	r24, 0x0066
+ 19e:	80 6c       	ori	r24, 0xC0	; 192
+ 1a0:	80 93 66 00 	sts	0x0066, r24
+ 1a4:	07 c0       	rjmp	.+14     	; 0x1b4 <__vector_6+0x58>
+	}
+	if (turnOn == 0b00000000 )
+ 1a6:	88 23       	and	r24, r24
+ 1a8:	29 f4       	brne	.+10     	; 0x1b4 <__vector_6+0x58>
+	{
+		 OutPort &= 0b00111111;
+ 1aa:	80 91 66 00 	lds	r24, 0x0066
+ 1ae:	8f 73       	andi	r24, 0x3F	; 63
+ 1b0:	80 93 66 00 	sts	0x0066, r24
+	}
+T1temp = 1;
+ 1b4:	81 e0       	ldi	r24, 0x01	; 1
+ 1b6:	80 93 60 00 	sts	0x0060, r24
+ 1ba:	25 c0       	rjmp	.+74     	; 0x206 <__vector_6+0xaa>
+}
+else if (T1temp == 1)
+ 1bc:	81 30       	cpi	r24, 0x01	; 1
+ 1be:	19 f5       	brne	.+70     	; 0x206 <__vector_6+0xaa>
+{
+	if (turnOn == 0b00000001 )
+ 1c0:	80 91 61 00 	lds	r24, 0x0061
+ 1c4:	81 30       	cpi	r24, 0x01	; 1
+ 1c6:	31 f4       	brne	.+12     	; 0x1d4 <__vector_6+0x78>
+	{
+		OutPort &=0b01111111;
+ 1c8:	90 91 66 00 	lds	r25, 0x0066
+ 1cc:	9f 77       	andi	r25, 0x7F	; 127
+ 1ce:	90 93 66 00 	sts	0x0066, r25
+ 1d2:	10 c0       	rjmp	.+32     	; 0x1f4 <__vector_6+0x98>
+	}
+	if (turnOn == 0b00000010)
+ 1d4:	82 30       	cpi	r24, 0x02	; 2
+ 1d6:	31 f4       	brne	.+12     	; 0x1e4 <__vector_6+0x88>
+	{
+		OutPort &=0b10111111;
+ 1d8:	80 91 66 00 	lds	r24, 0x0066
+ 1dc:	8f 7b       	andi	r24, 0xBF	; 191
+ 1de:	80 93 66 00 	sts	0x0066, r24
+ 1e2:	0f c0       	rjmp	.+30     	; 0x202 <__vector_6+0xa6>
+	}
+	if (turnOn == 0b00000011)
+ 1e4:	83 30       	cpi	r24, 0x03	; 3
+ 1e6:	31 f4       	brne	.+12     	; 0x1f4 <__vector_6+0x98>
+	{
+		OutPort &= 0b00111111;
+ 1e8:	80 91 66 00 	lds	r24, 0x0066
+ 1ec:	8f 73       	andi	r24, 0x3F	; 63
+ 1ee:	80 93 66 00 	sts	0x0066, r24
+ 1f2:	07 c0       	rjmp	.+14     	; 0x202 <__vector_6+0xa6>
+	}
+	if (turnOn == 0b00000000 )
+ 1f4:	88 23       	and	r24, r24
+ 1f6:	29 f4       	brne	.+10     	; 0x202 <__vector_6+0xa6>
+	{
+		OutPort &= 0b00111111;
+ 1f8:	80 91 66 00 	lds	r24, 0x0066
+ 1fc:	8f 73       	andi	r24, 0x3F	; 63
+ 1fe:	80 93 66 00 	sts	0x0066, r24
+	}
+	T1temp = 0;
+ 202:	10 92 60 00 	sts	0x0060, r1
+}
+
+		
+}
+ 206:	9f 91       	pop	r25
+ 208:	8f 91       	pop	r24
+ 20a:	0f 90       	pop	r0
+ 20c:	0f be       	out	0x3f, r0	; 63
+ 20e:	0f 90       	pop	r0
+ 210:	1f 90       	pop	r1
+ 212:	18 95       	reti
+
+00000214 <main>:
 int main(void)
 {
 	
 unsigned char butt,butt1,swadc6;
 //настройка 8бит таймера 
 TCCR0|=(1<<CS00)|(1<<CS01); // Тактировать с коэффициентом 64. 1 переполнение = 0.016384 сек
- 112:	83 b7       	in	r24, 0x33	; 51
- 114:	83 60       	ori	r24, 0x03	; 3
- 116:	83 bf       	out	0x33, r24	; 51
-TIMSK|=(1<<TOIE0);
- 118:	89 b7       	in	r24, 0x39	; 57
- 11a:	81 60       	ori	r24, 0x01	; 1
- 11c:	89 bf       	out	0x39, r24	; 57
+ 214:	83 b7       	in	r24, 0x33	; 51
+ 216:	83 60       	ori	r24, 0x03	; 3
+ 218:	83 bf       	out	0x33, r24	; 51
+TIMSK|=(1<<TOIE0)|(1<<OCIE1A);
+ 21a:	89 b7       	in	r24, 0x39	; 57
+ 21c:	81 61       	ori	r24, 0x11	; 17
+ 21e:	89 bf       	out	0x39, r24	; 57
+//настройка 16 бит таймера
+TCCR1A|=(0<<COM1A0)|(0<<COM1A1)|(0<<COM1B0)|(0<<COM1B1)|(0<<FOC1A)|(0<<FOC1B)|(0<<WGM11)|(0<<WGM10);
+ 220:	8f b5       	in	r24, 0x2f	; 47
+ 222:	8f bd       	out	0x2f, r24	; 47
+TCCR1B|=(0<<ICNC1)|(0<<ICES1)|(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(1<<CS11)|(0<<CS10);//prescalar = 8
+ 224:	8e b5       	in	r24, 0x2e	; 46
+ 226:	82 60       	ori	r24, 0x02	; 2
+ 228:	8e bd       	out	0x2e, r24	; 46
+OCR1A = 0x7A11;
+ 22a:	81 e1       	ldi	r24, 0x11	; 17
+ 22c:	9a e7       	ldi	r25, 0x7A	; 122
+ 22e:	9b bd       	out	0x2b, r25	; 43
+ 230:	8a bd       	out	0x2a, r24	; 42
 
-#ifdef DEBUG
-
-	DDRB = 0b11111111;  //kb port
- 11e:	8f ef       	ldi	r24, 0xFF	; 255
- 120:	87 bb       	out	0x17, r24	; 23
-	PORTB = 0b00000000; //kb port
- 122:	18 ba       	out	0x18, r1	; 24
-	//PORTB = 0b11111111;
-#endif
 
 	//настройка портов для кнопок
 	DDRC = 0b00110000;  //kb port
- 124:	80 e3       	ldi	r24, 0x30	; 48
- 126:	84 bb       	out	0x14, r24	; 20
+ 232:	80 e3       	ldi	r24, 0x30	; 48
+ 234:	84 bb       	out	0x14, r24	; 20
 	PORTC = 0b00001111; //kb port
- 128:	8f e0       	ldi	r24, 0x0F	; 15
- 12a:	85 bb       	out	0x15, r24	; 21
+ 236:	8f e0       	ldi	r24, 0x0F	; 15
+ 238:	85 bb       	out	0x15, r24	; 21
 
 	//настройка портов 
 	DDRD = 0b11100000;  //kb port
- 12c:	80 ee       	ldi	r24, 0xE0	; 224
- 12e:	81 bb       	out	0x11, r24	; 17
+ 23a:	80 ee       	ldi	r24, 0xE0	; 224
+ 23c:	81 bb       	out	0x11, r24	; 17
 	PORTD = 0b00000000; //kb port
- 130:	12 ba       	out	0x12, r1	; 18
+ 23e:	12 ba       	out	0x12, r1	; 18
 	//DDRx 0=in 1=out
 	//конец настройки портов
 
 #ifdef HeadLightControl
 	//adc setup
 	ADMUX = (0<<REFS0|0<<REFS1|1<<ADLAR|0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3);
- 132:	86 e2       	ldi	r24, 0x26	; 38
- 134:	87 b9       	out	0x07, r24	; 7
+ 240:	86 e2       	ldi	r24, 0x26	; 38
+ 242:	87 b9       	out	0x07, r24	; 7
 	//mux0-mux3 выбирать какой ацп 0-0<<MUX0|0<<MUX1|0<<MUX2|0<<MUX3 1-1<<MUX0|0<<MUX1|0<<MUX2|0<<MUX3
 	//0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC6
 	//1<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC7
 #ifndef adc7Use
 
 	ADCSRA = (1<<ADEN|1<<ADSC|1<<ADFR|1<<ADIE|1<<ADPS0|1<<ADPS1|1<<ADPS2);
- 136:	8f ee       	ldi	r24, 0xEF	; 239
- 138:	86 b9       	out	0x06, r24	; 6
+ 244:	8f ee       	ldi	r24, 0xEF	; 239
+ 246:	86 b9       	out	0x06, r24	; 6
 	//adcstate = 0;
 
 #endif
 
 
 sei();//разрешаем прерывания глобально
- 13a:	78 94       	sei
+ 248:	78 94       	sei
 #endif
 #ifdef Strobe //set strob_on if button pressed
 	butt1 = 	PINC&0b00001000;
 	if (!butt1) 
 	{
 		Strobe_on = 1;
- 13c:	21 e0       	ldi	r18, 0x01	; 1
+ 24a:	21 e0       	ldi	r18, 0x01	; 1
 	AdcKey=1;
 }
 
 if (100>adc6 && adc6>60)
 {
 	AdcKey=2;
- 13e:	42 e0       	ldi	r20, 0x02	; 2
+ 24c:	42 e0       	ldi	r20, 0x02	; 2
 }
 if (150>adc6 && adc6>100)
 {
 	AdcKey=3;
- 140:	33 e0       	ldi	r19, 0x03	; 3
+ 24e:	33 e0       	ldi	r19, 0x03	; 3
 
 sei();//разрешаем прерывания глобально
     while(1)
     {	
 #ifdef TurnControl
-		butt = 	PINC&0b00000111;	
- 142:	83 b3       	in	r24, 0x13	; 19
- 144:	87 70       	andi	r24, 0x07	; 7
-		switch (butt)
- 146:	85 30       	cpi	r24, 0x05	; 5
- 148:	59 f0       	breq	.+22     	; 0x160 <main+0x4e>
- 14a:	86 30       	cpi	r24, 0x06	; 6
- 14c:	19 f0       	breq	.+6      	; 0x154 <main+0x42>
- 14e:	83 30       	cpi	r24, 0x03	; 3
- 150:	91 f4       	brne	.+36     	; 0x176 <main+0x64>
- 152:	0c c0       	rjmp	.+24     	; 0x16c <main+0x5a>
-			{
-				case 0b00000110: OutPort |= 0b10000000;break;
- 154:	80 91 64 00 	lds	r24, 0x0064
- 158:	80 68       	ori	r24, 0x80	; 128
- 15a:	80 93 64 00 	sts	0x0064, r24
- 15e:	0b c0       	rjmp	.+22     	; 0x176 <main+0x64>
-				case 0b00000101: OutPort &= 0b00111111;break;
- 160:	80 91 64 00 	lds	r24, 0x0064
- 164:	8f 73       	andi	r24, 0x3F	; 63
- 166:	80 93 64 00 	sts	0x0064, r24
- 16a:	05 c0       	rjmp	.+10     	; 0x176 <main+0x64>
-				case 0b00000011: OutPort |= 0b01000000;break;					
- 16c:	80 91 64 00 	lds	r24, 0x0064
- 170:	80 64       	ori	r24, 0x40	; 64
- 172:	80 93 64 00 	sts	0x0064, r24
-				default: ;
+		butt = 	PINC&0b00000111;
+ 250:	83 b3       	in	r24, 0x13	; 19
+ 252:	87 70       	andi	r24, 0x07	; 7
+		
+#ifdef TurnBlink
+{
+	switch (butt)
+ 254:	85 30       	cpi	r24, 0x05	; 5
+ 256:	59 f0       	breq	.+22     	; 0x26e <main+0x5a>
+ 258:	86 30       	cpi	r24, 0x06	; 6
+ 25a:	19 f0       	breq	.+6      	; 0x262 <main+0x4e>
+ 25c:	83 30       	cpi	r24, 0x03	; 3
+ 25e:	79 f4       	brne	.+30     	; 0x27e <main+0x6a>
+ 260:	09 c0       	rjmp	.+18     	; 0x274 <main+0x60>
+	{
+		case 0b00000110: turnOn |= 0b00000001;break;
+ 262:	80 91 61 00 	lds	r24, 0x0061
+ 266:	81 60       	ori	r24, 0x01	; 1
+ 268:	80 93 61 00 	sts	0x0061, r24
+ 26c:	08 c0       	rjmp	.+16     	; 0x27e <main+0x6a>
+		case 0b00000101: turnOn = 0;break;
+ 26e:	10 92 61 00 	sts	0x0061, r1
+ 272:	05 c0       	rjmp	.+10     	; 0x27e <main+0x6a>
+		case 0b00000011: turnOn |= 0b00000010;break;
+ 274:	80 91 61 00 	lds	r24, 0x0061
+ 278:	82 60       	ori	r24, 0x02	; 2
+ 27a:	80 93 61 00 	sts	0x0061, r24
 			}
+}
+#endif*/
 #endif
 #ifdef Strobe //set strob_on if button pressed
 	butt1 = 	PINC&0b00001000;
- 176:	83 b3       	in	r24, 0x13	; 19
+ 27e:	83 b3       	in	r24, 0x13	; 19
 	if (!butt1) 
- 178:	83 fd       	sbrc	r24, 3
- 17a:	02 c0       	rjmp	.+4      	; 0x180 <main+0x6e>
+ 280:	83 fd       	sbrc	r24, 3
+ 282:	02 c0       	rjmp	.+4      	; 0x288 <main+0x74>
 	{
 		Strobe_on = 1;
- 17c:	20 93 62 00 	sts	0x0062, r18
+ 284:	20 93 64 00 	sts	0x0064, r18
 #endif
 #ifdef PanelLight
 
 #endif
 #ifdef HeadLightControl
 if (30>adc6 && adc6>5 )
- 180:	80 91 63 00 	lds	r24, 0x0063
- 184:	98 2f       	mov	r25, r24
- 186:	96 50       	subi	r25, 0x06	; 6
- 188:	98 31       	cpi	r25, 0x18	; 24
- 18a:	10 f4       	brcc	.+4      	; 0x190 <main+0x7e>
+ 288:	80 91 65 00 	lds	r24, 0x0065
+ 28c:	98 2f       	mov	r25, r24
+ 28e:	96 50       	subi	r25, 0x06	; 6
+ 290:	98 31       	cpi	r25, 0x18	; 24
+ 292:	10 f4       	brcc	.+4      	; 0x298 <main+0x84>
 {
 	AdcKey=1;
- 18c:	20 93 60 00 	sts	0x0060, r18
+ 294:	20 93 62 00 	sts	0x0062, r18
 }
 
 if (100>adc6 && adc6>60)
- 190:	98 2f       	mov	r25, r24
- 192:	9d 53       	subi	r25, 0x3D	; 61
- 194:	97 32       	cpi	r25, 0x27	; 39
- 196:	10 f4       	brcc	.+4      	; 0x19c <main+0x8a>
+ 298:	98 2f       	mov	r25, r24
+ 29a:	9d 53       	subi	r25, 0x3D	; 61
+ 29c:	97 32       	cpi	r25, 0x27	; 39
+ 29e:	10 f4       	brcc	.+4      	; 0x2a4 <main+0x90>
 {
 	AdcKey=2;
- 198:	40 93 60 00 	sts	0x0060, r20
+ 2a0:	40 93 62 00 	sts	0x0062, r20
 }
 if (150>adc6 && adc6>100)
- 19c:	98 2f       	mov	r25, r24
- 19e:	95 56       	subi	r25, 0x65	; 101
- 1a0:	91 33       	cpi	r25, 0x31	; 49
- 1a2:	10 f4       	brcc	.+4      	; 0x1a8 <main+0x96>
+ 2a4:	98 2f       	mov	r25, r24
+ 2a6:	95 56       	subi	r25, 0x65	; 101
+ 2a8:	91 33       	cpi	r25, 0x31	; 49
+ 2aa:	10 f4       	brcc	.+4      	; 0x2b0 <main+0x9c>
 {
 	AdcKey=3;
- 1a4:	30 93 60 00 	sts	0x0060, r19
+ 2ac:	30 93 62 00 	sts	0x0062, r19
 }
 if (150<adc6)
- 1a8:	87 39       	cpi	r24, 0x97	; 151
- 1aa:	10 f0       	brcs	.+4      	; 0x1b0 <main+0x9e>
+ 2b0:	87 39       	cpi	r24, 0x97	; 151
+ 2b2:	10 f0       	brcs	.+4      	; 0x2b8 <main+0xa4>
 {
 	AdcKey=0;
- 1ac:	10 92 60 00 	sts	0x0060, r1
+ 2b4:	10 92 62 00 	sts	0x0062, r1
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 1b0:	83 ed       	ldi	r24, 0xD3	; 211
- 1b2:	90 e3       	ldi	r25, 0x30	; 48
- 1b4:	01 97       	sbiw	r24, 0x01	; 1
- 1b6:	f1 f7       	brne	.-4      	; 0x1b4 <main+0xa2>
- 1b8:	00 c0       	rjmp	.+0      	; 0x1ba <main+0xa8>
- 1ba:	00 00       	nop
+ 2b8:	83 ed       	ldi	r24, 0xD3	; 211
+ 2ba:	90 e3       	ldi	r25, 0x30	; 48
+ 2bc:	01 97       	sbiw	r24, 0x01	; 1
+ 2be:	f1 f7       	brne	.-4      	; 0x2bc <main+0xa8>
+ 2c0:	00 c0       	rjmp	.+0      	; 0x2c2 <main+0xae>
+ 2c2:	00 00       	nop
 #ifdef debounce_delay
 _delay_ms(debounce_time);
 #endif	
 
 	
-	PORTD = OutPort;		
- 1bc:	80 91 64 00 	lds	r24, 0x0064
- 1c0:	82 bb       	out	0x12, r24	; 18
+	PORTD = OutPort;	
+ 2c4:	80 91 66 00 	lds	r24, 0x0066
+ 2c8:	82 bb       	out	0x12, r24	; 18
+	//PORTB = turnOn;	
 		
         //TODO:: Please write your application code 
     }
- 1c2:	bf cf       	rjmp	.-130    	; 0x142 <main+0x30>
+ 2ca:	c2 cf       	rjmp	.-124    	; 0x250 <main+0x3c>
 
-000001c4 <_exit>:
- 1c4:	f8 94       	cli
+000002cc <_exit>:
+ 2cc:	f8 94       	cli
 
-000001c6 <__stop_program>:
- 1c6:	ff cf       	rjmp	.-2      	; 0x1c6 <__stop_program>
+000002ce <__stop_program>:
+ 2ce:	ff cf       	rjmp	.-2      	; 0x2ce <__stop_program>

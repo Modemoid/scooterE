@@ -6,18 +6,19 @@
  */ 
 
 #define F_CPU 1000000UL
-#define DEBUG
-#define TurnControl
-#define HeadLightControl
+//#define DEBUG
+#define TurnControl //if turn control used //now work only blink version
+#define TurnBlink //if turn signal must blink
+#define HeadLightControl // if headlight control used 
 //#define adc7Use //разобраться с переключением каналов в прерывании - на будущее
-//#define i2c_Comm
+//#define i2c_Comm //if present i2c communication with other device 
 #define Strobe // if stroboscope present 
 #define Strobe_Bink // strobe blink 4 2 times 
-#define PanelLight //
-#define PanelLight_PWM 128
+#define PanelLight // panel light switch. affected debounce_delay 
+#define PanelLight_PWM 128 //panel light level 
 
-#define Strobe_TIME 40 //*0.15s = strobe work time after single button press, see Strob_blink define 
-#define debounce_delay
+#define Strobe_TIME 64 //*0.15s = strobe work time after single button press, see Strob_blink define 
+#define debounce_delay //if defined present key debounce delay, but logic work not need it, it can be removed. 
 #define debounce_time 50 //time in MS
 
 #include <avr/io.h>
@@ -27,17 +28,20 @@
 //gobal VAR
 unsigned char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
 unsigned char Strobe_on = 0; //for strobe
-unsigned char Strobe_count =0;//for strobe
-unsigned char adc6,AdcKey=0;
+unsigned char Strobe_count = 0;//for strobe
+unsigned char adc6;
+unsigned char  AdcKey = 0;
+unsigned char turnOn = 0; 
+unsigned char T1temp =0;
 
 #ifdef adc7Use
 char adc7,adcstate=0; //For ADC ch6 vector
 #endif
 
 //End of globa var
-ISR(TIMER0_OVF_vect)
+ISR(TIMER0_OVF_vect) //used for strobe //ok. work
 {
- #ifndef Strobe_Bink
+ #ifndef Strobe_Bink//ok. work
 	 if (Strobe_on)
 	 {
 	  Strobe_on++;
@@ -49,30 +53,43 @@ ISR(TIMER0_OVF_vect)
 
 #endif
 
-  #ifdef Strobe_Bink //разобраться - не работает //here
+  #ifdef Strobe_Bink //ok. work
  	 if (Strobe_on)
 	  {
 		  Strobe_on++;
 		  
-		 if (Strobe_on < Strobe_TIME && Strobe_on > (Strobe_TIME/4+Strobe_TIME/2)) //128 - 96
-
-			{
-				 	 
-					  OutPort &= 0b11011111;
-			}
-		 if (Strobe_on < (Strobe_TIME/4+Strobe_TIME/2) && Strobe_on > (Strobe_TIME/2)) //96-64
+		 if (Strobe_on < Strobe_TIME && Strobe_on > (Strobe_TIME/4+Strobe_TIME/2+Strobe_TIME/8)) //128 - 112
+		 {
+				 	 OutPort &= 0b11011111;
+		 }
+		 if (Strobe_on < (Strobe_TIME/4+Strobe_TIME/2+Strobe_TIME/8) && Strobe_on > (Strobe_TIME/2+Strobe_TIME/4)) //112-96
 		 {
 			 	 	 OutPort |= 0b00100000;
 		 }
-		 if (Strobe_on < (Strobe_TIME/2) && Strobe_on > (Strobe_TIME/4) ) //64-32
+		 if (Strobe_on < (Strobe_TIME/2+Strobe_TIME/4) && Strobe_on > (Strobe_TIME/2) ) //96-64
 		 {
 			 OutPort &= 0b11011111;
 		 }		
-		 if (Strobe_on < Strobe_TIME/4) //32-0
+		 if (Strobe_on < Strobe_TIME/2 && Strobe_on > (Strobe_TIME/4+Strobe_TIME/8)) //64-48
 		 {
 			 	 	 OutPort |= 0b00100000;
 		 }
-		 
+		 if (Strobe_on < (Strobe_TIME/4+Strobe_TIME/8) && Strobe_on > (Strobe_TIME/4) ) //48-32
+		 {
+			 OutPort &= 0b11011111;
+		 }		
+		 if (Strobe_on < Strobe_TIME/4 && Strobe_on > (Strobe_TIME/8) )//32-16
+		 {
+			 	 	 OutPort |= 0b00100000;
+		 }
+		 if (Strobe_on < (Strobe_TIME/8) && Strobe_on > (Strobe_TIME/16) ) //16-8
+		 {
+			 OutPort &= 0b11011111;
+		 }
+		 if (Strobe_on < Strobe_TIME/16) //8-0
+		 {
+			 OutPort |= 0b00100000;
+		 }
 		 if (Strobe_on > Strobe_TIME) //strobe turn off
 		 {
 			
@@ -87,15 +104,15 @@ ISR(TIMER0_OVF_vect)
   	{
 	  	Strobe_on = 0;
   	}
-}
-ISR(ADC_vect)
+} 
+ISR(ADC_vect) //buttons 
 {
 #ifndef adc7Use	
 	adc6 = ADCL;
 	adc6 = ADCH;
 #endif
 	
-#ifdef adc7Use
+#ifdef adc7Use //now not work. 
 if 	(adcstate = 0)
 {
 	adc6 = ADCL;
@@ -129,6 +146,51 @@ if (adcstate = 1)
 	
 	
 }
+ISR(TIMER1_COMPA_vect)//turn signal blink 
+{
+if (T1temp == 0)
+{
+	if (turnOn == 0b00000001 )
+	{
+		OutPort |=0b10000000;
+	}
+	if (turnOn == 0b00000010)
+	{
+		OutPort |=0b01000000;
+	}
+	if (turnOn == 0b00000011)
+	{
+		OutPort |= 0b11000000;
+	}
+	if (turnOn == 0b00000000 )
+	{
+		 OutPort &= 0b00111111;
+	}
+T1temp = 1;
+}
+else if (T1temp == 1)
+{
+	if (turnOn == 0b00000001 )
+	{
+		OutPort &=0b01111111;
+	}
+	if (turnOn == 0b00000010)
+	{
+		OutPort &=0b10111111;
+	}
+	if (turnOn == 0b00000011)
+	{
+		OutPort &= 0b00111111;
+	}
+	if (turnOn == 0b00000000 )
+	{
+		OutPort &= 0b00111111;
+	}
+	T1temp = 0;
+}
+
+		
+}
 
 
 
@@ -138,7 +200,12 @@ int main(void)
 unsigned char butt,butt1,swadc6;
 //настройка 8бит таймера 
 TCCR0|=(1<<CS00)|(1<<CS01); // Тактировать с коэффициентом 64. 1 переполнение = 0.016384 сек
-TIMSK|=(1<<TOIE0);
+TIMSK|=(1<<TOIE0)|(1<<OCIE1A);
+//настройка 16 бит таймера
+TCCR1A|=(0<<COM1A0)|(0<<COM1A1)|(0<<COM1B0)|(0<<COM1B1)|(0<<FOC1A)|(0<<FOC1B)|(0<<WGM11)|(0<<WGM10);
+TCCR1B|=(0<<ICNC1)|(0<<ICES1)|(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(1<<CS11)|(0<<CS10);//prescalar = 8
+OCR1A = 0x7A11;
+
 
 	//настройка портов для кнопок
 	DDRC = 0b00110000;  //kb port
@@ -177,7 +244,21 @@ sei();//разрешаем прерывания глобально
     while(1)
     {	
 #ifdef TurnControl
-		butt = 	PINC&0b00000111;	
+		butt = 	PINC&0b00000111;
+		
+#ifdef TurnBlink
+{
+	switch (butt)
+	{
+		case 0b00000110: turnOn |= 0b00000001;break;
+		case 0b00000101: turnOn = 0;break;
+		case 0b00000011: turnOn |= 0b00000010;break;
+		default: ;
+	}
+}
+#endif	
+/*#ifndef TurnBlink
+{ 
 		switch (butt)
 			{
 				case 0b00000110: OutPort |= 0b10000000;break;
@@ -185,6 +266,8 @@ sei();//разрешаем прерывания глобально
 				case 0b00000011: OutPort |= 0b01000000;break;					
 				default: ;
 			}
+}
+#endif*/
 #endif
 #ifdef Strobe //set strob_on if button pressed
 	butt1 = 	PINC&0b00001000;
@@ -219,7 +302,9 @@ if (150<adc6)
 #endif
 
 #ifdef i2c_Comm
-
+{
+	
+}
 
 #endif
 		
@@ -228,7 +313,8 @@ _delay_ms(debounce_time);
 #endif	
 
 	
-	PORTD = OutPort;		
+	PORTD = OutPort;	
+	//PORTB = turnOn;	
 		
         //TODO:: Please write your application code 
     }
