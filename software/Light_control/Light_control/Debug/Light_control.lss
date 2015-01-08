@@ -3,27 +3,27 @@ Light_control.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000002d0  00000000  00000000  00000074  2**1
+  0 .text         0000030a  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          00000007  00800060  00800060  00000344  2**0
+  1 .bss          00000007  00800060  00800060  0000037e  2**0
                   ALLOC
-  2 .stab         000006cc  00000000  00000000  00000344  2**2
+  2 .stab         000006cc  00000000  00000000  00000380  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000085  00000000  00000000  00000a10  2**0
+  3 .stabstr      00000085  00000000  00000000  00000a4c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_aranges 00000080  00000000  00000000  00000a98  2**3
+  4 .debug_aranges 00000080  00000000  00000000  00000ad8  2**3
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000004f4  00000000  00000000  00000b18  2**0
+  5 .debug_info   000004f4  00000000  00000000  00000b58  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000014f  00000000  00000000  0000100c  2**0
+  6 .debug_abbrev 0000014f  00000000  00000000  0000104c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000381  00000000  00000000  0000115b  2**0
+  7 .debug_line   0000038e  00000000  00000000  0000119b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000094  00000000  00000000  000014dc  2**2
+  8 .debug_frame  00000094  00000000  00000000  0000152c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000174  00000000  00000000  00001570  2**0
+  9 .debug_str    00000174  00000000  00000000  000015c0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000011f  00000000  00000000  000016e4  2**0
+ 10 .debug_loc    0000011f  00000000  00000000  00001734  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,8 +61,8 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	e0 ed       	ldi	r30, 0xD0	; 208
-  3a:	f2 e0       	ldi	r31, 0x02	; 2
+  38:	ea e0       	ldi	r30, 0x0A	; 10
+  3a:	f3 e0       	ldi	r31, 0x03	; 3
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
   40:	0d 92       	st	X+, r0
@@ -84,7 +84,7 @@ Disassembly of section .text:
   54:	b1 07       	cpc	r27, r17
   56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
   58:	dd d0       	rcall	.+442    	; 0x214 <main>
-  5a:	38 c1       	rjmp	.+624    	; 0x2cc <_exit>
+  5a:	55 c1       	rjmp	.+682    	; 0x306 <_exit>
 
 0000005c <__bad_interrupt>:
   5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
@@ -424,8 +424,8 @@ OCR1A = 0x7A11;
  238:	85 bb       	out	0x15, r24	; 21
 
 	//настройка портов 
-	DDRD = 0b11100000;  //kb port
- 23a:	80 ee       	ldi	r24, 0xE0	; 224
+	DDRD = 0b11111100;  //kb port
+ 23a:	8c ef       	ldi	r24, 0xFC	; 252
  23c:	81 bb       	out	0x11, r24	; 17
 	PORTD = 0b00000000; //kb port
  23e:	12 ba       	out	0x12, r1	; 18
@@ -516,9 +516,9 @@ sei();//разрешаем прерывания глобально
 	{
 		Strobe_on = 1;
  284:	20 93 64 00 	sts	0x0064, r18
-#endif
-#ifdef PanelLight
-
+{
+	
+}
 #endif
 #ifdef HeadLightControl
 if (30>adc6 && adc6>5 )
@@ -552,38 +552,84 @@ if (150>adc6 && adc6>100)
 }
 if (150<adc6)
  2b0:	87 39       	cpi	r24, 0x97	; 151
- 2b2:	10 f0       	brcs	.+4      	; 0x2b8 <main+0xa4>
+ 2b2:	18 f0       	brcs	.+6      	; 0x2ba <main+0xa6>
 {
 	AdcKey=0;
  2b4:	10 92 62 00 	sts	0x0062, r1
+ 2b8:	1c c0       	rjmp	.+56     	; 0x2f2 <main+0xde>
+}
+#endif
+
+#ifdef HeadLight_Dual_Beam
+{
+switch (AdcKey)
+ 2ba:	80 91 62 00 	lds	r24, 0x0062
+ 2be:	82 30       	cpi	r24, 0x02	; 2
+ 2c0:	59 f0       	breq	.+22     	; 0x2d8 <main+0xc4>
+ 2c2:	83 30       	cpi	r24, 0x03	; 3
+ 2c4:	81 f0       	breq	.+32     	; 0x2e6 <main+0xd2>
+ 2c6:	81 30       	cpi	r24, 0x01	; 1
+ 2c8:	a1 f4       	brne	.+40     	; 0x2f2 <main+0xde>
+{
+	case 1: 
+	{ 
+		OutPort |=0b00001000;
+ 2ca:	80 91 66 00 	lds	r24, 0x0066
+ 2ce:	88 60       	ori	r24, 0x08	; 8
+		OutPort &=0b11101011;
+ 2d0:	8b 7e       	andi	r24, 0xEB	; 235
+ 2d2:	80 93 66 00 	sts	0x0066, r24
+		
+		break;
+ 2d6:	0d c0       	rjmp	.+26     	; 0x2f2 <main+0xde>
+	}
+	case 2:
+	{
+		OutPort |=0b00010000;
+ 2d8:	80 91 66 00 	lds	r24, 0x0066
+ 2dc:	80 61       	ori	r24, 0x10	; 16
+		OutPort &=0b11110011;
+ 2de:	83 7f       	andi	r24, 0xF3	; 243
+ 2e0:	80 93 66 00 	sts	0x0066, r24
+		break;
+ 2e4:	06 c0       	rjmp	.+12     	; 0x2f2 <main+0xde>
+	}
+	case 3:
+	{
+		OutPort |=0b00000100;
+ 2e6:	80 91 66 00 	lds	r24, 0x0066
+ 2ea:	84 60       	ori	r24, 0x04	; 4
+		OutPort &=0b11100111;
+ 2ec:	87 7e       	andi	r24, 0xE7	; 231
+ 2ee:	80 93 66 00 	sts	0x0066, r24
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 2b8:	83 ed       	ldi	r24, 0xD3	; 211
- 2ba:	90 e3       	ldi	r25, 0x30	; 48
- 2bc:	01 97       	sbiw	r24, 0x01	; 1
- 2be:	f1 f7       	brne	.-4      	; 0x2bc <main+0xa8>
- 2c0:	00 c0       	rjmp	.+0      	; 0x2c2 <main+0xae>
- 2c2:	00 00       	nop
+ 2f2:	83 ed       	ldi	r24, 0xD3	; 211
+ 2f4:	90 e3       	ldi	r25, 0x30	; 48
+ 2f6:	01 97       	sbiw	r24, 0x01	; 1
+ 2f8:	f1 f7       	brne	.-4      	; 0x2f6 <main+0xe2>
+ 2fa:	00 c0       	rjmp	.+0      	; 0x2fc <main+0xe8>
+ 2fc:	00 00       	nop
 #ifdef debounce_delay
 _delay_ms(debounce_time);
 #endif	
 
 	
 	PORTD = OutPort;	
- 2c4:	80 91 66 00 	lds	r24, 0x0066
- 2c8:	82 bb       	out	0x12, r24	; 18
+ 2fe:	80 91 66 00 	lds	r24, 0x0066
+ 302:	82 bb       	out	0x12, r24	; 18
 	//PORTB = turnOn;	
 		
         //TODO:: Please write your application code 
     }
- 2ca:	c2 cf       	rjmp	.-124    	; 0x250 <main+0x3c>
+ 304:	a5 cf       	rjmp	.-182    	; 0x250 <main+0x3c>
 
-000002cc <_exit>:
- 2cc:	f8 94       	cli
+00000306 <_exit>:
+ 306:	f8 94       	cli
 
-000002ce <__stop_program>:
- 2ce:	ff cf       	rjmp	.-2      	; 0x2ce <__stop_program>
+00000308 <__stop_program>:
+ 308:	ff cf       	rjmp	.-2      	; 0x308 <__stop_program>

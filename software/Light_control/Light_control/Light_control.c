@@ -10,14 +10,15 @@
 #define TurnControl //if turn control used //now work only blink version
 #define TurnBlink //if turn signal must blink
 #define HeadLightControl // if headlight control used 
+#define HeadLight_Dual_Beam //use for classic bulb with 2 separate spring
+//#define HeadLight_Single_Beam //Used for bi-xenon lo beam work forever, hi control beam solenoid. 
 //#define adc7Use //разобраться с переключением каналов в прерывании - на будущее
 //#define i2c_Comm //if present i2c communication with other device 
 #define Strobe // if stroboscope present 
-#define Strobe_Bink // strobe blink 4 2 times 
-#define PanelLight // panel light switch. affected debounce_delay 
-#define PanelLight_PWM 128 //panel light level 
+#define Strobe_Bink // if strobe must blink
+#define DayLight // DayLight switch
 
-#define Strobe_TIME 64 //*0.15s = strobe work time after single button press, see Strob_blink define 
+#define Strobe_TIME 64 //*0.015s? = strobe work time after single button press, see Strob_blink define 
 #define debounce_delay //if defined present key debounce delay, but logic work not need it, it can be removed. 
 #define debounce_time 50 //time in MS
 
@@ -212,7 +213,7 @@ OCR1A = 0x7A11;
 	PORTC = 0b00001111; //kb port
 
 	//настройка портов 
-	DDRD = 0b11100000;  //kb port
+	DDRD = 0b11111100;  //kb port
 	PORTD = 0b00000000; //kb port
 	//PINx регистр чтения
 	//PORTx 1=pullup(in)
@@ -277,8 +278,10 @@ sei();//разрешаем прерывания глобально
 	}
 
 #endif
-#ifdef PanelLight
-
+#ifdef DayLight
+{
+	
+}
 #endif
 #ifdef HeadLightControl
 if (30>adc6 && adc6>5 )
@@ -306,6 +309,46 @@ if (150<adc6)
 	
 }
 
+#endif
+
+#ifdef HeadLight_Single_Beam
+{
+	
+}
+#endif
+
+#ifdef HeadLight_Dual_Beam
+{
+switch (AdcKey)
+{
+	case 1: 
+	{ 
+		OutPort |=0b00001000;
+		OutPort &=0b11101011;
+		
+		break;
+	}
+	case 2:
+	{
+		OutPort |=0b00010000;
+		OutPort &=0b11110011;
+		break;
+	}
+	case 3:
+	{
+		OutPort |=0b00000100;
+		OutPort &=0b11100111;
+		break;
+	}
+
+	case 0:
+	{
+		
+		break;
+	}			
+	default: ;
+}
+}
 #endif
 		
 #ifdef debounce_delay
