@@ -2,7 +2,7 @@
  * Light_control.c
  *
  * Created: 15.12.2014 15:32:42
- *  Author: kartsev
+ *  Author: Kartsev Pavel
  */ 
 
 #define F_CPU 1000000UL
