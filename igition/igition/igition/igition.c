@@ -9,12 +9,18 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+<<<<<<< HEAD
+=======
+//asm("sei");//тут не так добавил следующую правильно
+sei();//разрешаем прерывания глобально
+>>>>>>> 69cfb6cdd47818b409946652f0b991c08d46a835
 
 
 float koof;
 unsigned int time;
 unsigned char igt=0;
 
+<<<<<<< HEAD
 ISR(INT0_vect){
 	PORTB^=(1<<3);
 	TCCR1B=0x05;
@@ -60,6 +66,13 @@ ISR(TIMER1_OVF_vect){
 ISR(USART_RXC_vect){
 	
 }
+=======
+<<<<<<< HEAD
+ISR(INT0_vect){
+
+	TCCR1B=0x05; //0b00000101
+=======
+>>>>>>> 69cfb6cdd47818b409946652f0b991c08d46a835
 
 
 int main(void)
@@ -171,3 +184,84 @@ asm("sei");
 	}
 }
 
+<<<<<<< HEAD
+=======
+ISR(INT0_vect){
+PORTB^=(1<<3);
+	TCCR1B=0x05;
+>>>>>>> 4ba776ae6dc88c1ee02b36a629eaf11c36684667
+	time=TCNT1;
+	TCNT1=0;
+	OCR1A=time/koof;
+	if (time<540){ 
+		igt=64;
+	}
+	
+}
+
+ISR(TIMER1_COMPA_vect){
+	
+	asm("cli");
+	PORTB^=(1<<3);
+	// Place your code here
+	PORTD|=(1<<4);
+	OCR1B=OCR1A+16;
+	igt++;
+	asm("sei");
+	
+}
+
+ISR(TIMER1_COMPB_vect){
+	
+	asm("cli");
+	// Place your code here
+	PORTD&=~(1<<4);
+	if (igt<=2) {
+		OCR1A=OCR1B+16;
+	}
+	else igt=0;
+
+	asm("sei");
+	
+}
+
+ISR(TIMER1_OVF_vect){//тут таймер останавливается
+	
+	TCCR1B=0x00;
+	
+}
+
+ISR(USART_RXC_vect){
+	
+}
+
+int main(void)
+{
+	
+	PORTB=0x00;
+	DDRB=0x08;
+	PORTC=0x00;
+	DDRC=0x00;
+	PORTD=0x01;
+	DDRD=0x10;
+	TCCR1B=0x05;
+	GICR|=0x40;
+	MCUCR=0x03;//0b00000011; int0 нарастающий
+	GIFR=0x40;//нафига принудительно вызывается инт0? 
+	TIMSK=0x1C;
+	koof=360/79.3;
+	
+	while(1)
+	{
+		if (!( (1 << PD0) & PIND)){
+			PORTD|=(1<<4);
+			PORTB|=(1<<3);
+			_delay_ms(4);
+			PORTD&=~(1<<4);
+			PORTB&=~(1<<3);
+			_delay_ms(10);
+		}
+	}
+}
+
+>>>>>>> 69cfb6cdd47818b409946652f0b991c08d46a835
