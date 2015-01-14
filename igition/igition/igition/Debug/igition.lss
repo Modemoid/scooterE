@@ -77,10 +77,10 @@ Disassembly of section .text:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
 
 00000048 <__vector_1>:
-
 float koof;
 unsigned int time;
 unsigned char igt=0;
+
 
 ISR(INT0_vect){
   48:	1f 92       	push	r1

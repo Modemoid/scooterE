@@ -15,8 +15,7 @@
     <AssemblyName>igition</AssemblyName>
     <Name>igition</Name>
     <RootNamespace>igition</RootNamespace>
-    <ToolchainFlavour>
-    </ToolchainFlavour>
+    <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
