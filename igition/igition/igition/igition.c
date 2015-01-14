@@ -9,12 +9,57 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-asm("sei");
+
 
 float koof;
 unsigned int time;
 unsigned char igt=0;
 
+ISR(INT0_vect){
+	PORTB^=(1<<3);
+	TCCR1B=0x05;
+	time=TCNT1;
+	TCNT1=0;
+	OCR1A=time/koof;
+	if (time<540) igt=64;
+	
+}
+
+ISR(TIMER1_COMPA_vect){
+	
+	asm("cli");
+	PORTB^=(1<<3);
+	// Place your code here
+	PORTD|=(1<<4);
+	OCR1B=OCR1A+16;
+	igt++;
+	asm("sei");
+	
+}
+
+ISR(TIMER1_COMPB_vect){
+	
+	asm("cli");
+	// Place your code here
+	PORTD&=~(1<<4);
+	if (igt<=2) {
+		OCR1A=OCR1B+16;
+	}
+	else igt=0;
+
+	asm("sei");
+	
+}
+
+ISR(TIMER1_OVF_vect){
+	
+	TCCR1B=0x00;
+	
+}
+
+ISR(USART_RXC_vect){
+	
+}
 
 
 int main(void)
@@ -110,7 +155,7 @@ SPCR=0x00;
 // TWI disabled
 TWCR=0x00;
 	koof=360/79.3;
-	
+asm("sei");	
 
 
 	while(1)
@@ -126,48 +171,3 @@ TWCR=0x00;
 	}
 }
 
-ISR(INT0_vect){
-PORTB^=(1<<3);
-	TCCR1B=0x05;
-	time=TCNT1;
-	TCNT1=0;
-	OCR1A=time/koof;
-	if (time<540) igt=64;
-	
-}
-
-ISR(TIMER1_COMPA_vect){
-	
-	asm("cli");
-	PORTB^=(1<<3);
-	// Place your code here
-	PORTD|=(1<<4);
-	OCR1B=OCR1A+16;
-	igt++;
-	asm("sei");
-	
-}
-
-ISR(TIMER1_COMPB_vect){
-	
-	asm("cli");
-	// Place your code here
-	PORTD&=~(1<<4);
-	if (igt<=2) {
-		OCR1A=OCR1B+16;
-	}
-	else igt=0;
-
-	asm("sei");
-	
-}
-
-ISR(TIMER1_OVF_vect){
-	
-	TCCR1B=0x00;
-	
-}
-
-ISR(USART_RXC_vect){
-	
-}
