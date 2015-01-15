@@ -12,16 +12,22 @@
 float koof;
 unsigned int time;
 unsigned char igt=0;
+unsigned int delay=0;
 
 
 ISR(INT0_vect){
-	PORTB^=(1<<3);
-	TCCR1B=0x05;
+	asm("cli");
+unsigned char buf[10];
+	TCCR1B=0x03;
 	time=TCNT1;
 	TCNT1=0;
-	OCR1A=time/koof;
-	if (time<540) igt=64;
-	
+	delay=time/koof;
+	OCR1A=delay;
+		 sprintf(buf,"%u - %u\r\n",time,delay);
+		 USART_TransmitString(buf);
+		 
+	if (time<3200) igt=64; else igt=0;
+	asm("sei");
 }
 
 ISR(TIMER1_COMPA_vect){
@@ -60,6 +66,22 @@ ISR(USART_RXC_vect){
 	
 }
 
+void USART_Transmit(unsigned char data)
+{
+	while (!(UCSRA & (1<<UDRE)));
+	UDR = data;
+}
+void USART_TransmitString(char *data)
+{
+	while (*data) USART_Transmit(*data++);
+}
+unsigned char USART_Receive(void)
+{
+	while (!(UCSRA & (1<<RXC)));
+	return UDR;
+}
+
+
 
 int main(void)
 {
@@ -67,7 +89,7 @@ int main(void)
 // Port B initialization
 // Func7=In Func6=In Func5=In Func4=In Func3=Out Func2=In Func1=In Func0=In
 // State7=T State6=T State5=T State4=T State3=0 State2=T State1=T State0=T
-PORTB=0x00;
+PORTB=0x10;
 DDRB=0x08;
 
 // Port C initialization
@@ -101,7 +123,7 @@ TCNT0=0x00;
 // Compare A Match Interrupt: On
 // Compare B Match Interrupt: On
 TCCR1A=0x00;
-TCCR1B=0x01;
+TCCR1B=0x00;
 TCNT1H=0x00;
 TCNT1L=0x00;
 ICR1H=0x00;
@@ -133,8 +155,26 @@ GIFR=0x40;
 TIMSK=0x1C;
 
 // USART initialization
-// USART disabled
-UCSRB=0x00;
+// Communication Parameters: 8 Data, 1 Stop, No Parity
+// USART Receiver: On
+// USART Transmitter: On
+// USART Mode: Asynchronous
+// USART Baud Rate: 9600
+//UCSRA=0x00;
+//UCSRB=0x18;
+//UCSRC=0x86;
+//UBRRH=0x00;
+//UBRRL=0x14;
+	// USART settings: 9600 baud 8-n-1
+	// WARNING: real baud = 9752: err = 1,58333333333334%
+	UBRRH = 0;
+	UBRRL = 20;
+	UCSRB = (1<<RXCIE) | (1<<RXEN) | (1<<TXEN);
+	UCSRC = (1<<URSEL) | (1<<UCSZ1) | (1<<UCSZ0);
+	SREG |= (1<<7); // enable interrupts
+	USART_TransmitString("dsgfgsdg\r\n");
+
+
 
 // Analog Comparator initialization
 // Analog Comparator: Off
@@ -154,12 +194,13 @@ SPCR=0x00;
 // TWI disabled
 TWCR=0x00;
 	koof=360/79.3;
+
 asm("sei");	
 
 
 	while(1)
 	{
-		if (!( (1 << PD0) & PIND)){
+		if (!( (1 << PB4) & PINB)){
 			PORTD|=(1<<4);
 			PORTB|=(1<<3);
 			_delay_ms(4);
@@ -167,5 +208,8 @@ asm("sei");
 			PORTB&=~(1<<3);
 			_delay_ms(10);
 		}
+		USART_Transmit(USART_Receive());
+		
+
 	}
 }
