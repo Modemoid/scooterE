@@ -97,10 +97,7 @@
     <PostBuildEvent>c:\avrdude.exe -cavr910 -pm8 -PCOM2 -b115200 -e -U flash:w:"$(OutputDirectory)\$(OutputFileName).hex":i</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="lcd-library.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="lcd-library.h">
+    <Compile Include="lcd.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tuner_igtn.c">
