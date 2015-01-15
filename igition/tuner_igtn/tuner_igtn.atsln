@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "tuner_igtn", "tuner_igtn\tuner_igtn.cproj", "{62B4D3A2-500C-4F37-9C68-AD2A95B75BB1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{62B4D3A2-500C-4F37-9C68-AD2A95B75BB1}.Debug|AVR.ActiveCfg = Debug|AVR
+		{62B4D3A2-500C-4F37-9C68-AD2A95B75BB1}.Debug|AVR.Build.0 = Debug|AVR
+		{62B4D3A2-500C-4F37-9C68-AD2A95B75BB1}.Release|AVR.ActiveCfg = Release|AVR
+		{62B4D3A2-500C-4F37-9C68-AD2A95B75BB1}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

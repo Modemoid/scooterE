@@ -1,0 +1,681 @@
+
+tuner_igtn.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000274  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000030  00800060  00000274  000002e8  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000318  2**0
+                  CONTENTS, READONLY
+  3 .debug_aranges 000000b0  00000000  00000000  00000348  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   00000b85  00000000  00000000  000003f8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 0000038e  00000000  00000000  00000f7d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   0000045b  00000000  00000000  0000130b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  000001b0  00000000  00000000  00001768  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    000002c3  00000000  00000000  00001918  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_loc    00000735  00000000  00000000  00001bdb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 000000d8  00000000  00000000  00002310  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	24 c0       	rjmp	.+72     	; 0x4c <__bad_interrupt>
+   4:	23 c0       	rjmp	.+70     	; 0x4c <__bad_interrupt>
+   6:	22 c0       	rjmp	.+68     	; 0x4c <__bad_interrupt>
+   8:	21 c0       	rjmp	.+66     	; 0x4c <__bad_interrupt>
+   a:	20 c0       	rjmp	.+64     	; 0x4c <__bad_interrupt>
+   c:	1f c0       	rjmp	.+62     	; 0x4c <__bad_interrupt>
+   e:	1e c0       	rjmp	.+60     	; 0x4c <__bad_interrupt>
+  10:	1d c0       	rjmp	.+58     	; 0x4c <__bad_interrupt>
+  12:	1c c0       	rjmp	.+56     	; 0x4c <__bad_interrupt>
+  14:	1b c0       	rjmp	.+54     	; 0x4c <__bad_interrupt>
+  16:	1a c0       	rjmp	.+52     	; 0x4c <__bad_interrupt>
+  18:	19 c0       	rjmp	.+50     	; 0x4c <__bad_interrupt>
+  1a:	18 c0       	rjmp	.+48     	; 0x4c <__bad_interrupt>
+  1c:	17 c0       	rjmp	.+46     	; 0x4c <__bad_interrupt>
+  1e:	16 c0       	rjmp	.+44     	; 0x4c <__bad_interrupt>
+  20:	15 c0       	rjmp	.+42     	; 0x4c <__bad_interrupt>
+  22:	14 c0       	rjmp	.+40     	; 0x4c <__bad_interrupt>
+  24:	13 c0       	rjmp	.+38     	; 0x4c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	e4 e7       	ldi	r30, 0x74	; 116
+  3a:	f2 e0       	ldi	r31, 0x02	; 2
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+  42:	a0 39       	cpi	r26, 0x90	; 144
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
+  48:	ce d0       	rcall	.+412    	; 0x1e6 <main>
+  4a:	12 c1       	rjmp	.+548    	; 0x270 <_exit>
+
+0000004c <__bad_interrupt>:
+  4c:	d9 cf       	rjmp	.-78     	; 0x0 <__vectors>
+
+0000004e <lcdSendNibble>:
+				
+		lcdRawSendByte(pgm_read_byte(pattern++), LCD_DATA);
+	}
+	while (lcdIsBusy()) ;
+	lcdRawSendByte(0b10000000, LCD_COMMAND);
+}
+  4e:	91 b3       	in	r25, 0x11	; 17
+  50:	97 60       	ori	r25, 0x07	; 7
+/*
+	Отправляет младшую половину байта byte в LCD. Если state == 0,
+	то передаётся как команда, если нет, то как данные.
+*/
+{
+	LCDCONTROLDDR |=	(1<<LCD_RS)|
+  52:	91 bb       	out	0x11, r25	; 17
+						(1<<LCD_RW)|
+						(1<<LCD_E);			// Пины управления - на выход
+	LCDDATADDR |=		(1<<LCD_D4)|
+  54:	91 b3       	in	r25, 0x11	; 17
+  56:	98 67       	ori	r25, 0x78	; 120
+  58:	91 bb       	out	0x11, r25	; 17
+						(1<<LCD_D5)|
+						(1<<LCD_D6)|
+						(1<<LCD_D7);		// Пины данных - на выход	
+	
+	LCDCONTROLPORT &=	~(1<<LCD_RW);		// Режим записи, RW = 0					
+  5a:	91 98       	cbi	0x12, 1	; 18
+	
+	if (state)								// Устанавливаем 1 в RS
+  5c:	66 23       	and	r22, r22
+  5e:	11 f0       	breq	.+4      	; 0x64 <lcdSendNibble+0x16>
+		LCDCONTROLPORT |=(1<<LCD_RS);		// если отдаём данные
+  60:	90 9a       	sbi	0x12, 0	; 18
+  62:	01 c0       	rjmp	.+2      	; 0x66 <lcdSendNibble+0x18>
+	else
+		LCDCONTROLPORT &= ~(1<<LCD_RS);
+  64:	90 98       	cbi	0x12, 0	; 18
+		
+	LCDCONTROLPORT |= (1<<LCD_E);			// Взводим строб
+  66:	92 9a       	sbi	0x12, 2	; 18
+		
+	LCDDATAPORT &= ~((1<<LCD_D4)|
+  68:	92 b3       	in	r25, 0x12	; 18
+  6a:	97 78       	andi	r25, 0x87	; 135
+  6c:	92 bb       	out	0x12, r25	; 18
+					(1<<LCD_D5)|
+					(1<<LCD_D6)|
+					(1<<LCD_D7));			// Обнуляем пины данных
+	
+	if (byte & (1<<3))						// Записываем младшую
+  6e:	83 fd       	sbrc	r24, 3
+		LCDDATAPORT |= (1<<LCD_D7);			// половину байта
+  70:	96 9a       	sbi	0x12, 6	; 18
+											// byte в порт вывода данных
+	if (byte & (1<<2))
+  72:	82 fd       	sbrc	r24, 2
+		LCDDATAPORT |= (1<<LCD_D6);
+  74:	95 9a       	sbi	0x12, 5	; 18
+
+	if (byte & (1<<1))
+  76:	81 fd       	sbrc	r24, 1
+		LCDDATAPORT |= (1<<LCD_D5);
+  78:	94 9a       	sbi	0x12, 4	; 18
+
+ 	if (byte & (1<<0))
+  7a:	80 fd       	sbrc	r24, 0
+		LCDDATAPORT |= (1<<LCD_D4);
+  7c:	93 9a       	sbi	0x12, 3	; 18
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  7e:	82 e0       	ldi	r24, 0x02	; 2
+  80:	8a 95       	dec	r24
+  82:	f1 f7       	brne	.-4      	; 0x80 <lcdSendNibble+0x32>
+  84:	00 c0       	rjmp	.+0      	; 0x86 <lcdSendNibble+0x38>
+	
+	_delay_us(LCD_STROBEDELAY_US);			// Пауза
+	
+	LCDCONTROLPORT &= ~(1<<LCD_E);			// Опускаем строб. Полубайт ушёл
+  86:	92 98       	cbi	0x12, 2	; 18
+  88:	08 95       	ret
+
+0000008a <lcdGetNibble>:
+	Читает половину байта из LCD. Если state == 0, то читается команда,
+	если нет, то данные.
+*/
+{
+	char temp = 0;
+	LCDCONTROLDDR |=	((1<<LCD_RS)|
+  8a:	91 b3       	in	r25, 0x11	; 17
+  8c:	97 60       	ori	r25, 0x07	; 7
+  8e:	91 bb       	out	0x11, r25	; 17
+						(1<<LCD_RW)|
+						(1<<LCD_E));		// Пины управления - на выход
+	LCDCONTROLPORT |=	(1<<LCD_RW);		// Режим чтения
+  90:	91 9a       	sbi	0x12, 1	; 18
+	if (state)								// Устанавливаем 1 в RS
+  92:	88 23       	and	r24, r24
+  94:	11 f0       	breq	.+4      	; 0x9a <lcdGetNibble+0x10>
+		LCDCONTROLPORT |=(1<<LCD_RS);		// если получаем данные
+  96:	90 9a       	sbi	0x12, 0	; 18
+  98:	01 c0       	rjmp	.+2      	; 0x9c <lcdGetNibble+0x12>
+	else
+		LCDCONTROLPORT &= ~(1<<LCD_RS);
+  9a:	90 98       	cbi	0x12, 0	; 18
+
+	LCDCONTROLPORT |=	(1<<LCD_E);			// Взводим строб
+  9c:	92 9a       	sbi	0x12, 2	; 18
+
+	LCDDATADDR &= ~((1<<LCD_D4)|
+  9e:	81 b3       	in	r24, 0x11	; 17
+  a0:	87 78       	andi	r24, 0x87	; 135
+  a2:	81 bb       	out	0x11, r24	; 17
+					(1<<LCD_D5)|
+					(1<<LCD_D6)|
+					(1<<LCD_D7));			// Пины данных - на вход	
+	LCDDATAPORT |= ((1<<LCD_D4)|
+  a4:	82 b3       	in	r24, 0x12	; 18
+  a6:	88 67       	ori	r24, 0x78	; 120
+  a8:	82 bb       	out	0x12, r24	; 18
+  aa:	82 e0       	ldi	r24, 0x02	; 2
+  ac:	8a 95       	dec	r24
+  ae:	f1 f7       	brne	.-4      	; 0xac <lcdGetNibble+0x22>
+  b0:	00 c0       	rjmp	.+0      	; 0xb2 <lcdGetNibble+0x28>
+					(1<<LCD_D6)|
+					(1<<LCD_D7));			// с подтяжкой
+				
+	_delay_us(LCD_STROBEDELAY_US);			// Пауза	
+
+	LCDCONTROLPORT &= ~(1<<LCD_E);			// Опускаем строб
+  b2:	92 98       	cbi	0x12, 2	; 18
+		
+	if (LCDDATAPIN & (1<<LCD_D7))			// Читаем пины
+  b4:	86 99       	sbic	0x10, 6	; 16
+  b6:	02 c0       	rjmp	.+4      	; 0xbc <lcdGetNibble+0x32>
+/*
+	Читает половину байта из LCD. Если state == 0, то читается команда,
+	если нет, то данные.
+*/
+{
+	char temp = 0;
+  b8:	80 e0       	ldi	r24, 0x00	; 0
+  ba:	01 c0       	rjmp	.+2      	; 0xbe <lcdGetNibble+0x34>
+	_delay_us(LCD_STROBEDELAY_US);			// Пауза	
+
+	LCDCONTROLPORT &= ~(1<<LCD_E);			// Опускаем строб
+		
+	if (LCDDATAPIN & (1<<LCD_D7))			// Читаем пины
+		temp |=(1<<3);						// во временную переменную	
+  bc:	88 e0       	ldi	r24, 0x08	; 8
+		
+	if (LCDDATAPIN & (1<<LCD_D6))
+  be:	85 99       	sbic	0x10, 5	; 16
+		temp |= (1<<2);
+  c0:	84 60       	ori	r24, 0x04	; 4
+
+	if (LCDDATAPIN & (1<<LCD_D5))
+  c2:	84 99       	sbic	0x10, 4	; 16
+		temp |= (1<<1);
+  c4:	82 60       	ori	r24, 0x02	; 2
+		
+ 	if (LCDDATAPIN & (1<<LCD_D4))
+  c6:	83 99       	sbic	0x10, 3	; 16
+		temp |= (1<<0);
+  c8:	81 60       	ori	r24, 0x01	; 1
+	
+	return temp;							// возвращаем прочитанное
+
+}
+  ca:	08 95       	ret
+
+000000cc <lcdRawGetByte>:
+char lcdRawGetByte(char state)
+/*
+	Читает байт из LCD. Если state == 0, то читается команда,
+	если нет, то данные.
+*/
+{
+  cc:	cf 93       	push	r28
+  ce:	df 93       	push	r29
+  d0:	c8 2f       	mov	r28, r24
+	char temp = 0;
+	
+	temp |= lcdGetNibble(state);
+  d2:	db df       	rcall	.-74     	; 0x8a <lcdGetNibble>
+	temp = temp<<4;					
+  d4:	d8 2f       	mov	r29, r24
+  d6:	d2 95       	swap	r29
+  d8:	d0 7f       	andi	r29, 0xF0	; 240
+	temp |= lcdGetNibble(state);
+  da:	8c 2f       	mov	r24, r28
+  dc:	d6 df       	rcall	.-84     	; 0x8a <lcdGetNibble>
+	
+	return temp;
+}
+  de:	8d 2b       	or	r24, r29
+  e0:	df 91       	pop	r29
+  e2:	cf 91       	pop	r28
+  e4:	08 95       	ret
+
+000000e6 <lcdRawSendByte>:
+void lcdRawSendByte(char byte, char state)
+/*
+	Отравляет байт в LCD. Если state == 0, то передаётся как команда,
+	если нет, то как данные.
+*/
+{
+  e6:	cf 93       	push	r28
+  e8:	df 93       	push	r29
+  ea:	c8 2f       	mov	r28, r24
+  ec:	d6 2f       	mov	r29, r22
+	lcdSendNibble((byte>>4), state);					
+  ee:	82 95       	swap	r24
+  f0:	8f 70       	andi	r24, 0x0F	; 15
+  f2:	ad df       	rcall	.-166    	; 0x4e <lcdSendNibble>
+	lcdSendNibble(byte,state);
+  f4:	6d 2f       	mov	r22, r29
+  f6:	8c 2f       	mov	r24, r28
+  f8:	aa df       	rcall	.-172    	; 0x4e <lcdSendNibble>
+}
+  fa:	df 91       	pop	r29
+  fc:	cf 91       	pop	r28
+  fe:	08 95       	ret
+
+00000100 <lcdIsBusy>:
+/*
+	Читает состояние LCD, возвращает 0xff, если флаг занятости установлен,
+	и 0x00, если нет.
+*/
+{
+	if (lcdRawGetByte(LCD_COMMAND) & (1<<7))
+ 100:	80 e0       	ldi	r24, 0x00	; 0
+ 102:	e4 df       	rcall	.-56     	; 0xcc <lcdRawGetByte>
+		return 0xff;
+	else
+		return 0x00;
+}
+ 104:	88 0f       	add	r24, r24
+ 106:	88 0b       	sbc	r24, r24
+ 108:	08 95       	ret
+
+0000010a <lcdInit>:
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 10a:	8f e1       	ldi	r24, 0x1F	; 31
+ 10c:	9e e4       	ldi	r25, 0x4E	; 78
+ 10e:	01 97       	sbiw	r24, 0x01	; 1
+ 110:	f1 f7       	brne	.-4      	; 0x10e <lcdInit+0x4>
+ 112:	00 c0       	rjmp	.+0      	; 0x114 <lcdInit+0xa>
+ 114:	00 00       	nop
+	
+	
+	
+	//while (lcdIsBusy()) ;	
+	_delay_ms(50);
+	lcdSendNibble(0b0010, LCD_COMMAND);
+ 116:	60 e0       	ldi	r22, 0x00	; 0
+ 118:	82 e0       	ldi	r24, 0x02	; 2
+ 11a:	99 df       	rcall	.-206    	; 0x4e <lcdSendNibble>
+ 11c:	8f e1       	ldi	r24, 0x1F	; 31
+ 11e:	9e e4       	ldi	r25, 0x4E	; 78
+ 120:	01 97       	sbiw	r24, 0x01	; 1
+ 122:	f1 f7       	brne	.-4      	; 0x120 <lcdInit+0x16>
+ 124:	00 c0       	rjmp	.+0      	; 0x126 <lcdInit+0x1c>
+ 126:	00 00       	nop
+	_delay_ms(50);//while (lcdIsBusy()) ;
+	lcdRawSendByte(0b00101000, LCD_COMMAND);
+ 128:	60 e0       	ldi	r22, 0x00	; 0
+ 12a:	88 e2       	ldi	r24, 0x28	; 40
+ 12c:	dc df       	rcall	.-72     	; 0xe6 <lcdRawSendByte>
+ 12e:	8f e1       	ldi	r24, 0x1F	; 31
+ 130:	9e e4       	ldi	r25, 0x4E	; 78
+ 132:	01 97       	sbiw	r24, 0x01	; 1
+ 134:	f1 f7       	brne	.-4      	; 0x132 <lcdInit+0x28>
+ 136:	00 c0       	rjmp	.+0      	; 0x138 <lcdInit+0x2e>
+ 138:	00 00       	nop
+	_delay_ms(50);//while (lcdIsBusy()) ;
+	lcdRawSendByte(0b00000001, LCD_COMMAND);
+ 13a:	60 e0       	ldi	r22, 0x00	; 0
+ 13c:	81 e0       	ldi	r24, 0x01	; 1
+ 13e:	d3 df       	rcall	.-90     	; 0xe6 <lcdRawSendByte>
+ 140:	8f e1       	ldi	r24, 0x1F	; 31
+ 142:	9e e4       	ldi	r25, 0x4E	; 78
+ 144:	01 97       	sbiw	r24, 0x01	; 1
+ 146:	f1 f7       	brne	.-4      	; 0x144 <lcdInit+0x3a>
+ 148:	00 c0       	rjmp	.+0      	; 0x14a <lcdInit+0x40>
+ 14a:	00 00       	nop
+	_delay_ms(50);//while (lcdIsBusy()) ;
+	lcdRawSendByte(0b00000110, LCD_COMMAND);
+ 14c:	60 e0       	ldi	r22, 0x00	; 0
+ 14e:	86 e0       	ldi	r24, 0x06	; 6
+ 150:	ca df       	rcall	.-108    	; 0xe6 <lcdRawSendByte>
+ 152:	8f e1       	ldi	r24, 0x1F	; 31
+ 154:	9e e4       	ldi	r25, 0x4E	; 78
+ 156:	01 97       	sbiw	r24, 0x01	; 1
+ 158:	f1 f7       	brne	.-4      	; 0x156 <lcdInit+0x4c>
+ 15a:	00 c0       	rjmp	.+0      	; 0x15c <lcdInit+0x52>
+ 15c:	00 00       	nop
+	_delay_ms(50);//while (lcdIsBusy()) ;
+	lcdRawSendByte(0b00001100, LCD_COMMAND);
+ 15e:	60 e0       	ldi	r22, 0x00	; 0
+ 160:	8c e0       	ldi	r24, 0x0C	; 12
+ 162:	c1 df       	rcall	.-126    	; 0xe6 <lcdRawSendByte>
+ 164:	08 95       	ret
+
+00000166 <lcdGotoXY>:
+
+void lcdGotoXY(char str, char col)
+/*
+	Устанавливает курсор в заданную позицию.
+*/
+{
+ 166:	cf 93       	push	r28
+ 168:	df 93       	push	r29
+ 16a:	d8 2f       	mov	r29, r24
+ 16c:	c6 2f       	mov	r28, r22
+	while (lcdIsBusy())	;
+ 16e:	c8 df       	rcall	.-112    	; 0x100 <lcdIsBusy>
+ 170:	81 11       	cpse	r24, r1
+ 172:	fd cf       	rjmp	.-6      	; 0x16e <lcdGotoXY+0x8>
+	
+	lcdRawSendByte((0b10000000|((0x40*str)+col)), LCD_COMMAND);
+ 174:	8c 2f       	mov	r24, r28
+ 176:	90 e4       	ldi	r25, 0x40	; 64
+ 178:	d9 9f       	mul	r29, r25
+ 17a:	80 0d       	add	r24, r0
+ 17c:	11 24       	eor	r1, r1
+ 17e:	60 e0       	ldi	r22, 0x00	; 0
+ 180:	80 68       	ori	r24, 0x80	; 128
+ 182:	b1 df       	rcall	.-158    	; 0xe6 <lcdRawSendByte>
+}
+ 184:	df 91       	pop	r29
+ 186:	cf 91       	pop	r28
+ 188:	08 95       	ret
+
+0000018a <lcdDisplayScroll>:
+void lcdDisplayScroll(char pos, char dir)
+/*
+	Сдвигает область отображения на указанное количество символов
+	вправо или влево.
+*/
+{
+ 18a:	cf 93       	push	r28
+ 18c:	df 93       	push	r29
+ 18e:	c8 2f       	mov	r28, r24
+	while (pos){
+ 190:	88 23       	and	r24, r24
+ 192:	51 f0       	breq	.+20     	; 0x1a8 <lcdDisplayScroll+0x1e>
+		while (lcdIsBusy()) ;
+	
+		lcdRawSendByte((0b00011000|dir), LCD_COMMAND);
+ 194:	d6 2f       	mov	r29, r22
+ 196:	d8 61       	ori	r29, 0x18	; 24
+	Сдвигает область отображения на указанное количество символов
+	вправо или влево.
+*/
+{
+	while (pos){
+		while (lcdIsBusy()) ;
+ 198:	b3 df       	rcall	.-154    	; 0x100 <lcdIsBusy>
+ 19a:	81 11       	cpse	r24, r1
+ 19c:	fd cf       	rjmp	.-6      	; 0x198 <lcdDisplayScroll+0xe>
+	
+		lcdRawSendByte((0b00011000|dir), LCD_COMMAND);
+ 19e:	60 e0       	ldi	r22, 0x00	; 0
+ 1a0:	8d 2f       	mov	r24, r29
+ 1a2:	a1 df       	rcall	.-190    	; 0xe6 <lcdRawSendByte>
+		pos--;
+ 1a4:	c1 50       	subi	r28, 0x01	; 1
+/*
+	Сдвигает область отображения на указанное количество символов
+	вправо или влево.
+*/
+{
+	while (pos){
+ 1a6:	c1 f7       	brne	.-16     	; 0x198 <lcdDisplayScroll+0xe>
+		while (lcdIsBusy()) ;
+	
+		lcdRawSendByte((0b00011000|dir), LCD_COMMAND);
+		pos--;
+	}	
+}
+ 1a8:	df 91       	pop	r29
+ 1aa:	cf 91       	pop	r28
+ 1ac:	08 95       	ret
+
+000001ae <lcdPutsf>:
+#ifdef LCD_USE_FLASH_FUNCTIONS
+void lcdPutsf(char *str)
+/*
+	Выводит строку из flash в позицию курсора.
+*/
+{
+ 1ae:	0f 93       	push	r16
+ 1b0:	1f 93       	push	r17
+ 1b2:	cf 93       	push	r28
+ 1b4:	df 93       	push	r29
+ 1b6:	ec 01       	movw	r28, r24
+	while (pgm_read_byte(str)){
+ 1b8:	8c 01       	movw	r16, r24
+ 1ba:	fc 01       	movw	r30, r24
+ 1bc:	84 91       	lpm	r24, Z
+ 1be:	88 23       	and	r24, r24
+ 1c0:	69 f0       	breq	.+26     	; 0x1dc <lcdPutsf+0x2e>
+		while (lcdIsBusy()) ;
+ 1c2:	9e df       	rcall	.-196    	; 0x100 <lcdIsBusy>
+ 1c4:	81 11       	cpse	r24, r1
+ 1c6:	fd cf       	rjmp	.-6      	; 0x1c2 <lcdPutsf+0x14>
+		
+		lcdRawSendByte(pgm_read_byte(str++), LCD_DATA);
+ 1c8:	21 96       	adiw	r28, 0x01	; 1
+ 1ca:	f8 01       	movw	r30, r16
+ 1cc:	84 91       	lpm	r24, Z
+ 1ce:	61 e0       	ldi	r22, 0x01	; 1
+ 1d0:	8a df       	rcall	.-236    	; 0xe6 <lcdRawSendByte>
+void lcdPutsf(char *str)
+/*
+	Выводит строку из flash в позицию курсора.
+*/
+{
+	while (pgm_read_byte(str)){
+ 1d2:	8e 01       	movw	r16, r28
+ 1d4:	fe 01       	movw	r30, r28
+ 1d6:	84 91       	lpm	r24, Z
+ 1d8:	81 11       	cpse	r24, r1
+ 1da:	f3 cf       	rjmp	.-26     	; 0x1c2 <lcdPutsf+0x14>
+		while (lcdIsBusy()) ;
+		
+		lcdRawSendByte(pgm_read_byte(str++), LCD_DATA);
+	}
+}
+ 1dc:	df 91       	pop	r29
+ 1de:	cf 91       	pop	r28
+ 1e0:	1f 91       	pop	r17
+ 1e2:	0f 91       	pop	r16
+ 1e4:	08 95       	ret
+
+000001e6 <main>:
+int main(void)
+{
+	char i = 1;
+	char dir = LCD_SCROLL_LEFT;
+	
+	lcdInit();/*
+ 1e6:	91 df       	rcall	.-222    	; 0x10a <lcdInit>
+	lcdLoadCharacterf(2, Char12);
+	
+
+	
+	DDRB |= (1<<7);
+	*/	lcdGotoXY(0,2);
+ 1e8:	62 e0       	ldi	r22, 0x02	; 2
+ 1ea:	80 e0       	ldi	r24, 0x00	; 0
+ 1ec:	bc df       	rcall	.-136    	; 0x166 <lcdGotoXY>
+	lcdPutsf(stringOne);
+ 1ee:	87 e7       	ldi	r24, 0x77	; 119
+ 1f0:	90 e0       	ldi	r25, 0x00	; 0
+ 1f2:	dd df       	rcall	.-70     	; 0x1ae <lcdPutsf>
+	
+	lcdGotoXY(1,3);
+ 1f4:	63 e0       	ldi	r22, 0x03	; 3
+ 1f6:	81 e0       	ldi	r24, 0x01	; 1
+ 1f8:	b6 df       	rcall	.-148    	; 0x166 <lcdGotoXY>
+	lcdPutsf(stringTwo);
+ 1fa:	80 e6       	ldi	r24, 0x60	; 96
+ 1fc:	90 e0       	ldi	r25, 0x00	; 0
+ 1fe:	d7 df       	rcall	.-82     	; 0x1ae <lcdPutsf>
+	while(1)
+	{
+		
+		PORTB |= (1<<7);
+ 200:	c7 9a       	sbi	0x18, 7	; 24
+ 202:	2f ef       	ldi	r18, 0xFF	; 255
+ 204:	89 ef       	ldi	r24, 0xF9	; 249
+ 206:	90 e0       	ldi	r25, 0x00	; 0
+ 208:	21 50       	subi	r18, 0x01	; 1
+ 20a:	80 40       	sbci	r24, 0x00	; 0
+ 20c:	90 40       	sbci	r25, 0x00	; 0
+ 20e:	e1 f7       	brne	.-8      	; 0x208 <main+0x22>
+ 210:	00 c0       	rjmp	.+0      	; 0x212 <main+0x2c>
+ 212:	00 00       	nop
+		_delay_ms(200);
+		
+		PORTB &= ~(1<<7);
+ 214:	c7 98       	cbi	0x18, 7	; 24
+ 216:	8f e3       	ldi	r24, 0x3F	; 63
+ 218:	9c e9       	ldi	r25, 0x9C	; 156
+ 21a:	01 97       	sbiw	r24, 0x01	; 1
+ 21c:	f1 f7       	brne	.-4      	; 0x21a <main+0x34>
+ 21e:	00 c0       	rjmp	.+0      	; 0x220 <main+0x3a>
+ 220:	00 00       	nop
+		_delay_ms(100);
+		lcdDisplayScroll(1, dir);
+ 222:	60 e0       	ldi	r22, 0x00	; 0
+ 224:	81 e0       	ldi	r24, 0x01	; 1
+ 226:	b1 df       	rcall	.-158    	; 0x18a <lcdDisplayScroll>
+char stringTwo[]  = "\12 for all the fish! \12\0";
+
+int main(void)
+{
+	char i = 1;
+	char dir = LCD_SCROLL_LEFT;
+ 228:	d0 e0       	ldi	r29, 0x00	; 0
+char stringOne[]  = "\10 So long, and thanks \11\0";
+char stringTwo[]  = "\12 for all the fish! \12\0";
+
+int main(void)
+{
+	char i = 1;
+ 22a:	c1 e0       	ldi	r28, 0x01	; 1
+		if (i == 11){
+			if (dir == LCD_SCROLL_LEFT){
+				dir = LCD_SCROLL_RIGHT;
+			}
+			else{
+				dir = LCD_SCROLL_LEFT;
+ 22c:	10 e0       	ldi	r17, 0x00	; 0
+		PORTB &= ~(1<<7);
+		_delay_ms(100);
+		lcdDisplayScroll(1, dir);
+		if (i == 11){
+			if (dir == LCD_SCROLL_LEFT){
+				dir = LCD_SCROLL_RIGHT;
+ 22e:	04 e0       	ldi	r16, 0x04	; 4
+ 230:	07 c0       	rjmp	.+14     	; 0x240 <main+0x5a>
+		
+		PORTB &= ~(1<<7);
+		_delay_ms(100);
+		lcdDisplayScroll(1, dir);
+		if (i == 11){
+			if (dir == LCD_SCROLL_LEFT){
+ 232:	d1 11       	cpse	r29, r1
+ 234:	03 c0       	rjmp	.+6      	; 0x23c <main+0x56>
+				dir = LCD_SCROLL_RIGHT;
+ 236:	d0 2f       	mov	r29, r16
+			}
+			else{
+				dir = LCD_SCROLL_LEFT;
+			}
+			i = 0;
+ 238:	c1 2f       	mov	r28, r17
+ 23a:	02 c0       	rjmp	.+4      	; 0x240 <main+0x5a>
+		if (i == 11){
+			if (dir == LCD_SCROLL_LEFT){
+				dir = LCD_SCROLL_RIGHT;
+			}
+			else{
+				dir = LCD_SCROLL_LEFT;
+ 23c:	d1 2f       	mov	r29, r17
+			}
+			i = 0;
+ 23e:	c1 2f       	mov	r28, r17
+		}
+		i++;
+ 240:	cf 5f       	subi	r28, 0xFF	; 255
+	lcdGotoXY(1,3);
+	lcdPutsf(stringTwo);
+	while(1)
+	{
+		
+		PORTB |= (1<<7);
+ 242:	c7 9a       	sbi	0x18, 7	; 24
+ 244:	9f ef       	ldi	r25, 0xFF	; 255
+ 246:	29 ef       	ldi	r18, 0xF9	; 249
+ 248:	80 e0       	ldi	r24, 0x00	; 0
+ 24a:	91 50       	subi	r25, 0x01	; 1
+ 24c:	20 40       	sbci	r18, 0x00	; 0
+ 24e:	80 40       	sbci	r24, 0x00	; 0
+ 250:	e1 f7       	brne	.-8      	; 0x24a <main+0x64>
+ 252:	00 c0       	rjmp	.+0      	; 0x254 <main+0x6e>
+ 254:	00 00       	nop
+		_delay_ms(200);
+		
+		PORTB &= ~(1<<7);
+ 256:	c7 98       	cbi	0x18, 7	; 24
+ 258:	8f e3       	ldi	r24, 0x3F	; 63
+ 25a:	9c e9       	ldi	r25, 0x9C	; 156
+ 25c:	01 97       	sbiw	r24, 0x01	; 1
+ 25e:	f1 f7       	brne	.-4      	; 0x25c <main+0x76>
+ 260:	00 c0       	rjmp	.+0      	; 0x262 <main+0x7c>
+ 262:	00 00       	nop
+		_delay_ms(100);
+		lcdDisplayScroll(1, dir);
+ 264:	6d 2f       	mov	r22, r29
+ 266:	81 e0       	ldi	r24, 0x01	; 1
+ 268:	90 df       	rcall	.-224    	; 0x18a <lcdDisplayScroll>
+		if (i == 11){
+ 26a:	cb 30       	cpi	r28, 0x0B	; 11
+ 26c:	49 f7       	brne	.-46     	; 0x240 <main+0x5a>
+ 26e:	e1 cf       	rjmp	.-62     	; 0x232 <main+0x4c>
+
+00000270 <_exit>:
+ 270:	f8 94       	cli
+
+00000272 <__stop_program>:
+ 272:	ff cf       	rjmp	.-2      	; 0x272 <__stop_program>
