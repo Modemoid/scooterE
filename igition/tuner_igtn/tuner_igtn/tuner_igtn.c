@@ -61,8 +61,8 @@
 /*0x04 - отображение данных включено,*/
 /*0x02 - курсор включен, 0x01 - курсор мерцает*/
 
-unsigned char EncState,*buf;
-unsigned int EncData=0;
+unsigned char *buf, *rebuf;;
+
 
 
 //ПРОТОТИПЫ ФУНКЦИЙ
@@ -79,9 +79,12 @@ void LCD_cls(void){
 int main( void )
 {	
 unsigned char m1,New;
-char *rebuf;
+
+unsigned int NewState,OldState,upState,downState;
+unsigned char Vol;
 DDRC=0x00;
 PORTC|=1|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5);
+DDRB&=~(1|(1<<1));
 PORTB|=1|(1<<1);
 
 	buf="Start!";
@@ -91,6 +94,8 @@ PORTB|=1|(1<<1);
 LCDSendStr(buf);
 _delay_ms(3000);
 LCD_cls();
+LCDCurGotoXY(0,1);
+LCDSendStr("Mod=    Read=   ");
 	while(1){
 LCDCurGotoXY(0,0);
 m1=PINC;
@@ -149,51 +154,60 @@ switch (m1)
 	buf="Pressed button";
 }
 
-
-
-New = PINB & 0x03;	// Берем текущее значение
-// И сравниваем со старым
-
-// Смотря в какую сторону оно поменялось -- увеличиваем
-// Или уменьшаем счетный регистр
-
-switch(EncState)
+      NewState=PINB & 0b00000011;
+      //NewState=NewState>>5;  
+     // sprintf(line,"vol=%d",NewState);
+      //lcd_gotoxy(0,1);
+      //lcd_puts(line);
+if(NewState!=OldState)
 {
+
+switch(OldState)
+	{
 	case 2:
-	{
-		if(New == 3) EncData++;
-		if(New == 0) EncData--;
+		{
+		if(NewState == 3) upState++;
+		if(NewState == 0) downState++; 
 		break;
-	}
-	
+		}
+ 
 	case 0:
-	{
-		if(New == 2) EncData++;
-		if(New == 1) EncData--;
+		{
+		if(NewState == 2) upState++;
+		if(NewState == 1) downState++; 
 		break;
-	}
+		}
 	case 1:
-	{
-		if(New == 0) EncData++;
-		if(New == 3) EncData--;
+		{
+		if(NewState == 0) upState++;
+		if(NewState == 3) downState++; 
 		break;
-	}
+		}
 	case 3:
-	{
-		if(New == 1) EncData++;
-		if(New == 2) EncData--;
+		{
+		if(NewState == 1) upState++;
+		if(NewState == 2) downState++; 
 		break;
-	}
-}
-
-EncState = New;
-sprintf(rebuf,"%u",EncData);
-
+		}
+	}            
+OldState=NewState;
+}      
+ if (upState >= 4) 
+      {                            
+        Vol--;
+        upState = 0;
+      }
+      if (downState >= 4) 
+      {                              
+        Vol++;
+        downState = 0;
+      }
+	  
+itoa(Vol,rebuf,10);	  
 LCDCurGotoXY(0,0);
-LCDSendStr(rebuf);
-LCDCurGotoXY(0,1);
 LCDSendStr(buf);
-
+LCDCurGotoXY(4,1);
+LCDSendStr(rebuf);
 	}
 }
 
@@ -275,10 +289,9 @@ void LCDSendChar (unsigned char byte)
 }
 
 static void LCDSendStr (char *str ){
-register char c;
-
-while ( (c = *str++) ) {
-LCDSendChar(c);	
+	while (*str) {
+LCDSendChar(*str++);	
+LCDStrobeDelay();
 }
 
 
