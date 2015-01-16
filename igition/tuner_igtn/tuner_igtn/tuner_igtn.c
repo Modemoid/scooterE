@@ -61,7 +61,9 @@
 /*0x04 - отображение данных включено,*/
 /*0x02 - курсор включен, 0x01 - курсор мерцает*/
 
-unsigned char *buf;
+unsigned char EncState,*buf;
+unsigned int EncData=0;
+
 
 //ПРОТОТИПЫ ФУНКЦИЙ
 static void LCDSendChar (unsigned char);					//отправить символ на LCD
@@ -70,22 +72,128 @@ static void LCDSendCommand (unsigned char);					//отправить команду на LCD
 static void LCDInit (void);									//Инициализация LCD
 static void LCDCurGotoXY(unsigned char x, unsigned char y); //Перемещение курсора LCD в X,Y позицию
 
+void LCD_cls(void){
+	LCDSendCommand (LCDCommandDispClear);
+}
+
 int main( void )
 {	
-unsigned char m1;
+unsigned char m1,New;
+char *rebuf;
 DDRC=0x00;
 PORTC|=1|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5);
+PORTB|=1|(1<<1);
 
 	buf="Start!";
 	LCDInit();
 	LCDSendCommand (LCDCommandDispClear);						//очистить данные в самом дисплее
 	LCDSendCommand (LCDCommandCurHome);
 LCDSendStr(buf);
+_delay_ms(3000);
+LCD_cls();
 	while(1){
 LCDCurGotoXY(0,0);
 m1=PINC;
-sprintf(buf,"%X",m1);
+buf="";
+switch (m1)
+{
+	case 0x3C:
+	buf="Menu 1 ";
+	break;
+	case 0x34:
+	buf="Menu 2 ";
+	break;
+	case 0x30:
+	buf="Menu 3 ";
+	break;
+	case 0x38:
+	buf="Menu 4 ";	
+	break;
+	case 0x3A:
+	buf="Menu 5 ";	
+	break;
+	case 0x32:
+	buf="Menu 6 ";	
+	break;
+	case 0x36:
+	buf="Menu 7 ";	
+	break;
+	case 0x3E:
+	buf="Menu 8 ";	
+	break;
+	case 0x3F:
+	buf="Menu 9 ";	
+	break;
+	case 0x3D:
+	buf="Menu 10";	
+	break;
+	case 0x35:
+	buf="Menu 11";	
+	break;
+	case 0x31:
+	buf="Menu 12";	
+	break;
+	case 0x39:
+	buf="Menu 13";	
+	break;
+	case 0x3B:
+	buf="Menu 14";	
+	break;
+	case 0x33:
+	buf="Menu 15";	
+	break;
+	case 0x37:
+	buf="Menu 16";	
+	break;
+	default:
+	buf="Pressed button";
+}
+
+
+
+New = PINB & 0x03;	// Берем текущее значение
+// И сравниваем со старым
+
+// Смотря в какую сторону оно поменялось -- увеличиваем
+// Или уменьшаем счетный регистр
+
+switch(EncState)
+{
+	case 2:
+	{
+		if(New == 3) EncData++;
+		if(New == 0) EncData--;
+		break;
+	}
+	
+	case 0:
+	{
+		if(New == 2) EncData++;
+		if(New == 1) EncData--;
+		break;
+	}
+	case 1:
+	{
+		if(New == 0) EncData++;
+		if(New == 3) EncData--;
+		break;
+	}
+	case 3:
+	{
+		if(New == 1) EncData++;
+		if(New == 2) EncData--;
+		break;
+	}
+}
+
+EncState = New;
+sprintf(rebuf,"%u",EncData);
+
+LCDCurGotoXY(0,0);
+LCDSendStr(rebuf);
+LCDCurGotoXY(0,1);
 LCDSendStr(buf);
+
 	}
 }
 
