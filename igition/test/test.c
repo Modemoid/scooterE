@@ -181,7 +181,7 @@ SPCR=0x00;
 TWCR=0x00;
 //////
 
-koof=360/79.3;
+koof=360/100.3;
 // Global enable interrupts
 #asm("sei")
 

@@ -1,14 +1,11 @@
-RAM Allocation
-Variable                                                          Address   Size
---------------------------------------------------------------------------------
-koof                                                              0x0160       4
+CodeVisionAVR C Compiler V1.24.8d Professional
+(C) Copyright 1998-2006 Pavel Haiduc, HP InfoTech s.r.l.
+http://www.hpinfotech.com
 
-EEPROM Allocation
-Variable                                                          Address   Size
---------------------------------------------------------------------------------
+File: C:\Users\kartsev\Documents\scooterE\igition\test\test.c
+Global variables memory map:
 
-Register Allocation
-Variable                                                          Register  Size
---------------------------------------------------------------------------------
-time                                                              R4,R5        2
-igt                                                               R7           1
+Variable                          Address   Size
+koof                                                                  160h      4
+time                                                                 R4,R5      2
+igt                                                                     R6      1

@@ -15,7 +15,8 @@
     <AssemblyName>igition</AssemblyName>
     <Name>igition</Name>
     <RootNamespace>igition</RootNamespace>
-    <ToolchainFlavour>Native</ToolchainFlavour>
+    <ToolchainFlavour>
+    </ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
@@ -95,7 +96,8 @@
         <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
       </AvrGcc>
     </ToolchainSettings>
-    <PostBuildEvent>c:\avrdude.exe -cavr910 -pm8 -PCOM2 -b115200 -e -U flash:w:"$(OutputDirectory)\$(OutputFileName).hex":i</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="igition.c">

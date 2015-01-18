@@ -193,7 +193,7 @@ SPCR=0x00;
 // TWI initialization
 // TWI disabled
 TWCR=0x00;
-	koof=360/79.3;
+	koof=360/84.3;
 
 asm("sei");	
 
