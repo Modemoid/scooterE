@@ -37,7 +37,6 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../lcd.c \
 ../tuner_igtn.c
 
 
@@ -48,19 +47,15 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-lcd.o \
 tuner_igtn.o
 
 OBJS_AS_ARGS +=  \
-lcd.o \
 tuner_igtn.o
 
 C_DEPS +=  \
-lcd.d \
 tuner_igtn.d
 
 C_DEPS_AS_ARGS +=  \
-lcd.d \
 tuner_igtn.d
 
 OUTPUT_FILE_PATH +=tuner_igtn.elf
@@ -77,8 +72,6 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-
-
 
 
 

@@ -61,7 +61,9 @@
 /*0x04 - отображение данных включено,*/
 /*0x02 - курсор включен, 0x01 - курсор мерцает*/
 
-unsigned char *buf;
+unsigned char *buf, *rebuf;;
+
+
 
 //ПРОТОТИПЫ ФУНКЦИЙ
 static void LCDSendChar (unsigned char);					//отправить символ на LCD
@@ -70,22 +72,142 @@ static void LCDSendCommand (unsigned char);					//отправить команду на LCD
 static void LCDInit (void);									//Инициализация LCD
 static void LCDCurGotoXY(unsigned char x, unsigned char y); //Перемещение курсора LCD в X,Y позицию
 
+void LCD_cls(void){
+	LCDSendCommand (LCDCommandDispClear);
+}
+
 int main( void )
 {	
-unsigned char m1;
+unsigned char m1,New;
+
+unsigned int NewState,OldState,upState,downState;
+unsigned char Vol;
 DDRC=0x00;
 PORTC|=1|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5);
+DDRB&=~(1|(1<<1));
+PORTB|=1|(1<<1);
 
 	buf="Start!";
 	LCDInit();
 	LCDSendCommand (LCDCommandDispClear);						//очистить данные в самом дисплее
 	LCDSendCommand (LCDCommandCurHome);
 LCDSendStr(buf);
+_delay_ms(3000);
+LCD_cls();
+LCDCurGotoXY(0,1);
+LCDSendStr("Mod=    Read=   ");
 	while(1){
 LCDCurGotoXY(0,0);
 m1=PINC;
-sprintf(buf,"%X",m1);
+buf="";
+switch (m1)
+{
+	case 0x3C:
+	buf="Menu 1 ";
+	break;
+	case 0x34:
+	buf="Menu 2 ";
+	break;
+	case 0x30:
+	buf="Menu 3 ";
+	break;
+	case 0x38:
+	buf="Menu 4 ";	
+	break;
+	case 0x3A:
+	buf="Menu 5 ";	
+	break;
+	case 0x32:
+	buf="Menu 6 ";	
+	break;
+	case 0x36:
+	buf="Menu 7 ";	
+	break;
+	case 0x3E:
+	buf="Menu 8 ";	
+	break;
+	case 0x3F:
+	buf="Menu 9 ";	
+	break;
+	case 0x3D:
+	buf="Menu 10";	
+	break;
+	case 0x35:
+	buf="Menu 11";	
+	break;
+	case 0x31:
+	buf="Menu 12";	
+	break;
+	case 0x39:
+	buf="Menu 13";	
+	break;
+	case 0x3B:
+	buf="Menu 14";	
+	break;
+	case 0x33:
+	buf="Menu 15";	
+	break;
+	case 0x37:
+	buf="Menu 16";	
+	break;
+	default:
+	buf="Pressed button";
+}
+
+      NewState=PINB & 0b00000011;
+      //NewState=NewState>>5;  
+     // sprintf(line,"vol=%d",NewState);
+      //lcd_gotoxy(0,1);
+      //lcd_puts(line);
+if(NewState!=OldState)
+{
+
+switch(OldState)
+	{
+	case 2:
+		{
+		if(NewState == 3) upState++;
+		if(NewState == 0) downState++; 
+		break;
+		}
+ 
+	case 0:
+		{
+		if(NewState == 2) upState++;
+		if(NewState == 1) downState++; 
+		break;
+		}
+	case 1:
+		{
+		if(NewState == 0) upState++;
+		if(NewState == 3) downState++; 
+		break;
+		}
+	case 3:
+		{
+		if(NewState == 1) upState++;
+		if(NewState == 2) downState++; 
+		break;
+		}
+	}            
+OldState=NewState;
+}      
+ if (upState >= 4) 
+      {                            
+        Vol--;
+        upState = 0;
+      }
+      if (downState >= 4) 
+      {                              
+        Vol++;
+        downState = 0;
+      }
+	  
+itoa(Vol,rebuf,10);	  
+LCDCurGotoXY(0,0);
 LCDSendStr(buf);
+LCDCurGotoXY(4,1);
+LCDSendStr(rebuf);
 	}
 }
 
@@ -167,10 +289,9 @@ void LCDSendChar (unsigned char byte)
 }
 
 static void LCDSendStr (char *str ){
-register char c;
-
-while ( (c = *str++) ) {
-LCDSendChar(c);	
+	while (*str) {
+LCDSendChar(*str++);	
+LCDStrobeDelay();
 }
 
 
