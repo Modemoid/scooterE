@@ -1,0 +1,17 @@
+/*
+ * tuner_igtn.c
+ *
+ * Created: 21.01.2015 15:11:10
+ * Author: skota
+ */
+
+#include <io.h>
+
+void main(void)
+{
+while (1)
+    {
+    // Please write your application code here
+
+    }
+}
