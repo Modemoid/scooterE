@@ -13,7 +13,7 @@
 #define HeadLight_Dual_Beam //use for classic bulb with 2 separate spring
 //#define HeadLight_Single_Beam //Used for bi-xenon lo beam work forever, hi control beam solenoid. 
 //#define adc7Use //разобраться с переключением каналов в прерывании - на будущее
-//#define i2c_Comm //if present i2c communication with other device 
+#define i2c_Comm //if present i2c communication with other device 
 #define Strobe // if stroboscope present 
 #define Strobe_Bink // if strobe must blink
 #define DayLight // DayLight switch
@@ -25,6 +25,7 @@
 #include <avr/io.h>
 #include <avr/delay.h>
 #include <avr/interrupt.h>
+#include <util/twi.h>
 
 //gobal VAR
 unsigned char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
