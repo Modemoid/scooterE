@@ -214,8 +214,8 @@ SFIOR=0x00;
 // ADC initialization
 // ADC Clock frequency: 1000,000 kHz
 // ADC Voltage Reference: Int., cap. on AREF
-ADMUX=FIRST_ADC_INPUT | (ADC_VREF_TYPE & 0xff);
-ADCSRA=0xCC;
+ADMUX=0;
+ADCSRA=0;
 
 // SPI initialization
 // SPI disabled
@@ -241,7 +241,7 @@ MSCS_init();
 delay_ms(10);
 
  lcd_puts("Start!");
- delay_ms(2000);
+// delay_ms(2000);
 // Global enable interrupts
 #asm("sei")
 
@@ -251,12 +251,12 @@ while (1)
 
       
       m1=PINC;       
-      /*
-      m1=0x00;
-      delay_ms (100);
+      
+      m1=0x0C;
+      //delay_ms (100);
       // */
 sprintf(buf,"");
-switch (m1&0b1001111)
+switch (m1&0b1111)
 {
     case 0xC:   
     MSCS_com_veryfy("                ",buf1);     
@@ -382,12 +382,17 @@ switch (m1&0b1001111)
      sprintf(buf,"Restart        clock-Ok");    
      }
     break;
-    case 0x7:                                    
+    case 0x7: 
+    // ADC initialization
+// ADC Clock frequency: 1000,000 kHz
+// ADC Voltage Reference: Int., cap. on AREF
+ADMUX=FIRST_ADC_INPUT | (ADC_VREF_TYPE & 0xff);
+ADCSRA=0xCC;                                   
     ft=0.005*adc_data;
     sprintf(buf,"Voltmetr        %1.3fVol",ft);    
     break;
     default:
-    sprintf(buf,"Pressed button");
+    sprintf(buf,"Pressed button   %X",PINC);
 }
       lcd_clear();
       lcd_gotoxy(0,0);

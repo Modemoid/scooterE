@@ -1,0 +1,21 @@
+RAM Allocation
+Variable                                                          Address   Size
+--------------------------------------------------------------------------------
+downState                                                         0x0189       2
+_base_y                                                           0x018B       4
+_lcd_y                                                            0x018F       1
+_lcd_maxx                                                         0x0190       1
+
+EEPROM Allocation
+Variable                                                          Address   Size
+--------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                          Register  Size
+--------------------------------------------------------------------------------
+adc_data                                                          R4,R5        2
+Vol                                                               R7           1
+NewState                                                          R8,R9        2
+OldState                                                          R10,R11      2
+upState                                                           R12,R13      2
+_lcd_x                                                            R6           1
