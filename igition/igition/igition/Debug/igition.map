@@ -58,6 +58,28 @@ Discarded input sections
  .text          0x00000000        0x0 igition.o
  .data          0x00000000        0x0 igition.o
  .bss           0x00000000        0x0 igition.o
+ .text          0x00000000        0x0 MSCS_lib.o
+ .data          0x00000000        0x0 MSCS_lib.o
+ .bss           0x00000000        0x0 MSCS_lib.o
+ .text.MSCS_delay_framing
+                0x00000000        0xe MSCS_lib.o
+ .text.miso     0x00000000        0xc MSCS_lib.o
+ .text.MSCS_framing
+                0x00000000       0x1c MSCS_lib.o
+ .text.MSCS_com
+                0x00000000      0x1d4 MSCS_lib.o
+ .text.MSCS_init
+                0x00000000        0xe MSCS_lib.o
+ .debug_info    0x00000000      0x2f5 MSCS_lib.o
+ .debug_abbrev  0x00000000      0x1b8 MSCS_lib.o
+ .debug_loc     0x00000000      0x44d MSCS_lib.o
+ .debug_aranges
+                0x00000000       0x40 MSCS_lib.o
+ .debug_ranges  0x00000000       0x60 MSCS_lib.o
+ .debug_line    0x00000000      0x22b MSCS_lib.o
+ .debug_str     0x00000000      0x201 MSCS_lib.o
+ .comment       0x00000000       0x31 MSCS_lib.o
+ .debug_frame   0x00000000       0xc0 MSCS_lib.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(divsf3.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(divsf3.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(divsf3.o)
@@ -202,6 +224,7 @@ Linker script and memory map
 
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4/crtm8.o
 LOAD igition.o
+LOAD MSCS_lib.o
 START GROUP
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a
 END GROUP
@@ -594,13 +617,13 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x35f
+.debug_info     0x00000000      0x346
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x35f igition.o
+ .debug_info    0x00000000      0x346 igition.o
 
-.debug_abbrev   0x00000000      0x224
+.debug_abbrev   0x00000000      0x211
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x224 igition.o
+ .debug_abbrev  0x00000000      0x211 igition.o
 
 .debug_line     0x00000000      0x231
  *(.debug_line .debug_line.* .debug_line_end)

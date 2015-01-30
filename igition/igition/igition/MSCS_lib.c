@@ -133,14 +133,14 @@ unsigned char buffer_tx,buffer_rx;
 unsigned char i,j;
 unsigned int c;
 if (MSCS_framing()) {
-while(MSCS_framing()) #asm ("nop");
+while(MSCS_framing()) asm ("nop");;
 wait=1;
 }
 
 if (wait){
 
  while (!(mosi()&&clk())){
- #asm ("nop")                                                               
+ asm ("nop");
  }  
  for(i=0;i<16;i++){
   buffer_tx=data[i];

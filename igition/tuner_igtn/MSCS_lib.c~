@@ -73,6 +73,9 @@ MSCS_delay();
 MSCS_delay();
 MSCS_delay();
 MSCS_delay();
+MSCS_delay();
+MSCS_delay();
+MSCS_delay();
 }
 
 void MSCS_init(void){

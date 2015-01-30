@@ -251,16 +251,16 @@ while (1)
 
       
       m1=PINC;       
-      /*
-      m1=0x00;
-      delay_ms (100);
+      
+      //m1=0x0C;
+      //delay_ms (100);
       // */
 sprintf(buf,"");
 switch (m1&0b1111)
 {
     case 0xC:   
-    MSCS_com_veryfy("                ",buf1);     
-    sprintf(buf,"h-%2um-%2u        s-%2u",buf1[9],buf1[10],buf1[11]);      
+    MSCS_com_veryfy("rh              ",buf1);     
+    sprintf(buf,"h-%2um-%2u        s-%2ut=%2d",buf1[9],buf1[10],buf1[11],buf1[8]);      
     break;
     case 0x4:   
     m2=encoder(m2);
@@ -270,7 +270,7 @@ switch (m1&0b1111)
     break;
     case 0x0:        
     if (!((m1&0b100000)&&0b100000)){ 
-    MSCS_com_veryfy("                ",buf1);
+    MSCS_com_veryfy("rh              ",buf1);
     Vol=buf1[m2];
     } 
     Vol=encoder(Vol);
@@ -325,11 +325,26 @@ switch (m1&0b1111)
      sprintf(buf,"PORT       SwitchOk");
     }        
     break;
-    case 0x6:
-    sprintf(buf,"Menu 7 ");    
+    case 0x6:   
+       MSCS_com_veryfy("rt              ",buf1);     
+    sprintf(buf,"t1=%2u %u         t2=%2u",buf1[2],buf[1],buf1[3]);      
+    delay_ms(3000);
     break;
-    case 0xE:
-    sprintf(buf,"Menu 8 ");    
+    case 0xE: 
+    MSCS_com_veryfy("rac             ",buf1); 
+    m3=encoder(m3);
+    if (m3>=250) m3=0;
+    if (m3>buf1[1]) m3=buf1[1]; 
+    sprintf(buf,"c=%1u de=%1u",buf1[1],m3+1);
+     if (!((m1&0b100000)&&0b100000)){ 
+     buf2[0]='r';
+     buf2[1]='a';
+     buf2[2]='g';
+     buf2[3]=m3;  
+     MSCS_com_veryfy(buf2,buf1);  
+     sprintf(buf,"%2X%2X%2X%2X        %2X%2X%2X%2X",buf1[2],buf1[3],buf1[4],buf1[5],buf1[6],buf1[7],buf1[8],buf1[9]);
+    }   
+
     break;
     case 0xF:
     sprintf(buf,"Menu 9 ");    

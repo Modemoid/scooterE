@@ -13,19 +13,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .debug_aranges 00000060  00000000  00000000  00000baa  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000035f  00000000  00000000  00000c0a  2**0
+  5 .debug_info   00000346  00000000  00000000  00000c0a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000224  00000000  00000000  00000f69  2**0
+  6 .debug_abbrev 00000211  00000000  00000000  00000f50  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000231  00000000  00000000  0000118d  2**0
+  7 .debug_line   00000231  00000000  00000000  00001161  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000150  00000000  00000000  000013c0  2**2
+  8 .debug_frame  00000150  00000000  00000000  00001394  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000209  00000000  00000000  00001510  2**0
+  9 .debug_str    00000209  00000000  00000000  000014e4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000002f7  00000000  00000000  00001719  2**0
+ 10 .debug_loc    000002f7  00000000  00000000  000016ed  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000050  00000000  00000000  00001a10  2**0
+ 11 .debug_ranges 00000050  00000000  00000000  000019e4  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -539,22 +539,26 @@ SPCR=0x00;
 // TWI disabled
 TWCR=0x00;
  298:	16 be       	out	0x36, r1	; 54
-	koof=360/79.3;
- 29a:	88 e6       	ldi	r24, 0x68	; 104
- 29c:	95 e4       	ldi	r25, 0x45	; 69
- 29e:	a1 e9       	ldi	r26, 0x91	; 145
+	koof=360/84.3;
+ 29a:	81 ea       	ldi	r24, 0xA1	; 161
+ 29c:	97 ea       	ldi	r25, 0xA7	; 167
+ 29e:	a8 e8       	ldi	r26, 0x88	; 136
  2a0:	b0 e4       	ldi	r27, 0x40	; 64
  2a2:	80 93 7b 00 	sts	0x007B, r24
  2a6:	90 93 7c 00 	sts	0x007C, r25
  2aa:	a0 93 7d 00 	sts	0x007D, r26
  2ae:	b0 93 7e 00 	sts	0x007E, r27
-
+/*MSCS_init();
+unsigned char transmit_buf[17],resiv_buf[17];
+unsigned int fractional;
+float fractional_part;*/
 asm("sei");	
  2b2:	78 94       	sei
-
-
-	while(1)
-	{
+		fractional=fractional_part;
+		transmit_buf[3]=fractional/100;
+		transmit_buf[4]=fractional%100;
+		MSCS_com(transmit_buf,0,resiv_buf);
+		*/
 		if (!( (1 << PB4) & PINB)){
  2b4:	b4 99       	sbic	0x16, 4	; 22
  2b6:	10 c0       	rjmp	.+32     	; 0x2d8 <main+0xa8>

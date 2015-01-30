@@ -1,5 +1,5 @@
-VERSION:3 SOURCE_TIMESTAMP:46347750
-NODE:I LEVEL:0 LINE:6 "C:\Users\skota\git\avr\scooterE\igition\tuner_igtn\MSCS_lib.h"
+VERSION:3 SOURCE_TIMESTAMP:46385478
+NODE:I LEVEL:0 LINE:6 "F:\igition\tuner_igtn\MSCS_lib.h"
 NODE:M LEVEL:0 LINE:10 "DDRMOSI"
 NODE:M LEVEL:0 LINE:11 "MOSI_PORT"
 NODE:M LEVEL:0 LINE:13 "DDRCLK"
@@ -11,4 +11,4 @@ NODE:F LEVEL:0 LINE:27 "mosi(unsigned char mos)"
 NODE:F LEVEL:0 LINE:35 "clk(unsigned char cl)"
 NODE:F LEVEL:0 LINE:43 "miso(void)"
 NODE:F LEVEL:0 LINE:47 "MSCS_com(unsigned char * data,unsigned char [17] ret)"
-NODE:F LEVEL:0 LINE:77 "MSCS_init(void)"
+NODE:F LEVEL:0 LINE:78 "MSCS_init(void)"

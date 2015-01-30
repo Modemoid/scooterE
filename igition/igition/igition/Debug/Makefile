@@ -37,7 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../igition.c
+../igition.c \
+../MSCS_lib.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,16 +48,20 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-igition.o
+igition.o \
+MSCS_lib.o
 
 OBJS_AS_ARGS +=  \
-igition.o
+igition.o \
+MSCS_lib.o
 
 C_DEPS +=  \
-igition.d
+igition.d \
+MSCS_lib.d
 
 C_DEPS_AS_ARGS +=  \
-igition.d
+igition.d \
+MSCS_lib.d
 
 OUTPUT_FILE_PATH +=igition.elf
 
@@ -72,6 +77,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

@@ -8,6 +8,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include "MSCS_lib.h"
 
 float koof;
 unsigned int time;
@@ -194,12 +195,28 @@ SPCR=0x00;
 // TWI disabled
 TWCR=0x00;
 	koof=360/84.3;
-
+/*MSCS_init();
+unsigned char transmit_buf[17],resiv_buf[17];
+unsigned int fractional;
+float fractional_part;*/
 asm("sei");	
 
 
 	while(1)
 	{
+		/*transmit_buf[12]='g';
+		transmit_buf[13]='e';
+		transmit_buf[14]='r';
+		transmit_buf[15]='b';
+		transmit_buf[0]=OCR1AH;
+		transmit_buf[1]=OCR1AL;
+		transmit_buf[2]=koof;
+		fractional_part=(koof-transmit_buf[2])*1000.0;
+		fractional=fractional_part;
+		transmit_buf[3]=fractional/100;
+		transmit_buf[4]=fractional%100;
+		MSCS_com(transmit_buf,0,resiv_buf);
+		*/
 		if (!( (1 << PB4) & PINB)){
 			PORTD|=(1<<4);
 			PORTB|=(1<<3);
