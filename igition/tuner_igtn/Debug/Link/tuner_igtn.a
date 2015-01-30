@@ -548,17 +548,10 @@
 ; 0000 00F8 while (1)
 ;PCODE: $00000111 VOL: 0
 ; 0000 00F9       {
-; 0000 00FA 
-; 0000 00FB 
-; 0000 00FC 
-; 0000 00FD       m1=PINC;
+; 0000 00FA       m1=PINC;
 ;PCODE: $00000112 VOL: 0
 ;PCODE: $00000113 VOL: 0
-; 0000 00FE 
-; 0000 00FF       //m1=0x0C;
-; 0000 0100       //delay_ms (100);
-; 0000 0101       // */
-; 0000 0102 sprintf(buf,"");
+; 0000 00FB sprintf(buf,"");
 ;PCODE: $00000114 VOL: 0
 ;PCODE: $00000115 VOL: 0
 ;PCODE: $00000116 VOL: 0
@@ -568,20 +561,20 @@
 ;PCODE: $0000011A VOL: 0
 ;PCODE: $0000011B VOL: 0
 ;PCODE: $0000011C VOL: 0
-; 0000 0103 switch (m1&0b1111)
+; 0000 00FC switch (m1&0b1111)
 ;PCODE: $0000011D VOL: 0
 ;PCODE: $0000011E VOL: 0
-; 0000 0104 {
-; 0000 0105     case 0xC:
+; 0000 00FD {
+; 0000 00FE     case 0xC://1
 ;PCODE: $0000011F VOL: 0
 ;PCODE: $00000120 VOL: 0
-; 0000 0106     MSCS_com_veryfy("rh              ",buf1);
+; 0000 00FF     MSCS_com_veryfy("rh              ",buf1);
 ;PCODE: $00000121 VOL: 0
 ;PCODE: $00000122 VOL: 0
 ;PCODE: $00000123 VOL: 0
 ;PCODE: $00000124 VOL: 0
 ;PCODE: $00000125 VOL: 0
-; 0000 0107     sprintf(buf,"h-%2um-%2u        s-%2ut=%2d",buf1[9],buf1[10],buf1[11],buf1[8]);
+; 0000 0100     sprintf(buf,"h-%2um-%2u        s-%2ut=%2d",buf1[9],buf1[10],buf1[11],buf1[8]);
 ;PCODE: $00000126 VOL: 0
 ;PCODE: $00000127 VOL: 0
 ;PCODE: $00000128 VOL: 0
@@ -603,30 +596,30 @@
 ;PCODE: $00000138 VOL: 0
 ;PCODE: $00000139 VOL: 0
 ;PCODE: $0000013A VOL: 0
-; 0000 0108     break;
+; 0000 0101     break;
 ;PCODE: $0000013B VOL: 0
-; 0000 0109     case 0x4:
+; 0000 0102     case 0x4://2
 ;PCODE: $0000013C VOL: 0
 ;PCODE: $0000013D VOL: 0
 ;PCODE: $0000013E VOL: 0
-; 0000 010A     m2=encoder(m2);
+; 0000 0103     m2=encoder(m2);
 ;PCODE: $0000013F VOL: 0
 ;PCODE: $00000140 VOL: 0
 ;PCODE: $00000141 VOL: 0
-; 0000 010B     if (m2>=250) m2=0;
+; 0000 0104     if (m2>=250) m2=0;
 ;PCODE: $00000142 VOL: 0
 ;PCODE: $00000143 VOL: 0
 ;PCODE: $00000144 VOL: 0
 ;PCODE: $00000145 VOL: 0
 ;PCODE: $00000146 VOL: 0
-; 0000 010C     if (m2>7) m2=7;
+; 0000 0105     if (m2>7) m2=7;
 ;PCODE: $00000147 VOL: 0
 ;PCODE: $00000148 VOL: 0
 ;PCODE: $00000149 VOL: 0
 ;PCODE: $0000014A VOL: 0
 ;PCODE: $0000014B VOL: 0
 ;PCODE: $0000014C VOL: 0
-; 0000 010D     sprintf(buf,"SelTimer        Timer%u",m2+1);
+; 0000 0106     sprintf(buf,"SelTimer        Timer%u",m2+1);
 ;PCODE: $0000014D VOL: 0
 ;PCODE: $0000014E VOL: 0
 ;PCODE: $0000014F VOL: 0
@@ -641,13 +634,13 @@
 ;PCODE: $00000158 VOL: 0
 ;PCODE: $00000159 VOL: 0
 ;PCODE: $0000015A VOL: 0
-; 0000 010E     break;
+; 0000 0107     break;
 ;PCODE: $0000015B VOL: 0
-; 0000 010F     case 0x0:
+; 0000 0108     case 0x0://3
 ;PCODE: $0000015C VOL: 0
 ;PCODE: $0000015D VOL: 0
 ;PCODE: $0000015E VOL: 0
-; 0000 0110     if (!((m1&0b100000)&&0b100000)){
+; 0000 0109     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $0000015F VOL: 0
 ;PCODE: $00000160 VOL: 0
 ;PCODE: $00000161 VOL: 0
@@ -656,25 +649,25 @@
 ;PCODE: $00000164 VOL: 0
 ;PCODE: $00000165 VOL: 0
 ;PCODE: $00000166 VOL: 0
-; 0000 0111     MSCS_com_veryfy("rh              ",buf1);
+; 0000 010A     MSCS_com_veryfy("rh              ",buf1);
 ;PCODE: $00000167 VOL: 0
 ;PCODE: $00000168 VOL: 0
 ;PCODE: $00000169 VOL: 0
 ;PCODE: $0000016A VOL: 0
 ;PCODE: $0000016B VOL: 0
-; 0000 0112     Vol=buf1[m2];
+; 0000 010B     Vol=buf1[m2];
 ;PCODE: $0000016C VOL: 0
 ;PCODE: $0000016D VOL: 0
 ;PCODE: $0000016E VOL: 0
 ;PCODE: $0000016F VOL: 0
 ;PCODE: $00000170 VOL: 0
-; 0000 0113     }
-; 0000 0114     Vol=encoder(Vol);
+; 0000 010C     }
+; 0000 010D     Vol=encoder(Vol);
 ;PCODE: $00000171 VOL: 0
 ;PCODE: $00000172 VOL: 0
 ;PCODE: $00000173 VOL: 0
 ;PCODE: $00000174 VOL: 0
-; 0000 0115     sprintf(buf,"TimerNo%u        time=%u",m2+1,Vol);
+; 0000 010E     sprintf(buf,"TimerNo%u        time=%u",m2+1,Vol);
 ;PCODE: $00000175 VOL: 0
 ;PCODE: $00000176 VOL: 0
 ;PCODE: $00000177 VOL: 0
@@ -691,15 +684,15 @@
 ;PCODE: $00000182 VOL: 0
 ;PCODE: $00000183 VOL: 0
 ;PCODE: $00000184 VOL: 0
-; 0000 0116 
-; 0000 0117     break;
+; 0000 010F 
+; 0000 0110     break;
 ;PCODE: $00000185 VOL: 0
-; 0000 0118 
-; 0000 0119     case 0x8:
+; 0000 0111 
+; 0000 0112     case 0x8://4
 ;PCODE: $00000186 VOL: 0
 ;PCODE: $00000187 VOL: 0
 ;PCODE: $00000188 VOL: 0
-; 0000 011A     sprintf(buf,"WriteNo%u        toMemory",m2+1);
+; 0000 0113     sprintf(buf,"WriteNo%u        toMemory",m2+1);
 ;PCODE: $00000189 VOL: 0
 ;PCODE: $0000018A VOL: 0
 ;PCODE: $0000018B VOL: 0
@@ -713,7 +706,7 @@
 ;PCODE: $00000193 VOL: 0
 ;PCODE: $00000194 VOL: 0
 ;PCODE: $00000195 VOL: 0
-; 0000 011B     if (!((m1&0b100000)&&0b100000)){
+; 0000 0114     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $00000196 VOL: 0
 ;PCODE: $00000197 VOL: 0
 ;PCODE: $00000198 VOL: 0
@@ -722,36 +715,36 @@
 ;PCODE: $0000019B VOL: 0
 ;PCODE: $0000019C VOL: 0
 ;PCODE: $0000019D VOL: 0
-; 0000 011C      buf2[0]='w';
+; 0000 0115      buf2[0]='w';
 ;PCODE: $0000019E VOL: 0
 ;PCODE: $0000019F VOL: 0
-; 0000 011D      buf2[1]='r';
+; 0000 0116      buf2[1]='r';
 ;PCODE: $000001A0 VOL: 0
 ;PCODE: $000001A1 VOL: 0
-; 0000 011E      buf2[2]='i';
+; 0000 0117      buf2[2]='i';
 ;PCODE: $000001A2 VOL: 0
 ;PCODE: $000001A3 VOL: 0
-; 0000 011F      buf2[3]='t';
+; 0000 0118      buf2[3]='t';
 ;PCODE: $000001A4 VOL: 0
 ;PCODE: $000001A5 VOL: 0
-; 0000 0120      buf2[4]='e';
+; 0000 0119      buf2[4]='e';
 ;PCODE: $000001A6 VOL: 0
 ;PCODE: $000001A7 VOL: 0
-; 0000 0121      buf2[5]='t';
+; 0000 011A      buf2[5]='t';
 ;PCODE: $000001A8 VOL: 0
 ;PCODE: $000001A9 VOL: 0
-; 0000 0122      buf2[6]=m2;
+; 0000 011B      buf2[6]=m2;
 ;PCODE: $000001AA VOL: 0
 ;PCODE: $000001AB VOL: 0
-; 0000 0123      buf2[7]=Vol;
+; 0000 011C      buf2[7]=Vol;
 ;PCODE: $000001AC VOL: 0
 ;PCODE: $000001AD VOL: 0
-; 0000 0124      MSCS_com_veryfy(buf2,buf1);
+; 0000 011D      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $000001AE VOL: 0
 ;PCODE: $000001AF VOL: 0
 ;PCODE: $000001B0 VOL: 0
 ;PCODE: $000001B1 VOL: 0
-; 0000 0125      sprintf(buf,"WriteNo%u        Ok",m2+1);
+; 0000 011E      sprintf(buf,"WriteNo%u        Ok",m2+1);
 ;PCODE: $000001B2 VOL: 0
 ;PCODE: $000001B3 VOL: 0
 ;PCODE: $000001B4 VOL: 0
@@ -765,17 +758,17 @@
 ;PCODE: $000001BC VOL: 0
 ;PCODE: $000001BD VOL: 0
 ;PCODE: $000001BE VOL: 0
-; 0000 0126     }
-; 0000 0127     break;
+; 0000 011F     }
+; 0000 0120     break;
 ;PCODE: $000001BF VOL: 0
 ;PCODE: $000001C0 VOL: 0
-; 0000 0128 
-; 0000 0129 
-; 0000 012A     case 0xA:
+; 0000 0121 
+; 0000 0122 
+; 0000 0123     case 0xA://5
 ;PCODE: $000001C1 VOL: 0
 ;PCODE: $000001C2 VOL: 0
 ;PCODE: $000001C3 VOL: 0
-; 0000 012B     sprintf(buf,"Enable          testMode");
+; 0000 0124     sprintf(buf,"Enable          testMode");
 ;PCODE: $000001C4 VOL: 0
 ;PCODE: $000001C5 VOL: 0
 ;PCODE: $000001C6 VOL: 0
@@ -785,7 +778,7 @@
 ;PCODE: $000001CA VOL: 0
 ;PCODE: $000001CB VOL: 0
 ;PCODE: $000001CC VOL: 0
-; 0000 012C     if (!((m1&0b100000)&&0b100000)){
+; 0000 0125     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $000001CD VOL: 0
 ;PCODE: $000001CE VOL: 0
 ;PCODE: $000001CF VOL: 0
@@ -794,30 +787,30 @@
 ;PCODE: $000001D2 VOL: 0
 ;PCODE: $000001D3 VOL: 0
 ;PCODE: $000001D4 VOL: 0
-; 0000 012D      buf2[0]='w';
+; 0000 0126      buf2[0]='w';
 ;PCODE: $000001D5 VOL: 0
 ;PCODE: $000001D6 VOL: 0
-; 0000 012E      buf2[1]='r';
+; 0000 0127      buf2[1]='r';
 ;PCODE: $000001D7 VOL: 0
 ;PCODE: $000001D8 VOL: 0
-; 0000 012F      buf2[2]='i';
+; 0000 0128      buf2[2]='i';
 ;PCODE: $000001D9 VOL: 0
 ;PCODE: $000001DA VOL: 0
-; 0000 0130      buf2[3]='t';
+; 0000 0129      buf2[3]='t';
 ;PCODE: $000001DB VOL: 0
 ;PCODE: $000001DC VOL: 0
-; 0000 0131      buf2[4]='e';
+; 0000 012A      buf2[4]='e';
 ;PCODE: $000001DD VOL: 0
 ;PCODE: $000001DE VOL: 0
-; 0000 0132      buf2[5]='e';
+; 0000 012B      buf2[5]='e';
 ;PCODE: $000001DF VOL: 0
 ;PCODE: $000001E0 VOL: 0
-; 0000 0133      MSCS_com_veryfy(buf2,buf1);
+; 0000 012C      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $000001E1 VOL: 0
 ;PCODE: $000001E2 VOL: 0
 ;PCODE: $000001E3 VOL: 0
 ;PCODE: $000001E4 VOL: 0
-; 0000 0134      sprintf(buf,"Enable        Tmode Ok");
+; 0000 012D      sprintf(buf,"Enable        Tmode Ok");
 ;PCODE: $000001E5 VOL: 0
 ;PCODE: $000001E6 VOL: 0
 ;PCODE: $000001E7 VOL: 0
@@ -827,32 +820,32 @@
 ;PCODE: $000001EB VOL: 0
 ;PCODE: $000001EC VOL: 0
 ;PCODE: $000001ED VOL: 0
-; 0000 0135     }
-; 0000 0136     break;
+; 0000 012E     }
+; 0000 012F     break;
 ;PCODE: $000001EE VOL: 0
 ;PCODE: $000001EF VOL: 0
-; 0000 0137     case 0x2:
+; 0000 0130     case 0x2://6
 ;PCODE: $000001F0 VOL: 0
 ;PCODE: $000001F1 VOL: 0
 ;PCODE: $000001F2 VOL: 0
-; 0000 0138     m3=encoder(m3);
+; 0000 0131     m3=encoder(m3);
 ;PCODE: $000001F3 VOL: 0
 ;PCODE: $000001F4 VOL: 0
 ;PCODE: $000001F5 VOL: 0
-; 0000 0139     if (m3>=250) m3=0;
+; 0000 0132     if (m3>=250) m3=0;
 ;PCODE: $000001F6 VOL: 0
 ;PCODE: $000001F7 VOL: 0
 ;PCODE: $000001F8 VOL: 0
 ;PCODE: $000001F9 VOL: 0
 ;PCODE: $000001FA VOL: 0
-; 0000 013A     if (m3>3) m3=3;
+; 0000 0133     if (m3>3) m3=3;
 ;PCODE: $000001FB VOL: 0
 ;PCODE: $000001FC VOL: 0
 ;PCODE: $000001FD VOL: 0
 ;PCODE: $000001FE VOL: 0
 ;PCODE: $000001FF VOL: 0
 ;PCODE: $00000200 VOL: 0
-; 0000 013B     sprintf(buf,"PORT No%u        Switch",m3+1);
+; 0000 0134     sprintf(buf,"PORT No%u        Switch",m3+1);
 ;PCODE: $00000201 VOL: 0
 ;PCODE: $00000202 VOL: 0
 ;PCODE: $00000203 VOL: 0
@@ -867,7 +860,7 @@
 ;PCODE: $0000020C VOL: 0
 ;PCODE: $0000020D VOL: 0
 ;PCODE: $0000020E VOL: 0
-; 0000 013C      if (!((m1&0b100000)&&0b100000)){
+; 0000 0135      if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $0000020F VOL: 0
 ;PCODE: $00000210 VOL: 0
 ;PCODE: $00000211 VOL: 0
@@ -876,33 +869,33 @@
 ;PCODE: $00000214 VOL: 0
 ;PCODE: $00000215 VOL: 0
 ;PCODE: $00000216 VOL: 0
-; 0000 013D      buf2[0]='w';
+; 0000 0136      buf2[0]='w';
 ;PCODE: $00000217 VOL: 0
 ;PCODE: $00000218 VOL: 0
-; 0000 013E      buf2[1]='r';
+; 0000 0137      buf2[1]='r';
 ;PCODE: $00000219 VOL: 0
 ;PCODE: $0000021A VOL: 0
-; 0000 013F      buf2[2]='i';
+; 0000 0138      buf2[2]='i';
 ;PCODE: $0000021B VOL: 0
 ;PCODE: $0000021C VOL: 0
-; 0000 0140      buf2[3]='t';
+; 0000 0139      buf2[3]='t';
 ;PCODE: $0000021D VOL: 0
 ;PCODE: $0000021E VOL: 0
-; 0000 0141      buf2[4]='e';
+; 0000 013A      buf2[4]='e';
 ;PCODE: $0000021F VOL: 0
 ;PCODE: $00000220 VOL: 0
-; 0000 0142      buf2[5]='s';
+; 0000 013B      buf2[5]='s';
 ;PCODE: $00000221 VOL: 0
 ;PCODE: $00000222 VOL: 0
-; 0000 0143      buf2[6]=m3;
+; 0000 013C      buf2[6]=m3;
 ;PCODE: $00000223 VOL: 0
 ;PCODE: $00000224 VOL: 0
-; 0000 0144      MSCS_com_veryfy(buf2,buf1);
+; 0000 013D      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $00000225 VOL: 0
 ;PCODE: $00000226 VOL: 0
 ;PCODE: $00000227 VOL: 0
 ;PCODE: $00000228 VOL: 0
-; 0000 0145      sprintf(buf,"PORT       SwitchOk");
+; 0000 013E      sprintf(buf,"PORT       SwitchOk");
 ;PCODE: $00000229 VOL: 0
 ;PCODE: $0000022A VOL: 0
 ;PCODE: $0000022B VOL: 0
@@ -912,21 +905,21 @@
 ;PCODE: $0000022F VOL: 0
 ;PCODE: $00000230 VOL: 0
 ;PCODE: $00000231 VOL: 0
-; 0000 0146     }
-; 0000 0147     break;
+; 0000 013F     }
+; 0000 0140     break;
 ;PCODE: $00000232 VOL: 0
 ;PCODE: $00000233 VOL: 0
-; 0000 0148     case 0x6:
+; 0000 0141     case 0x6://7
 ;PCODE: $00000234 VOL: 0
 ;PCODE: $00000235 VOL: 0
 ;PCODE: $00000236 VOL: 0
-; 0000 0149        MSCS_com_veryfy("rt              ",buf1);
+; 0000 0142        MSCS_com_veryfy("rtt             ",buf1);
 ;PCODE: $00000237 VOL: 0
 ;PCODE: $00000238 VOL: 0
 ;PCODE: $00000239 VOL: 0
 ;PCODE: $0000023A VOL: 0
 ;PCODE: $0000023B VOL: 0
-; 0000 014A     sprintf(buf,"t1=%2u %u         t2=%2u",buf1[2],buf[1],buf1[3]);
+; 0000 0143     sprintf(buf,"t1=%2u %u         t2=%2u",buf1[2],buf[1],buf1[3]);
 ;PCODE: $0000023C VOL: 0
 ;PCODE: $0000023D VOL: 0
 ;PCODE: $0000023E VOL: 0
@@ -945,16 +938,17 @@
 ;PCODE: $0000024B VOL: 0
 ;PCODE: $0000024C VOL: 0
 ;PCODE: $0000024D VOL: 0
-; 0000 014B     delay_ms(3000);
+; 0000 0144     delay_ms(3000);
 ;PCODE: $0000024E VOL: 0
 ;PCODE: $0000024F VOL: 0
-; 0000 014C     break;
+; 0000 0145     break;
 ;PCODE: $00000250 VOL: 0
-; 0000 014D     case 0xE:
+; 0000 0146     case 0xE: //8
 ;PCODE: $00000251 VOL: 0
 ;PCODE: $00000252 VOL: 0
 ;PCODE: $00000253 VOL: 0
-; 0000 014E      if (!((m1&0b100000)&&0b100000)){
+; 0000 0147 
+; 0000 0148     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $00000254 VOL: 0
 ;PCODE: $00000255 VOL: 0
 ;PCODE: $00000256 VOL: 0
@@ -963,30 +957,33 @@
 ;PCODE: $00000259 VOL: 0
 ;PCODE: $0000025A VOL: 0
 ;PCODE: $0000025B VOL: 0
-; 0000 014F      buf2[0]='r';
+; 0000 0149      buf2[0]='w';
 ;PCODE: $0000025C VOL: 0
 ;PCODE: $0000025D VOL: 0
-; 0000 0150      buf2[1]='a';
+; 0000 014A      buf2[1]='r';
 ;PCODE: $0000025E VOL: 0
 ;PCODE: $0000025F VOL: 0
-; 0000 0151      buf2[2]='g';
+; 0000 014B      buf2[2]='i';
 ;PCODE: $00000260 VOL: 0
 ;PCODE: $00000261 VOL: 0
-; 0000 0152      buf2[3]=m3;
+; 0000 014C      buf2[3]='t';
 ;PCODE: $00000262 VOL: 0
 ;PCODE: $00000263 VOL: 0
-; 0000 0153      MSCS_com_veryfy(buf2,buf1);
+; 0000 014D      buf2[4]='e';
 ;PCODE: $00000264 VOL: 0
 ;PCODE: $00000265 VOL: 0
+; 0000 014E      buf2[5]='a';
 ;PCODE: $00000266 VOL: 0
 ;PCODE: $00000267 VOL: 0
-; 0000 0154      sprintf(buf,"%2X%2X%2X%2X        %2X%2X%2X%2X",buf1[2],buf1[3],buf1[4],buf1[5],buf1[6],buf1[7],buf1[8],buf1[9]);
+; 0000 014F      buf2[6]=m3;
 ;PCODE: $00000268 VOL: 0
 ;PCODE: $00000269 VOL: 0
+; 0000 0150      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $0000026A VOL: 0
 ;PCODE: $0000026B VOL: 0
 ;PCODE: $0000026C VOL: 0
 ;PCODE: $0000026D VOL: 0
+; 0000 0151      sprintf(buf,"Address         WRITE Ok");
 ;PCODE: $0000026E VOL: 0
 ;PCODE: $0000026F VOL: 0
 ;PCODE: $00000270 VOL: 0
@@ -996,125 +993,134 @@
 ;PCODE: $00000274 VOL: 0
 ;PCODE: $00000275 VOL: 0
 ;PCODE: $00000276 VOL: 0
+; 0000 0152     } else {
 ;PCODE: $00000277 VOL: 0
 ;PCODE: $00000278 VOL: 0
+; 0000 0153      buf2[0]='r';
 ;PCODE: $00000279 VOL: 0
 ;PCODE: $0000027A VOL: 0
+; 0000 0154      buf2[1]='a';
 ;PCODE: $0000027B VOL: 0
 ;PCODE: $0000027C VOL: 0
+; 0000 0155      buf2[2]='g';
 ;PCODE: $0000027D VOL: 0
 ;PCODE: $0000027E VOL: 0
+; 0000 0156      buf2[3]=m3;
 ;PCODE: $0000027F VOL: 0
 ;PCODE: $00000280 VOL: 0
+; 0000 0157      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $00000281 VOL: 0
 ;PCODE: $00000282 VOL: 0
 ;PCODE: $00000283 VOL: 0
 ;PCODE: $00000284 VOL: 0
+; 0000 0158     sprintf(buf,"%2X%2X%2X%2X        %2X%2X t%2u",buf1[2],buf1[3],buf1[4],buf1[5],buf1[6],buf1[7],buf1[8]);
 ;PCODE: $00000285 VOL: 0
 ;PCODE: $00000286 VOL: 0
 ;PCODE: $00000287 VOL: 0
 ;PCODE: $00000288 VOL: 0
-; 0000 0155     } else {
 ;PCODE: $00000289 VOL: 0
 ;PCODE: $0000028A VOL: 0
-; 0000 0156     MSCS_com_veryfy("rac             ",buf1);
 ;PCODE: $0000028B VOL: 0
 ;PCODE: $0000028C VOL: 0
 ;PCODE: $0000028D VOL: 0
 ;PCODE: $0000028E VOL: 0
 ;PCODE: $0000028F VOL: 0
-; 0000 0157     m3=encoder(m3);
 ;PCODE: $00000290 VOL: 0
 ;PCODE: $00000291 VOL: 0
 ;PCODE: $00000292 VOL: 0
-; 0000 0158     if (m3>=250) m3=0;
 ;PCODE: $00000293 VOL: 0
 ;PCODE: $00000294 VOL: 0
 ;PCODE: $00000295 VOL: 0
 ;PCODE: $00000296 VOL: 0
 ;PCODE: $00000297 VOL: 0
-; 0000 0159     if (m3>buf1[1]) m3=buf1[1];
 ;PCODE: $00000298 VOL: 0
 ;PCODE: $00000299 VOL: 0
 ;PCODE: $0000029A VOL: 0
 ;PCODE: $0000029B VOL: 0
 ;PCODE: $0000029C VOL: 0
 ;PCODE: $0000029D VOL: 0
-; 0000 015A     sprintf(buf,"c=%1u de=%1u",buf1[1],m3+1);
 ;PCODE: $0000029E VOL: 0
 ;PCODE: $0000029F VOL: 0
 ;PCODE: $000002A0 VOL: 0
 ;PCODE: $000002A1 VOL: 0
 ;PCODE: $000002A2 VOL: 0
+; 0000 0159 
+; 0000 015A     }
 ;PCODE: $000002A3 VOL: 0
+; 0000 015B     break;
 ;PCODE: $000002A4 VOL: 0
+; 0000 015C     case 0xF:  //9
 ;PCODE: $000002A5 VOL: 0
 ;PCODE: $000002A6 VOL: 0
 ;PCODE: $000002A7 VOL: 0
+; 0000 015D 
+; 0000 015E      m3=encoder(m3);
 ;PCODE: $000002A8 VOL: 0
 ;PCODE: $000002A9 VOL: 0
 ;PCODE: $000002AA VOL: 0
+; 0000 015F      if (m3>=250) m3=0;
 ;PCODE: $000002AB VOL: 0
 ;PCODE: $000002AC VOL: 0
 ;PCODE: $000002AD VOL: 0
 ;PCODE: $000002AE VOL: 0
-; 0000 015B     }
 ;PCODE: $000002AF VOL: 0
-; 0000 015C     break;
+; 0000 0160      if (m3>(buf1[1]-1)) m3=(buf1[1]-1);
 ;PCODE: $000002B0 VOL: 0
-; 0000 015D     case 0xF:
 ;PCODE: $000002B1 VOL: 0
 ;PCODE: $000002B2 VOL: 0
 ;PCODE: $000002B3 VOL: 0
-; 0000 015E     sprintf(buf,"Menu 9 ");
 ;PCODE: $000002B4 VOL: 0
 ;PCODE: $000002B5 VOL: 0
 ;PCODE: $000002B6 VOL: 0
 ;PCODE: $000002B7 VOL: 0
+; 0000 0161 
+; 0000 0162     sprintf(buf,"sel term        %u",m3);
 ;PCODE: $000002B8 VOL: 0
 ;PCODE: $000002B9 VOL: 0
 ;PCODE: $000002BA VOL: 0
 ;PCODE: $000002BB VOL: 0
 ;PCODE: $000002BC VOL: 0
-; 0000 015F     break;
 ;PCODE: $000002BD VOL: 0
-; 0000 0160     case 0xD:
 ;PCODE: $000002BE VOL: 0
 ;PCODE: $000002BF VOL: 0
 ;PCODE: $000002C0 VOL: 0
-; 0000 0161     sprintf(buf,"Menu 10");
 ;PCODE: $000002C1 VOL: 0
 ;PCODE: $000002C2 VOL: 0
 ;PCODE: $000002C3 VOL: 0
 ;PCODE: $000002C4 VOL: 0
+; 0000 0163     break;
 ;PCODE: $000002C5 VOL: 0
+; 0000 0164     case 0xD: //10
 ;PCODE: $000002C6 VOL: 0
 ;PCODE: $000002C7 VOL: 0
 ;PCODE: $000002C8 VOL: 0
+; 0000 0165 
+; 0000 0166      buf2[0]='r';
 ;PCODE: $000002C9 VOL: 0
-; 0000 0162     break;
 ;PCODE: $000002CA VOL: 0
-; 0000 0163     case 0x5:
+; 0000 0167      buf2[1]='t';
 ;PCODE: $000002CB VOL: 0
 ;PCODE: $000002CC VOL: 0
+; 0000 0168      buf2[2]='h';
 ;PCODE: $000002CD VOL: 0
-; 0000 0164     sprintf(buf,"Menu 11");
 ;PCODE: $000002CE VOL: 0
+; 0000 0169 
+; 0000 016A      m3=encoder(m3);
 ;PCODE: $000002CF VOL: 0
 ;PCODE: $000002D0 VOL: 0
 ;PCODE: $000002D1 VOL: 0
+; 0000 016B 
+; 0000 016C      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $000002D2 VOL: 0
 ;PCODE: $000002D3 VOL: 0
 ;PCODE: $000002D4 VOL: 0
 ;PCODE: $000002D5 VOL: 0
+; 0000 016D      sprintf(buf,"HLevel T        t=%3u",buf1[1]);
 ;PCODE: $000002D6 VOL: 0
-; 0000 0165     break;
 ;PCODE: $000002D7 VOL: 0
-; 0000 0166     case 0x1:
 ;PCODE: $000002D8 VOL: 0
 ;PCODE: $000002D9 VOL: 0
 ;PCODE: $000002DA VOL: 0
-; 0000 0167     sprintf(buf,"Menu 12");
 ;PCODE: $000002DB VOL: 0
 ;PCODE: $000002DC VOL: 0
 ;PCODE: $000002DD VOL: 0
@@ -1122,15 +1128,16 @@
 ;PCODE: $000002DF VOL: 0
 ;PCODE: $000002E0 VOL: 0
 ;PCODE: $000002E1 VOL: 0
+; 0000 016E 
+; 0000 016F     break;
 ;PCODE: $000002E2 VOL: 0
+; 0000 0170     case 0x5: //11
 ;PCODE: $000002E3 VOL: 0
-; 0000 0168     break;
 ;PCODE: $000002E4 VOL: 0
-; 0000 0169     case 0x9:
 ;PCODE: $000002E5 VOL: 0
+; 0000 0171     sprintf(buf,"Menu 11");
 ;PCODE: $000002E6 VOL: 0
 ;PCODE: $000002E7 VOL: 0
-; 0000 016A     sprintf(buf,"Menu 13");
 ;PCODE: $000002E8 VOL: 0
 ;PCODE: $000002E9 VOL: 0
 ;PCODE: $000002EA VOL: 0
@@ -1138,15 +1145,15 @@
 ;PCODE: $000002EC VOL: 0
 ;PCODE: $000002ED VOL: 0
 ;PCODE: $000002EE VOL: 0
+; 0000 0172     break;
 ;PCODE: $000002EF VOL: 0
+; 0000 0173     case 0x1://12
 ;PCODE: $000002F0 VOL: 0
-; 0000 016B     break;
 ;PCODE: $000002F1 VOL: 0
-; 0000 016C     case 0xB:
 ;PCODE: $000002F2 VOL: 0
+; 0000 0174     sprintf(buf,"Menu 12");
 ;PCODE: $000002F3 VOL: 0
 ;PCODE: $000002F4 VOL: 0
-; 0000 016D     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $000002F5 VOL: 0
 ;PCODE: $000002F6 VOL: 0
 ;PCODE: $000002F7 VOL: 0
@@ -1154,100 +1161,102 @@
 ;PCODE: $000002F9 VOL: 0
 ;PCODE: $000002FA VOL: 0
 ;PCODE: $000002FB VOL: 0
+; 0000 0175     break;
 ;PCODE: $000002FC VOL: 0
-; 0000 016E     if (!m4){
+; 0000 0176     case 0x9://13
 ;PCODE: $000002FD VOL: 0
 ;PCODE: $000002FE VOL: 0
-; 0000 016F     Vol=1;
 ;PCODE: $000002FF VOL: 0
+; 0000 0177     sprintf(buf,"Menu 13");
 ;PCODE: $00000300 VOL: 0
-; 0000 0170     m4=1;
 ;PCODE: $00000301 VOL: 0
 ;PCODE: $00000302 VOL: 0
-; 0000 0171    // TCCR1A|=(1<<COM1B0);
-; 0000 0172     TCCR1B|=(1<<CS12)|(1<<CS10);
 ;PCODE: $00000303 VOL: 0
 ;PCODE: $00000304 VOL: 0
 ;PCODE: $00000305 VOL: 0
-; 0000 0173     OCR1A=15629;
 ;PCODE: $00000306 VOL: 0
 ;PCODE: $00000307 VOL: 0
-; 0000 0174     OCR1B=15625;
 ;PCODE: $00000308 VOL: 0
+; 0000 0178     break;
 ;PCODE: $00000309 VOL: 0
-; 0000 0175     // Timer(s)/Counter(s) Interrupt(s) initialization
-; 0000 0176     TIMSK|=(1<<OCIE1A) | (1<<OCIE1B);
+; 0000 0179     case 0xB: //14
 ;PCODE: $0000030A VOL: 0
 ;PCODE: $0000030B VOL: 0
 ;PCODE: $0000030C VOL: 0
-; 0000 0177     } else {
+; 0000 017A     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $0000030D VOL: 0
 ;PCODE: $0000030E VOL: 0
-; 0000 0178     m4=0;
 ;PCODE: $0000030F VOL: 0
 ;PCODE: $00000310 VOL: 0
-; 0000 0179     TCCR1A&=~(1<<COM1B0);
 ;PCODE: $00000311 VOL: 0
 ;PCODE: $00000312 VOL: 0
 ;PCODE: $00000313 VOL: 0
-; 0000 017A     TCCR1B&=~((1<<CS12)|(1<<CS10));
 ;PCODE: $00000314 VOL: 0
+; 0000 017B     if (!m4){
 ;PCODE: $00000315 VOL: 0
 ;PCODE: $00000316 VOL: 0
-; 0000 017B     TIMSK&=~((1<<OCIE1A) | (1<<OCIE1B));
+; 0000 017C     Vol=1;
 ;PCODE: $00000317 VOL: 0
 ;PCODE: $00000318 VOL: 0
+; 0000 017D     m4=1;
 ;PCODE: $00000319 VOL: 0
-; 0000 017C     }
 ;PCODE: $0000031A VOL: 0
-; 0000 017D }
-; 0000 017E     Vol=encoder(Vol);
+; 0000 017E    // TCCR1A|=(1<<COM1B0);
+; 0000 017F     TCCR1B|=(1<<CS12)|(1<<CS10);
 ;PCODE: $0000031B VOL: 0
 ;PCODE: $0000031C VOL: 0
 ;PCODE: $0000031D VOL: 0
+; 0000 0180     OCR1A=15629;
 ;PCODE: $0000031E VOL: 0
-; 0000 017F     OCR1B=15625/Vol;
 ;PCODE: $0000031F VOL: 0
+; 0000 0181     OCR1B=15625;
 ;PCODE: $00000320 VOL: 0
 ;PCODE: $00000321 VOL: 0
+; 0000 0182     // Timer(s)/Counter(s) Interrupt(s) initialization
+; 0000 0183     TIMSK|=(1<<OCIE1A) | (1<<OCIE1B);
 ;PCODE: $00000322 VOL: 0
 ;PCODE: $00000323 VOL: 0
-; 0000 0180     if (m4)    sprintf(buf,"PulseGen        ON%4uOB",Vol*60);
 ;PCODE: $00000324 VOL: 0
+; 0000 0184     } else {
 ;PCODE: $00000325 VOL: 0
 ;PCODE: $00000326 VOL: 0
+; 0000 0185     m4=0;
 ;PCODE: $00000327 VOL: 0
 ;PCODE: $00000328 VOL: 0
+; 0000 0186     TCCR1A&=~(1<<COM1B0);
 ;PCODE: $00000329 VOL: 0
 ;PCODE: $0000032A VOL: 0
 ;PCODE: $0000032B VOL: 0
+; 0000 0187     TCCR1B&=~((1<<CS12)|(1<<CS10));
 ;PCODE: $0000032C VOL: 0
 ;PCODE: $0000032D VOL: 0
 ;PCODE: $0000032E VOL: 0
+; 0000 0188     TIMSK&=~((1<<OCIE1A) | (1<<OCIE1B));
 ;PCODE: $0000032F VOL: 0
 ;PCODE: $00000330 VOL: 0
 ;PCODE: $00000331 VOL: 0
+; 0000 0189     }
 ;PCODE: $00000332 VOL: 0
-; 0000 0181     else sprintf(buf,"PulseGen        OFF     ");
+; 0000 018A }
+; 0000 018B     Vol=encoder(Vol);
 ;PCODE: $00000333 VOL: 0
 ;PCODE: $00000334 VOL: 0
 ;PCODE: $00000335 VOL: 0
 ;PCODE: $00000336 VOL: 0
+; 0000 018C     OCR1B=15625/Vol;
 ;PCODE: $00000337 VOL: 0
 ;PCODE: $00000338 VOL: 0
 ;PCODE: $00000339 VOL: 0
 ;PCODE: $0000033A VOL: 0
 ;PCODE: $0000033B VOL: 0
+; 0000 018D     if (m4)    sprintf(buf,"PulseGen        ON%4uOB",Vol*60);
 ;PCODE: $0000033C VOL: 0
 ;PCODE: $0000033D VOL: 0
-; 0000 0182     break;
 ;PCODE: $0000033E VOL: 0
 ;PCODE: $0000033F VOL: 0
-; 0000 0183     case 0x3:
 ;PCODE: $00000340 VOL: 0
 ;PCODE: $00000341 VOL: 0
 ;PCODE: $00000342 VOL: 0
-; 0000 0184     sprintf(buf,"Restart        clock");
 ;PCODE: $00000343 VOL: 0
 ;PCODE: $00000344 VOL: 0
 ;PCODE: $00000345 VOL: 0
@@ -1256,8 +1265,8 @@
 ;PCODE: $00000348 VOL: 0
 ;PCODE: $00000349 VOL: 0
 ;PCODE: $0000034A VOL: 0
+; 0000 018E     else sprintf(buf,"PulseGen        OFF     ");
 ;PCODE: $0000034B VOL: 0
-; 0000 0185     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $0000034C VOL: 0
 ;PCODE: $0000034D VOL: 0
 ;PCODE: $0000034E VOL: 0
@@ -1266,30 +1275,26 @@
 ;PCODE: $00000351 VOL: 0
 ;PCODE: $00000352 VOL: 0
 ;PCODE: $00000353 VOL: 0
-; 0000 0186      buf2[0]='w';
 ;PCODE: $00000354 VOL: 0
 ;PCODE: $00000355 VOL: 0
-; 0000 0187      buf2[1]='r';
+; 0000 018F     break;
 ;PCODE: $00000356 VOL: 0
 ;PCODE: $00000357 VOL: 0
-; 0000 0188      buf2[2]='i';
+; 0000 0190     case 0x3: //15
 ;PCODE: $00000358 VOL: 0
 ;PCODE: $00000359 VOL: 0
-; 0000 0189      buf2[3]='t';
 ;PCODE: $0000035A VOL: 0
+; 0000 0191     sprintf(buf,"Restart        clock");
 ;PCODE: $0000035B VOL: 0
-; 0000 018A      buf2[4]='e';
 ;PCODE: $0000035C VOL: 0
 ;PCODE: $0000035D VOL: 0
-; 0000 018B      buf2[5]='c';
 ;PCODE: $0000035E VOL: 0
 ;PCODE: $0000035F VOL: 0
-; 0000 018C      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $00000360 VOL: 0
 ;PCODE: $00000361 VOL: 0
 ;PCODE: $00000362 VOL: 0
 ;PCODE: $00000363 VOL: 0
-; 0000 018D      sprintf(buf,"Restart        clock-Ok");
+; 0000 0192     if (!((m1&0b100000)&&0b100000)){
 ;PCODE: $00000364 VOL: 0
 ;PCODE: $00000365 VOL: 0
 ;PCODE: $00000366 VOL: 0
@@ -1298,32 +1303,30 @@
 ;PCODE: $00000369 VOL: 0
 ;PCODE: $0000036A VOL: 0
 ;PCODE: $0000036B VOL: 0
+; 0000 0193      buf2[0]='w';
 ;PCODE: $0000036C VOL: 0
-; 0000 018E      }
-; 0000 018F     break;
 ;PCODE: $0000036D VOL: 0
+; 0000 0194      buf2[1]='r';
 ;PCODE: $0000036E VOL: 0
-; 0000 0190     case 0x7:
 ;PCODE: $0000036F VOL: 0
+; 0000 0195      buf2[2]='i';
 ;PCODE: $00000370 VOL: 0
 ;PCODE: $00000371 VOL: 0
-; 0000 0191     // ADC initialization
-; 0000 0192 // ADC Clock frequency: 1000,000 kHz
-; 0000 0193 // ADC Voltage Reference: Int., cap. on AREF
-; 0000 0194 ADMUX=FIRST_ADC_INPUT | (ADC_VREF_TYPE & 0xff);
+; 0000 0196      buf2[3]='t';
 ;PCODE: $00000372 VOL: 0
 ;PCODE: $00000373 VOL: 0
-; 0000 0195 ADCSRA=0xCC;
+; 0000 0197      buf2[4]='e';
 ;PCODE: $00000374 VOL: 0
 ;PCODE: $00000375 VOL: 0
-; 0000 0196     ft=0.005*adc_data;
+; 0000 0198      buf2[5]='c';
 ;PCODE: $00000376 VOL: 0
 ;PCODE: $00000377 VOL: 0
+; 0000 0199      MSCS_com_veryfy(buf2,buf1);
 ;PCODE: $00000378 VOL: 0
 ;PCODE: $00000379 VOL: 0
 ;PCODE: $0000037A VOL: 0
-; 0000 0197     sprintf(buf,"Voltmetr        %1.3fVol",ft);
 ;PCODE: $0000037B VOL: 0
+; 0000 019A      sprintf(buf,"Restart        clock-Ok");
 ;PCODE: $0000037C VOL: 0
 ;PCODE: $0000037D VOL: 0
 ;PCODE: $0000037E VOL: 0
@@ -1333,47 +1336,81 @@
 ;PCODE: $00000382 VOL: 0
 ;PCODE: $00000383 VOL: 0
 ;PCODE: $00000384 VOL: 0
+; 0000 019B      }
+; 0000 019C     break;
 ;PCODE: $00000385 VOL: 0
-; 0000 0198     break;
 ;PCODE: $00000386 VOL: 0
-; 0000 0199     default:
+; 0000 019D     case 0x7: //16
 ;PCODE: $00000387 VOL: 0
-; 0000 019A     sprintf(buf,"Pressed button   %X",PINC);
 ;PCODE: $00000388 VOL: 0
 ;PCODE: $00000389 VOL: 0
+; 0000 019E     // ADC initialization
+; 0000 019F // ADC Clock frequency: 1000,000 kHz
+; 0000 01A0 // ADC Voltage Reference: Int., cap. on AREF
+; 0000 01A1 ADMUX=FIRST_ADC_INPUT | (ADC_VREF_TYPE & 0xff);
 ;PCODE: $0000038A VOL: 0
 ;PCODE: $0000038B VOL: 0
+; 0000 01A2 ADCSRA=0xCC;
 ;PCODE: $0000038C VOL: 0
 ;PCODE: $0000038D VOL: 0
+; 0000 01A3     ft=0.005*adc_data;
 ;PCODE: $0000038E VOL: 0
 ;PCODE: $0000038F VOL: 0
 ;PCODE: $00000390 VOL: 0
 ;PCODE: $00000391 VOL: 0
 ;PCODE: $00000392 VOL: 0
+; 0000 01A4     sprintf(buf,"Voltmetr        %1.3fVol",ft);
 ;PCODE: $00000393 VOL: 0
-; 0000 019B }
 ;PCODE: $00000394 VOL: 0
-; 0000 019C       lcd_clear();
 ;PCODE: $00000395 VOL: 0
-; 0000 019D       lcd_gotoxy(0,0);
 ;PCODE: $00000396 VOL: 0
 ;PCODE: $00000397 VOL: 0
 ;PCODE: $00000398 VOL: 0
 ;PCODE: $00000399 VOL: 0
-; 0000 019E       lcd_puts(buf);
 ;PCODE: $0000039A VOL: 0
 ;PCODE: $0000039B VOL: 0
-; 0000 019F       }
 ;PCODE: $0000039C VOL: 0
 ;PCODE: $0000039D VOL: 0
-; 0000 01A0 }
+; 0000 01A5     break;
 ;PCODE: $0000039E VOL: 0
+; 0000 01A6     default:
 ;PCODE: $0000039F VOL: 0
+; 0000 01A7     sprintf(buf,"Pressed button   %X",PINC);
 ;PCODE: $000003A0 VOL: 0
 ;PCODE: $000003A1 VOL: 0
+;PCODE: $000003A2 VOL: 0
+;PCODE: $000003A3 VOL: 0
+;PCODE: $000003A4 VOL: 0
+;PCODE: $000003A5 VOL: 0
+;PCODE: $000003A6 VOL: 0
+;PCODE: $000003A7 VOL: 0
+;PCODE: $000003A8 VOL: 0
+;PCODE: $000003A9 VOL: 0
+;PCODE: $000003AA VOL: 0
+;PCODE: $000003AB VOL: 0
+; 0000 01A8 }
+;PCODE: $000003AC VOL: 0
+; 0000 01A9       lcd_clear();
+;PCODE: $000003AD VOL: 0
+; 0000 01AA       lcd_gotoxy(0,0);
+;PCODE: $000003AE VOL: 0
+;PCODE: $000003AF VOL: 0
+;PCODE: $000003B0 VOL: 0
+;PCODE: $000003B1 VOL: 0
+; 0000 01AB       lcd_puts(buf);
+;PCODE: $000003B2 VOL: 0
+;PCODE: $000003B3 VOL: 0
+; 0000 01AC       }
+;PCODE: $000003B4 VOL: 0
+;PCODE: $000003B5 VOL: 0
+; 0000 01AD }
+;PCODE: $000003B6 VOL: 0
+;PCODE: $000003B7 VOL: 0
+;PCODE: $000003B8 VOL: 0
+;PCODE: $000003B9 VOL: 0
 
 	.DSEG
 _0x1E:
-	.BYTE 0x4B
+	.BYTE 0x3A
 ;    // */
 ;

@@ -247,28 +247,21 @@ delay_ms(10);
 
 while (1)
       {
-
-
-      
       m1=PINC;       
-      
-      //m1=0x0C;
-      //delay_ms (100);
-      // */
 sprintf(buf,"");
 switch (m1&0b1111)
 {
-    case 0xC:   
+    case 0xC://1   
     MSCS_com_veryfy("rh              ",buf1);     
     sprintf(buf,"h-%2um-%2u        s-%2ut=%2d",buf1[9],buf1[10],buf1[11],buf1[8]);      
     break;
-    case 0x4:   
+    case 0x4://2   
     m2=encoder(m2);
     if (m2>=250) m2=0;
     if (m2>7) m2=7;
     sprintf(buf,"SelTimer        Timer%u",m2+1);
     break;
-    case 0x0:        
+    case 0x0://3        
     if (!((m1&0b100000)&&0b100000)){ 
     MSCS_com_veryfy("rh              ",buf1);
     Vol=buf1[m2];
@@ -278,7 +271,7 @@ switch (m1&0b1111)
 
     break;
     
-    case 0x8:                           
+    case 0x8://4                           
     sprintf(buf,"WriteNo%u        toMemory",m2+1);
     if (!((m1&0b100000)&&0b100000)){ 
      buf2[0]='w';
@@ -295,7 +288,7 @@ switch (m1&0b1111)
     break;         
     
     
-    case 0xA:
+    case 0xA://5
     sprintf(buf,"Enable          testMode");
     if (!((m1&0b100000)&&0b100000)){ 
      buf2[0]='w';
@@ -308,7 +301,7 @@ switch (m1&0b1111)
      sprintf(buf,"Enable        Tmode Ok");
     }        
     break;
-    case 0x2:
+    case 0x2://6
     m3=encoder(m3);
     if (m3>=250) m3=0;
     if (m3>3) m3=3;
@@ -325,43 +318,63 @@ switch (m1&0b1111)
      sprintf(buf,"PORT       SwitchOk");
     }        
     break;
-    case 0x6:   
-       MSCS_com_veryfy("rt              ",buf1);     
+    case 0x6://7   
+       MSCS_com_veryfy("rtt             ",buf1);     
     sprintf(buf,"t1=%2u %u         t2=%2u",buf1[2],buf[1],buf1[3]);      
     delay_ms(3000);
     break;
-    case 0xE: 
-     if (!((m1&0b100000)&&0b100000)){ 
+    case 0xE: //8
+    
+    if (!((m1&0b100000)&&0b100000)){ 
+     buf2[0]='w';
+     buf2[1]='r';
+     buf2[2]='i';
+     buf2[3]='t';
+     buf2[4]='e';
+     buf2[5]='a';  
+     buf2[6]=m3;  
+     MSCS_com_veryfy(buf2,buf1);
+     sprintf(buf,"Address         WRITE Ok");
+    } else {
      buf2[0]='r';
      buf2[1]='a';
      buf2[2]='g';
-     buf2[3]=m3;  
+     buf2[3]=m3;
      MSCS_com_veryfy(buf2,buf1);  
-     sprintf(buf,"%2X%2X%2X%2X        %2X%2X%2X%2X",buf1[2],buf1[3],buf1[4],buf1[5],buf1[6],buf1[7],buf1[8],buf1[9]);
-    } else {  
-    MSCS_com_veryfy("rac             ",buf1); 
-    m3=encoder(m3);
-    if (m3>=250) m3=0;
-    if (m3>buf1[1]) m3=buf1[1]; 
-    sprintf(buf,"c=%1u de=%1u",buf1[1],m3+1);       
+    sprintf(buf,"%2X%2X%2X%2X        %2X%2X t%2u",buf1[2],buf1[3],buf1[4],buf1[5],buf1[6],buf1[7],buf1[8]);       
+    
     }
     break;
-    case 0xF:
-    sprintf(buf,"Menu 9 ");    
+    case 0xF:  //9 
+     
+     m3=encoder(m3);
+     if (m3>=250) m3=0;
+     if (m3>(buf1[1]-1)) m3=(buf1[1]-1); 
+    
+    sprintf(buf,"sel term        %u",m3);    
     break;
-    case 0xD:
-    sprintf(buf,"Menu 10");    
+    case 0xD: //10 
+    
+     buf2[0]='r';
+     buf2[1]='t';
+     buf2[2]='h';
+     
+     m3=encoder(m3);
+     
+     MSCS_com_veryfy(buf2,buf1); 
+     sprintf(buf,"HLevel T        t=%3u",buf1[1]);       
+         
     break;
-    case 0x5:
+    case 0x5: //11
     sprintf(buf,"Menu 11");    
     break;
-    case 0x1:
+    case 0x1://12
     sprintf(buf,"Menu 12");    
     break;
-    case 0x9:
+    case 0x9://13
     sprintf(buf,"Menu 13");    
     break;
-    case 0xB:  
+    case 0xB: //14 
     if (!((m1&0b100000)&&0b100000)){ 
     if (!m4){
     Vol=1;
@@ -384,7 +397,7 @@ switch (m1&0b1111)
     if (m4)    sprintf(buf,"PulseGen        ON%4uOB",Vol*60);
     else sprintf(buf,"PulseGen        OFF     ");     
     break;
-    case 0x3:
+    case 0x3: //15
     sprintf(buf,"Restart        clock");
     if (!((m1&0b100000)&&0b100000)){ 
      buf2[0]='w';
@@ -397,7 +410,7 @@ switch (m1&0b1111)
      sprintf(buf,"Restart        clock-Ok");    
      }
     break;
-    case 0x7: 
+    case 0x7: //16
     // ADC initialization
 // ADC Clock frequency: 1000,000 kHz
 // ADC Voltage Reference: Int., cap. on AREF

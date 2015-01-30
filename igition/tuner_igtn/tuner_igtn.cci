@@ -1,8 +1,8 @@
-VERSION:3 SOURCE_TIMESTAMP:463D7F58
+VERSION:3 SOURCE_TIMESTAMP:463E62AE
 NODE:I LEVEL:0 LINE:24 "C:\cvavr\inc\mega8.h"
 NODE:I LEVEL:0 LINE:25 "C:\cvavr\inc\stdio.h"
 NODE:I LEVEL:0 LINE:26 "C:\cvavr\inc\delay.h"
-NODE:I LEVEL:0 LINE:29 "F:\igition\tuner_igtn\MSCS_lib.h"
+NODE:I LEVEL:0 LINE:29 "C:\Users\skota\git\avr\scooterE\igition\tuner_igtn\MSCS_lib.h"
 NODE:I LEVEL:0 LINE:32 "C:\cvavr\inc\alcd.h"
 NODE:M LEVEL:0 LINE:34 "FIRST_ADC_INPUT"
 NODE:V LEVEL:0 LINE:35 "adc_data -> R4,R5"
