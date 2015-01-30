@@ -114,7 +114,8 @@ OldState=NewState;
       {                              
         val++;
         downState = 0;
-      }
+      }    
+
  return val;
 }
 
@@ -351,7 +352,8 @@ switch (m1&0b1111)
      if (m3>=250) m3=0;
      if (m3>(buf1[1]-1)) m3=(buf1[1]-1); 
     
-    sprintf(buf,"sel term        %u",m3);    
+    sprintf(buf,"sel term        %u",m3); 
+    m4=0;   
     break;
     case 0xD: //10 
     
@@ -360,19 +362,128 @@ switch (m1&0b1111)
      buf2[2]='h';
      
      m3=encoder(m3);
+
+    if (!((m1&0b100000)&&0b100000)){ 
+     buf2[0]='w';
+     buf2[1]='r';
+     buf2[2]='i';
+     buf2[3]='t';
+     buf2[4]='e';
+     buf2[5]='h';  
+     buf2[6]=m3;  
+     MSCS_com_veryfy(buf2,buf1);
+     sprintf(buf,"HTemp           WRITE Ok");
      
-     MSCS_com_veryfy(buf2,buf1); 
-     sprintf(buf,"HLevel T        t=%3u",buf1[1]);       
-         
+    } else {
+
+      MSCS_com_veryfy(buf2,buf1); 
+      if (!m4) {
+       m3=buf1[1];
+       m4=1;
+      }     
+     sprintf(buf,"HLevel T        %3u  %3u",buf1[1],m3);       
+    }
     break;
     case 0x5: //11
-    sprintf(buf,"Menu 11");    
+    m4=0;     
+    
+    
+    
+     m3=encoder(m3);
+     if (m3>250) m3=0;
+     if (m3>3) m3=3;                        
+     
+     buf2[0]='r';
+     buf2[1]='t';
+     buf2[2]='r';
+     buf2[3]=m3;
+     MSCS_com_veryfy(buf2,buf1);
+     if (buf1[1]) 
+     {
+     sprintf(buf,"Sel Rel         %1u TIMER ",m3+1);
+     } else{
+     sprintf(buf,"Sel Rel         %1u termom",m3+1);
+     }    
+     
+     
+    if (!((m1&0b100000)&&0b100000)){ 
+     buf2[0]='w';
+     buf2[1]='r';
+     buf2[2]='i';
+     buf2[3]='t';
+     buf2[4]='e';
+     buf2[5]='r';
+     buf2[6]=m3;
+     MSCS_com_veryfy(buf2,buf1);
+     }    
     break;
     case 0x1://12
-    sprintf(buf,"Menu 12");    
+    
+     buf2[0]='r';
+     buf2[1]='t';
+     buf2[2]='l';
+     m3=encoder(m3);
+    if (!((m1&0b100000)&&0b100000)){ 
+     buf2[0]='w';
+     buf2[1]='r';
+     buf2[2]='i';
+     buf2[3]='t';
+     buf2[4]='e';
+     buf2[5]='l';  
+     buf2[6]=m3;  
+     MSCS_com_veryfy(buf2,buf1);
+     sprintf(buf,"LTemp           WRITE Ok");
+     
+    } else {
+
+      MSCS_com_veryfy(buf2,buf1); 
+      if (!m4) {
+       m3=buf1[1];
+       m4=1;
+      }     
+     sprintf(buf,"LLevel T        %3u  %3u",buf1[1],m3);       
+    }   
     break;
     case 0x9://13
-    sprintf(buf,"Menu 13");    
+    m4=0;
+    
+    
+    
+    m4=0;     
+    
+    
+    
+     m3=encoder(m3);
+     if (m3>250) m3=0;
+     if (m3>3) m3=3;                        
+     
+     buf2[0]='r';
+     buf2[1]='t';
+     buf2[2]='s';
+     buf2[3]=m3;
+     MSCS_com_veryfy(buf2,buf1);
+     if (buf1[1]) 
+     {
+     sprintf(buf,"Sel Rel         %1u LOW tm",m3+1);
+     } else{
+     sprintf(buf,"Sel Rel         %1u hi  tm",m3+1);
+     }    
+     
+     
+    if (!((m1&0b100000)&&0b100000)){ 
+     buf2[0]='w';
+     buf2[1]='r';
+     buf2[2]='i';
+     buf2[3]='t';
+     buf2[4]='e';
+     buf2[5]='g';
+     buf2[6]=m3;
+     MSCS_com_veryfy(buf2,buf1);
+     }   
+    
+    
+    
+    
     break;
     case 0xB: //14 
     if (!((m1&0b100000)&&0b100000)){ 

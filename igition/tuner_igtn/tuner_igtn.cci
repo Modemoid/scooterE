@@ -1,4 +1,4 @@
-VERSION:3 SOURCE_TIMESTAMP:463E62AE
+VERSION:3 SOURCE_TIMESTAMP:463E6E71
 NODE:I LEVEL:0 LINE:24 "C:\cvavr\inc\mega8.h"
 NODE:I LEVEL:0 LINE:25 "C:\cvavr\inc\stdio.h"
 NODE:I LEVEL:0 LINE:26 "C:\cvavr\inc\delay.h"
@@ -16,5 +16,5 @@ NODE:V LEVEL:0 LINE:54 "downState -> RAM:????"
 NODE:F LEVEL:0 LINE:57 "timer1_compa_isr(void)"
 NODE:F LEVEL:0 LINE:65 "timer1_compb_isr(void)"
 NODE:F LEVEL:0 LINE:73 "encoder(unsigned char val)"
-NODE:F LEVEL:0 LINE:121 "MSCS_com_veryfy(unsigned char * data,unsigned char [17] ret)"
-NODE:F LEVEL:0 LINE:128 "main(void)"
+NODE:F LEVEL:0 LINE:122 "MSCS_com_veryfy(unsigned char * data,unsigned char [17] ret)"
+NODE:F LEVEL:0 LINE:129 "main(void)"
