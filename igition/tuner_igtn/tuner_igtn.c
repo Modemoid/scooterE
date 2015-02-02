@@ -71,7 +71,9 @@ PORTB.2=1;
 
 
 unsigned char encoder(unsigned char val){
-          NewState=PINB & 0b00000011;
+unsigned char r;
+for (r=0;r<=16;r++){
+NewState=PINB & 0b00000011;
 if(NewState!=OldState)
 {
 
@@ -115,7 +117,7 @@ OldState=NewState;
         val++;
         downState = 0;
       }    
-
+}
  return val;
 }
 
@@ -131,7 +133,7 @@ void main(void)
 // Declare your local variables here
 unsigned char buf[32],buf1[17],buf2[17];
 float ft;
-unsigned char m1,m2=0,m3=0,m4=0; //m1-galet switcher m2 - timer for read to Vol - 1-6 m3 - port POWER m4 - pulsegen
+unsigned char k,m1,m2=0,m3=0,m4=0; //m1-galet switcher m2 - timer for read to Vol - 1-6 m3 - port POWER m4 - pulsegen
 
 // Input/Output Ports initialization
 // Port B initialization
@@ -254,7 +256,7 @@ switch (m1&0b1111)
 {
     case 0xC://1   
     MSCS_com_veryfy("rh              ",buf1);     
-    sprintf(buf,"h-%2um-%2u        s-%2ut=%2d",buf1[9],buf1[10],buf1[11],buf1[8]);      
+    sprintf(buf,"h-%2um-%2u        s-%2u %2d",buf1[9],buf1[10],buf1[11],buf1[8]);      
     break;
     case 0x4://2   
     m2=encoder(m2);
@@ -316,7 +318,8 @@ switch (m1&0b1111)
      buf2[5]='s';  
      buf2[6]=m3;  
      MSCS_com_veryfy(buf2,buf1);
-     sprintf(buf,"PORT       SwitchOk");
+     sprintf(buf,"PORT       SwitchOk");   
+     delay_ms(1000);
     }        
     break;
     case 0x6://7   
@@ -376,7 +379,10 @@ switch (m1&0b1111)
      
     } else {
 
+      if (!k){
       MSCS_com_veryfy(buf2,buf1); 
+      }
+      k++;
       if (!m4) {
        m3=buf1[1];
        m4=1;
@@ -397,12 +403,13 @@ switch (m1&0b1111)
      buf2[1]='t';
      buf2[2]='r';
      buf2[3]=m3;
-     MSCS_com_veryfy(buf2,buf1);
+     if (!k) MSCS_com_veryfy(buf2,buf1);
+     k++;
      if (buf1[1]) 
      {
-     sprintf(buf,"Sel Rel         %1u TIMER ",m3+1);
+     sprintf(buf,"Sel Rel         %uTIMER",m3+1);
      } else{
-     sprintf(buf,"Sel Rel         %1u termom",m3+1);
+     sprintf(buf,"Sel Rel         %uterm",m3+1);
      }    
      
      
@@ -436,7 +443,8 @@ switch (m1&0b1111)
      
     } else {
 
-      MSCS_com_veryfy(buf2,buf1); 
+      if (!k) MSCS_com_veryfy(buf2,buf1);
+      k++; 
       if (!m4) {
        m3=buf1[1];
        m4=1;
@@ -461,7 +469,9 @@ switch (m1&0b1111)
      buf2[1]='t';
      buf2[2]='s';
      buf2[3]=m3;
+     if (!k) 
      MSCS_com_veryfy(buf2,buf1);
+     k++;
      if (buf1[1]) 
      {
      sprintf(buf,"Sel Rel         %1u LOW tm",m3+1);
