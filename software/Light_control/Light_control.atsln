@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Light_control", "Light_control\Light_control.cproj", "{75DD2CF3-F578-47D2-BB8C-B884D00FBA29}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Light_control", "Light_control\Light_control.cproj", "{DEBFE49D-FFD7-404D-9BF4-6592B96FAFA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{75DD2CF3-F578-47D2-BB8C-B884D00FBA29}.Debug|AVR.ActiveCfg = Debug|AVR
-		{75DD2CF3-F578-47D2-BB8C-B884D00FBA29}.Debug|AVR.Build.0 = Debug|AVR
-		{75DD2CF3-F578-47D2-BB8C-B884D00FBA29}.Release|AVR.ActiveCfg = Release|AVR
-		{75DD2CF3-F578-47D2-BB8C-B884D00FBA29}.Release|AVR.Build.0 = Release|AVR
+		{DEBFE49D-FFD7-404D-9BF4-6592B96FAFA2}.Debug|AVR.ActiveCfg = Debug|AVR
+		{DEBFE49D-FFD7-404D-9BF4-6592B96FAFA2}.Debug|AVR.Build.0 = Debug|AVR
+		{DEBFE49D-FFD7-404D-9BF4-6592B96FAFA2}.Release|AVR.ActiveCfg = Release|AVR
+		{DEBFE49D-FFD7-404D-9BF4-6592B96FAFA2}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

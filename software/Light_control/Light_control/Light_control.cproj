@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>6.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8</ToolchainName>
-    <ProjectGuid>{75dd2cf3-f578-47d2-bb8c-b884d00fba29}</ProjectGuid>
+    <ProjectGuid>{debfe49d-ffd7-404d-9bf4-6592b96fafa2}</ProjectGuid>
     <avrdevice>ATmega8</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>

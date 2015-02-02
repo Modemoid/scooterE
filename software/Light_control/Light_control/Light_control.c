@@ -10,17 +10,24 @@
 #define TurnControl //if turn control used //now work only blink version
 #define TurnBlink //if turn signal must blink
 #define HeadLightControl // if headlight control used 
-#define HeadLight_Dual_Beam //use for classic bulb with 2 separate spring
-//#define HeadLight_Single_Beam //Used for bi-xenon lo beam work forever, hi control beam solenoid. 
+//#define HeadLight_Dual_Beam //use for classic bulb with 2 separate spring
+#define HeadLight_Single_Beam //Used for bi-xenon lo beam work forever, hi control beam solenoid. 
 //#define adc7Use //разобраться с переключением каналов в прерывании - на будущее
-#define i2c_Comm //if present i2c communication with other device 
+//#define i2c_Comm //if present i2c communication with other device 
 #define Strobe // if stroboscope present 
 #define Strobe_Bink // if strobe must blink
-#define DayLight // DayLight switch
-
+#define DayLight // DayLight switch //now not used
+#define DayLightOnStart //define if U want get daylight turned on sturtup
 #define Strobe_TIME 64 //*0.015s? = strobe work time after single button press, see Strob_blink define 
 #define debounce_delay //if defined present key debounce delay, but logic work not need it, it can be removed. 
 #define debounce_time 50 //time in MS
+
+#define LED1 0
+#define LED2 1
+#define LED3 2
+#define LED4 3
+#define LED_PORT PORTB
+#define LED_DDR DDRB
 
 #include <avr/io.h>
 #include <avr/delay.h>
@@ -32,10 +39,48 @@ unsigned char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UA
 unsigned char Strobe_on = 0; //for strobe
 unsigned char Strobe_count = 0;//for strobe
 unsigned char adc6;
-unsigned char  AdcKey = 0;
+unsigned char AdcKey = 0;
 unsigned char turnOn = 0; 
-unsigned char T1temp =0;
+unsigned char T1temp = 0;
 
+
+
+
+#ifdef i2c_Comm
+#define i2c_MasterAddress 	0xA2	// Адрес на который будем отзываться
+#define i2c_i_am_slave		1	// Если мы еще и слейвом работаем то 1. А то не услышит!
+#define twi_port PORTC
+#define twi_ddr DDRC
+#define SDA_pin 4
+#define SCL_pin 5
+#define i2cBuffSize 2
+//#define i2c_MaxPageAddrLgth	2	// Максимальная величина адреса страницы. Обычно адрес страницы это один или два байта.
+								// Зависит от типа ЕЕПРОМ или другой микросхемы.
+#define TWI_SUCCESS 0xff
+#define TWI_ADR_BITS     1       // позиция адреса в адресном пакете
+#define TRUE             1
+#define FALSE            0
+
+//char i2c_SlaveAddress = 0xD0;// 0xD0 = ds1307; 0x90 = lm75
+char i2c_Buffer[i2cBuffSize];//TX buffer
+//char i2c_BufferR[i2cBuffSize];//RXbuffer
+char i2c_index = 0;
+char i2c_ByteCount;				// Число байт передаваемых
+//char i2c_PageAddress[i2c_MaxPageAddrLgth];	// Буфер адреса страниц (для режима с sawsarp)
+//char i2c_PageAddrIndex;				// Индекс буфера адреса страниц
+//char i2c_PageAddrCount;				// Число байт в адресе страницы для текущего Slave
+char ptr = 0; //индексная переменная для массива
+
+//буфер для сообщения
+volatile static uint8_t twiBuf[i2cBuffSize];
+
+//сколько байт нужно передать
+volatile static uint8_t twiMsgSize;
+
+//статус модуля
+volatile static uint8_t twiState = TW_NO_INFO;
+
+#endif
 #ifdef adc7Use
 char adc7,adcstate=0; //For ADC ch6 vector
 #endif
@@ -193,7 +238,197 @@ else if (T1temp == 1)
 
 		
 }
+#ifdef i2c_Comm
+ISR(TWI_vect)
+{
+	
+//берем статусный код модуля
+uint8_t stat = TWSR & 0xF8;
+//LED_PORT|= 1<<LED1;
+//обрабатываем его
+switch (stat)
+{
+	/*case TW_START:
+	case TW_REP_START:
+	ptr = 0; //индексная переменная для массива
+		LED_PORT|= 1<<LED2;
+	case TW_MT_SLA_ACK:
+	case TW_MT_DATA_ACK:
 
+	if (ptr < twiMsgSize)
+	{ //если не все передано
+		//загружаем байт сообщения
+		TWDR = twiBuf[ptr];
+		
+		//сбрасываем флаг TWINT
+		TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT);
+		
+		//увеличиваем индексную переменную
+		ptr++;
+	}
+	else{ //если передано все
+
+	//устанавливаем состояние, что данные переданы
+	twiState = TWI_SUCCESS;
+
+	//формируем СТОП, запрещаем прерывания
+	TWCR = (1<<TWEN)|(1<<TWINT)|(1<<TWSTO)|(0<<TWIE);
+	}
+	break;
+
+	case TW_MR_DATA_ACK:
+	twiBuf[ptr] = TWDR; //сохраняем байт данных
+	ptr++;
+	case TW_MR_SLA_ACK:
+
+	if (ptr < (twiMsgSize-1)){ //это предпоследний байт?
+	//нет, формируем подтверждение
+	TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWEA);
+		}
+		else {
+		//да, подтверждение не формируем
+		TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT);
+		}
+		break;
+	case TW_MR_DATA_NACK:
+		twiBuf[ptr] = TWDR;
+		twiState = TWI_SUCCESS;
+		TWCR = (1<<TWEN)|(1<<TWINT)|(1<<TWSTO);
+		break;
+	case TW_MT_ARB_LOST:
+		TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWSTA);
+		break;
+	/*дальше коды для слейва*/
+	case TW_ST_SLA_ACK: //0xA8 SLA+R received, ACK returned  нам какой то другой мастер по имени обращается и просить ему передать байтиков.
+			 //and load first data
+			 LED_PORT|= 1<<LED1; //set на чтение
+			 //LED_PORT&= ~(1<<LED3);//clear
+				//i2c_Buffer[0] = 0xAC;
+				//i2c_Buffer[1] = 0xCE;
+				ptr=0;
+				TWDR = 0xEE;
+				//TWDR = i2c_Buffer[0];
+				TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
+				
+				break;
+	case TW_SR_SLA_ACK: //0x60 Receive SLA+W Сидим на шине, никого не трогаем, ни с кем не общаемся. А тут нас по имени… Конечно отзовемся :)	
+			LED_PORT|= 1<<LED2; //на запись
+			//set				ptr=0;
+			TWDR = OutPort;
+			//TWDR = i2c_Buffer[0];
+			TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
+			break;
+	case TW_ST_DATA_ACK: //Send Byte Receive ACK Ну дали мы ему байт. Он нам ACK. А мы тем временем думаем слать ему еще один (последний) и говорить «иди NACK». Или же у нас дофига их и можно еще пообщаться.	
+			//TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|(0<<TWWC);
+			////////ТВИ можно    инт=можно   флаг     посл.Аск  посл.старт посл.стоп  коллизия
+			LED_PORT|= 1<<LED4; //на запись
+			//TWCR = (1<<TWINT)|(1<<TWEN)|(0<<TWSTO);
+			break;
+	case TW_ST_DATA_NACK:
+			LED_PORT|= 1<<LED2;
+			TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
+			break;
+	/*общие сообщения об ошибках*/
+	case TW_MT_SLA_NACK:
+	case TW_MR_SLA_NACK:
+	case TW_MT_DATA_NACK:
+	case TW_BUS_ERROR:
+		//сохраняем статусный код
+		twiState = stat;
+		LED_PORT|= 1<<LED3; 
+		//запрещаем прерывания модуля
+		TWCR = (1<<TWEN)|(0<<TWIE);
+		break;
+	default:
+			//сохраняем статусный код
+			twiState = stat;
+
+	}	
+}
+
+void Init_i2c(void)							// Настройка режима мастера
+{
+	twi_port |= 1<<SCL_pin|1<<SDA_pin;			// Включим подтяжку на ноги, вдруг юзер на резисторы пожмотился
+	twi_ddr &=~(1<<SCL_pin|1<<SDA_pin);
+	TWBR = 0x50;         						// Настроим битрейт 8Mhz = 23809 гц
+	TWSR = 0x00;
+}
+void TWI_SendData(uint8_t *msg, uint8_t msgSize)
+{
+   uint8_t i;
+ 
+   /*ждем ,когда TWI модуль освободится*/
+   while(TWCR & (1<<TWIE)); 
+ 
+   /*сохр. количество байт для передачи
+   и первый байт сообщения*/
+   twiMsgSize = msgSize;
+   twiBuf[0] = msg[0]; 
+ 
+   /*если первый байт типа SLA+W, то 
+   остальное сообщение тоже сохраняем*/
+   if (!(msg[0] & (1<<TW_READ))){ 
+      for (i = 1; i < msgSize; i++){ 
+         twiBuf[i] = msg[i];
+      }
+   }
+ 
+   twiState = TW_NO_INFO ;
+ 
+   /*разрешаем прерывание и формируем состояние старт */
+   TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWSTA); 
+}
+/****************************************************************************
+ Проверка - не занят ли TWI модуль. Используется внутри модуля
+****************************************************************************/
+static uint8_t TWI_TransceiverBusy(void)
+{
+  return (TWCR & (1<<TWIE));                 
+}
+
+/****************************************************************************
+ Взять статус TWI модуля
+****************************************************************************/
+uint8_t TWI_GetState(void)
+{
+  while (TWI_TransceiverBusy());             
+  return twiState;                        
+}
+/****************************************************************************
+ Переписать полученные данные в буфер msg в количестве msgSize байт. 
+****************************************************************************/
+uint8_t TWI_GetData(uint8_t *msg, uint8_t msgSize)
+{
+	uint8_t i;
+
+	while(TWI_TransceiverBusy());    //ждем, когда TWI модуль освободится
+
+	if(twiState == TWI_SUCCESS){     //если сообщение успешно принято,
+	for(i = 0; i < msgSize; i++){  //то переписываем его из внутреннего буфера в переданный
+	msg[i] = twiBuf[i];
+}
+  }
+  
+  return twiState;                                   
+}
+
+void Init_Slave_i2c(int Addr)				// Настройка режима слейва (если нужно)
+{
+	//LED_PORT|= 1<<LED3; //set
+	TWAR = i2c_MasterAddress;					// Внесем в регистр свой адрес, на который будем отзываться.
+	// 1 в нулевом бите означает, что мы отзываемся на широковещательные пакеты
+	//SlaveOutFunc = Addr;						// Присвоим указателю выхода по слейву функцию выхода
+	// TWCR = (1<<TWEN)|(1<<TWEA)|(1<<TWIE);
+	
+	TWCR = 	0<<TWSTA|
+			0<<TWSTO|
+			0<<TWINT|
+			1<<TWEA|
+			1<<TWEN|
+			1<<TWIE;							// Включаем агрегат и начинаем слушать шину.
+
+}
+#endif
 
 
 int main(void)
@@ -219,6 +454,9 @@ OCR1A = 0x7A11;
 	//PINx регистр чтения
 	//PORTx 1=pullup(in)
 	//DDRx 0=in 1=out
+	//настройка портов
+	DDRB = 0b00001111;  //TestLed port
+	PORTB = 0b00000000; //TestLed port
 	//конец настройки портов
 
 #ifdef HeadLightControl
@@ -240,9 +478,42 @@ OCR1A = 0x7A11;
 	//adcstate = 0;
 
 #endif
+#ifdef DayLightOnStart
+OutPort |=0b00000100;
+OutPort &=0b11100111;
+#endif
 
 
-sei();//разрешаем прерывания глобально
+
+
+#ifdef i2c_Comm_master
+{
+	Init_i2c();
+
+	/*подготавливаем сообщение*/
+	i2c_Buffer[0] = (i2c_SlaveAddress &= 0xFE);
+	i2c_Buffer[1] = 0x00;
+	i2c_Buffer[2] = 0b10000101;
+	i2c_Buffer[3] = 0b01000100;
+	i2c_Buffer[4] = 0b00100010;
+
+	/*отправляем его*/
+	TWI_SendData(i2c_Buffer, 6);
+	i2c_Buffer[0] = (i2c_SlaveAddress &= 0xFE);
+	i2c_Buffer[1] = 0x07;
+	i2c_Buffer[2] = 0b10010000;
+	TWI_SendData(i2c_Buffer, 3);
+}
+#endif
+#ifdef i2c_Comm
+//{
+//LED_PORT|= 1<<LED4; //set
+Init_Slave_i2c(i2c_MasterAddress);
+	
+//}
+#endif
+_delay_ms(50);
+sei();//разрешаем прерывания глобально	
     while(1)
     {	
 #ifdef TurnControl
@@ -259,6 +530,7 @@ sei();//разрешаем прерывания глобально
 	}
 }
 #endif	
+
 /*#ifndef TurnBlink
 { 
 		switch (butt)
@@ -305,17 +577,40 @@ if (150<adc6)
 
 #endif
 
-#ifdef i2c_Comm
-{
-	
-}
-
-#endif
-
 #ifdef HeadLight_Single_Beam
 {
-	
+	switch (AdcKey)
+	{
+		case 1:
+		{
+
+			OutPort |=0b00011000;
+			OutPort &=0b11111011;			
+			break;
+		}
+		case 2:
+		{
+			OutPort |=0b00001000;
+			OutPort &=0b11101011;
+
+			break;
+		}
+		case 3:
+		{
+			OutPort |=0b00000100;
+			OutPort &=0b11100111;
+			break;
+		}
+
+		case 0:
+		{
+			
+			break;
+		}
+		default: ;
+	}
 }
+
 #endif
 
 #ifdef HeadLight_Dual_Beam
