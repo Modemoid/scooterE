@@ -1,0 +1,389 @@
+
+Mastrr1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001b0  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000014  00800060  00800060  00000224  2**0
+                  ALLOC
+  2 .stab         000006cc  00000000  00000000  00000224  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000085  00000000  00000000  000008f0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_aranges 00000080  00000000  00000000  00000978  2**3
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000050d  00000000  00000000  000009f8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 0000015d  00000000  00000000  00000f05  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002cd  00000000  00000000  00001062  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000084  00000000  00000000  00001330  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000161  00000000  00000000  000013b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000000b7  00000000  00000000  00001515  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	2c c0       	rjmp	.+88     	; 0x5c <__bad_interrupt>
+   4:	2b c0       	rjmp	.+86     	; 0x5c <__bad_interrupt>
+   6:	2a c0       	rjmp	.+84     	; 0x5c <__bad_interrupt>
+   8:	29 c0       	rjmp	.+82     	; 0x5c <__bad_interrupt>
+   a:	28 c0       	rjmp	.+80     	; 0x5c <__bad_interrupt>
+   c:	27 c0       	rjmp	.+78     	; 0x5c <__bad_interrupt>
+   e:	26 c0       	rjmp	.+76     	; 0x5c <__bad_interrupt>
+  10:	25 c0       	rjmp	.+74     	; 0x5c <__bad_interrupt>
+  12:	24 c0       	rjmp	.+72     	; 0x5c <__bad_interrupt>
+  14:	23 c0       	rjmp	.+70     	; 0x5c <__bad_interrupt>
+  16:	22 c0       	rjmp	.+68     	; 0x5c <__bad_interrupt>
+  18:	21 c0       	rjmp	.+66     	; 0x5c <__bad_interrupt>
+  1a:	20 c0       	rjmp	.+64     	; 0x5c <__bad_interrupt>
+  1c:	1f c0       	rjmp	.+62     	; 0x5c <__bad_interrupt>
+  1e:	1e c0       	rjmp	.+60     	; 0x5c <__bad_interrupt>
+  20:	1d c0       	rjmp	.+58     	; 0x5c <__bad_interrupt>
+  22:	4a c0       	rjmp	.+148    	; 0xb8 <__vector_17>
+  24:	1b c0       	rjmp	.+54     	; 0x5c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	e0 eb       	ldi	r30, 0xB0	; 176
+  3a:	f1 e0       	ldi	r31, 0x01	; 1
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+  42:	a0 36       	cpi	r26, 0x60	; 96
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
+
+00000048 <__do_clear_bss>:
+  48:	10 e0       	ldi	r17, 0x00	; 0
+  4a:	a0 e6       	ldi	r26, 0x60	; 96
+  4c:	b0 e0       	ldi	r27, 0x00	; 0
+  4e:	01 c0       	rjmp	.+2      	; 0x52 <.do_clear_bss_start>
+
+00000050 <.do_clear_bss_loop>:
+  50:	1d 92       	st	X+, r1
+
+00000052 <.do_clear_bss_start>:
+  52:	a4 37       	cpi	r26, 0x74	; 116
+  54:	b1 07       	cpc	r27, r17
+  56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
+  58:	95 d0       	rcall	.+298    	; 0x184 <main>
+  5a:	a8 c0       	rjmp	.+336    	; 0x1ac <_exit>
+
+0000005c <__bad_interrupt>:
+  5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
+
+0000005e <i2c_init_master>:
+char I2c_DEbug = 0, I2c_DEbug1 = 0, I2c_DEbug2 = 0;
+
+void i2c_init_master(void)
+{
+	
+	i2c_port |= 1<<SCL_pin|1<<SDA_pin;			// Включим подтяжку на ноги, вдруг юзер на резисторы пожмотился
+  5e:	85 b3       	in	r24, 0x15	; 21
+  60:	80 63       	ori	r24, 0x30	; 48
+  62:	85 bb       	out	0x15, r24	; 21
+	i2c_ddr &=~(1<<SCL_pin|1<<SDA_pin);
+  64:	84 b3       	in	r24, 0x14	; 20
+  66:	8f 7c       	andi	r24, 0xCF	; 207
+  68:	84 bb       	out	0x14, r24	; 20
+	TWBR = 160;         						// Настроим битрейт ~7kHz
+  6a:	80 ea       	ldi	r24, 0xA0	; 160
+  6c:	80 b9       	out	0x00, r24	; 0
+	TWSR = 0x01;
+  6e:	81 e0       	ldi	r24, 0x01	; 1
+  70:	81 b9       	out	0x01, r24	; 1
+}
+  72:	08 95       	ret
+
+00000074 <i2c_TX>:
+void i2c_TX(char *msg, char msgSize)
+{
+	  i2c_msgSize = msgSize;
+  74:	60 93 63 00 	sts	0x0063, r22
+	  while(TWCR & (1<<TWIE)); //ждем ,когда TWI модуль освободится
+  78:	06 b6       	in	r0, 0x36	; 54
+  7a:	00 fc       	sbrc	r0, 0
+  7c:	fd cf       	rjmp	.-6      	; 0x78 <i2c_TX+0x4>
+	  
+	   i2c_BufferTX[0] = msg[0]; //и первый байт сообщения
+  7e:	fc 01       	movw	r30, r24
+  80:	80 81       	ld	r24, Z
+  82:	80 93 6f 00 	sts	0x006F, r24
+// 		    for (LocalCounter = 1; LocalCounter < msgSize; LocalCounter++){
+// 			      i2c_BufferTX[LocalCounter] = msg[LocalCounter];
+// 		      }
+// 	     }
+	//разрешаем прерывание и формируем состояние старт
+   i2c_SendStart();
+  86:	85 ea       	ldi	r24, 0xA5	; 165
+  88:	86 bf       	out	0x36, r24	; 54
+}
+  8a:	08 95       	ret
+
+0000008c <i2c_Rx>:
+char i2c_Rx(char *msg, char msgSize)
+{
+	char LocalCounterRx, LocalRecived;
+	i2c_msgSize = msgSize;
+  8c:	60 93 63 00 	sts	0x0063, r22
+	while(TWCR & (1<<TWIE)); //ждем ,когда TWI модуль освободится
+  90:	06 b6       	in	r0, 0x36	; 54
+  92:	00 fc       	sbrc	r0, 0
+  94:	fd cf       	rjmp	.-6      	; 0x90 <i2c_Rx+0x4>
+
+		for(LocalCounterRx = 0; LocalCounterRx < msgSize; LocalCounterRx++)
+  96:	66 23       	and	r22, r22
+  98:	69 f0       	breq	.+26     	; 0xb4 <i2c_Rx+0x28>
+  9a:	ab e6       	ldi	r26, 0x6B	; 107
+  9c:	b0 e0       	ldi	r27, 0x00	; 0
+  9e:	28 2f       	mov	r18, r24
+  a0:	e8 2f       	mov	r30, r24
+  a2:	f9 2f       	mov	r31, r25
+		{  //то переписываем его из внутреннего буфера в переданный
+			msg[LocalCounterRx] = i2c_BufferRX[LocalCounterRx];
+  a4:	8d 91       	ld	r24, X+
+  a6:	81 93       	st	Z+, r24
+{
+	char LocalCounterRx, LocalRecived;
+	i2c_msgSize = msgSize;
+	while(TWCR & (1<<TWIE)); //ждем ,когда TWI модуль освободится
+
+		for(LocalCounterRx = 0; LocalCounterRx < msgSize; LocalCounterRx++)
+  a8:	8e 2f       	mov	r24, r30
+  aa:	82 1b       	sub	r24, r18
+  ac:	86 17       	cp	r24, r22
+  ae:	d0 f3       	brcs	.-12     	; 0xa4 <i2c_Rx+0x18>
+  b0:	26 2f       	mov	r18, r22
+  b2:	21 50       	subi	r18, 0x01	; 1
+		{  //то переписываем его из внутреннего буфера в переданный
+			msg[LocalCounterRx] = i2c_BufferRX[LocalCounterRx];
+			LocalRecived = LocalCounterRx;
+		}
+		return LocalRecived;
+}
+  b4:	82 2f       	mov	r24, r18
+  b6:	08 95       	ret
+
+000000b8 <__vector_17>:
+//статус модуля
+//volatile static char i2c_State = TW_NO_INFO;
+
+#endif
+ISR(TWI_vect)
+{
+  b8:	1f 92       	push	r1
+  ba:	0f 92       	push	r0
+  bc:	0f b6       	in	r0, 0x3f	; 63
+  be:	0f 92       	push	r0
+  c0:	11 24       	eor	r1, r1
+  c2:	8f 93       	push	r24
+  c4:	9f 93       	push	r25
+  c6:	ef 93       	push	r30
+  c8:	ff 93       	push	r31
+	switch(TWSR & 0xF8)				// Отсекаем биты прескалера
+  ca:	81 b1       	in	r24, 0x01	; 1
+  cc:	90 e0       	ldi	r25, 0x00	; 0
+  ce:	88 7f       	andi	r24, 0xF8	; 248
+  d0:	90 70       	andi	r25, 0x00	; 0
+  d2:	88 32       	cpi	r24, 0x28	; 40
+  d4:	91 05       	cpc	r25, r1
+  d6:	31 f1       	breq	.+76     	; 0x124 <__vector_17+0x6c>
+  d8:	89 32       	cpi	r24, 0x29	; 41
+  da:	91 05       	cpc	r25, r1
+  dc:	44 f4       	brge	.+16     	; 0xee <__vector_17+0x36>
+  de:	88 30       	cpi	r24, 0x08	; 8
+  e0:	91 05       	cpc	r25, r1
+  e2:	61 f0       	breq	.+24     	; 0xfc <__vector_17+0x44>
+  e4:	80 31       	cpi	r24, 0x10	; 16
+  e6:	91 05       	cpc	r25, r1
+  e8:	09 f0       	breq	.+2      	; 0xec <__vector_17+0x34>
+  ea:	43 c0       	rjmp	.+134    	; 0x172 <__vector_17+0xba>
+  ec:	07 c0       	rjmp	.+14     	; 0xfc <__vector_17+0x44>
+  ee:	80 34       	cpi	r24, 0x40	; 64
+  f0:	91 05       	cpc	r25, r1
+  f2:	21 f1       	breq	.+72     	; 0x13c <__vector_17+0x84>
+  f4:	80 35       	cpi	r24, 0x50	; 80
+  f6:	91 05       	cpc	r25, r1
+  f8:	e1 f5       	brne	.+120    	; 0x172 <__vector_17+0xba>
+  fa:	2e c0       	rjmp	.+92     	; 0x158 <__vector_17+0xa0>
+			break;
+		}
+		case TW_START:	// Старт был, а затем мы:
+		case TW_REP_START:	// Повторный старт был, а затем мы:
+			{
+				if (i2c_direction == i2c_write)
+  fc:	80 91 69 00 	lds	r24, 0x0069
+ 100:	81 30       	cpi	r24, 0x01	; 1
+ 102:	39 f4       	brne	.+14     	; 0x112 <__vector_17+0x5a>
+				{
+					TWDR = i2c_Active_Save i2c_AddW ;					// Шлем Addr+W
+ 104:	80 91 6a 00 	lds	r24, 0x006A
+ 108:	8e 7f       	andi	r24, 0xFE	; 254
+ 10a:	80 93 6a 00 	sts	0x006A, r24
+ 10e:	83 b9       	out	0x03, r24	; 3
+ 110:	06 c0       	rjmp	.+12     	; 0x11e <__vector_17+0x66>
+				}else
+				{
+					TWDR = i2c_Active_Save i2c_AddR ;					// Шлем Addr+W
+ 112:	80 91 6a 00 	lds	r24, 0x006A
+ 116:	81 60       	ori	r24, 0x01	; 1
+ 118:	80 93 6a 00 	sts	0x006A, r24
+ 11c:	83 b9       	out	0x03, r24	; 3
+				}
+				
+				/*		TWDR = i2c_BufferTX[0];				// Адрес слейва*/
+				TWCR = 	0<<TWSTA|
+ 11e:	85 e8       	ldi	r24, 0x85	; 133
+ 120:	86 bf       	out	0x36, r24	; 54
+				0<<TWSTO|
+				1<<TWINT|
+				1<<TWEN|
+				1<<TWIE;  								// Go!
+
+				break;
+ 122:	27 c0       	rjmp	.+78     	; 0x172 <__vector_17+0xba>
+		{
+			break;
+		}
+	case TW_MT_DATA_ACK: // 0x28 // DATA sent and ACK received
+		{
+					i2c_BufferRX[i2c_Index] = TWDR; //сохраняем байт данных
+ 124:	80 91 64 00 	lds	r24, 0x0064
+ 128:	93 b1       	in	r25, 0x03	; 3
+ 12a:	e8 2f       	mov	r30, r24
+ 12c:	f0 e0       	ldi	r31, 0x00	; 0
+ 12e:	e5 59       	subi	r30, 0x95	; 149
+ 130:	ff 4f       	sbci	r31, 0xFF	; 255
+ 132:	90 83       	st	Z, r25
+					i2c_Index++;
+ 134:	8f 5f       	subi	r24, 0xFF	; 255
+ 136:	80 93 64 00 	sts	0x0064, r24
+			break;
+ 13a:	1b c0       	rjmp	.+54     	; 0x172 <__vector_17+0xba>
+			break;
+		}
+	// Master Receiver Mode
+	case TW_MR_SLA_ACK: // 0x40 // SLA+R sent, ACK received
+		{
+			if (i2c_Index < i2c_msgSize){ //это последний байт?
+ 13c:	90 91 64 00 	lds	r25, 0x0064
+ 140:	80 91 63 00 	lds	r24, 0x0063
+ 144:	98 17       	cp	r25, r24
+ 146:	20 f4       	brcc	.+8      	; 0x150 <__vector_17+0x98>
+			i2c_SendACK();
+ 148:	85 ec       	ldi	r24, 0xC5	; 197
+ 14a:	86 bf       	out	0x36, r24	; 54
+			SetLed1
+ 14c:	c0 9a       	sbi	0x18, 0	; 24
+ 14e:	11 c0       	rjmp	.+34     	; 0x172 <__vector_17+0xba>
+			//нет, формируем подтверждение
+			}
+			else {
+			i2c_SendNACK();
+ 150:	85 e8       	ldi	r24, 0x85	; 133
+ 152:	86 bf       	out	0x36, r24	; 54
+			SetLed2
+ 154:	c1 9a       	sbi	0x18, 1	; 24
+ 156:	0d c0       	rjmp	.+26     	; 0x172 <__vector_17+0xba>
+
+			break;
+		}
+	case TW_MR_DATA_ACK: // 0x50 // Data received, ACK returned
+		{
+			if (i2c_Index < (i2c_msgSize))//это предпоследний байт? //нет, формируем подтверждение
+ 158:	90 91 64 00 	lds	r25, 0x0064
+ 15c:	80 91 63 00 	lds	r24, 0x0063
+ 160:	98 17       	cp	r25, r24
+ 162:	20 f4       	brcc	.+8      	; 0x16c <__vector_17+0xb4>
+			{ 
+				SetLed3
+ 164:	c2 9a       	sbi	0x18, 2	; 24
+				i2c_SendACK();
+ 166:	85 ec       	ldi	r24, 0xC5	; 197
+ 168:	86 bf       	out	0x36, r24	; 54
+ 16a:	03 c0       	rjmp	.+6      	; 0x172 <__vector_17+0xba>
+			}
+			else {
+				SetLed4
+ 16c:	c3 9a       	sbi	0x18, 3	; 24
+				i2c_SendNACK();
+ 16e:	85 e8       	ldi	r24, 0x85	; 133
+ 170:	86 bf       	out	0x36, r24	; 54
+	
+	// TWI_SUCCESS				0xFF // Successful transfer, this state is impossible from TWSR as bit2 is 0 and read only
+	break;
+	}
+
+}			
+ 172:	ff 91       	pop	r31
+ 174:	ef 91       	pop	r30
+ 176:	9f 91       	pop	r25
+ 178:	8f 91       	pop	r24
+ 17a:	0f 90       	pop	r0
+ 17c:	0f be       	out	0x3f, r0	; 63
+ 17e:	0f 90       	pop	r0
+ 180:	1f 90       	pop	r1
+ 182:	18 95       	reti
+
+00000184 <main>:
+#define TestLed
+int main(void)
+{
+	#ifdef TestLed
+			//настройка портов
+			LED_DDR|= 1<<LED1|1<<LED2|1<<LED3|1<<LED4;     //Led port
+ 184:	87 b3       	in	r24, 0x17	; 23
+ 186:	8f 60       	ori	r24, 0x0F	; 15
+ 188:	87 bb       	out	0x17, r24	; 23
+			LED_PORT&= ~(1<<LED1)|1<<LED2|1<<LED3|1<<LED4; //Led port
+ 18a:	c0 98       	cbi	0x18, 0	; 24
+			//конец настройки портов
+   #endif
+   
+ 
+i2c_init_master();
+ 18c:	68 df       	rcall	.-304    	; 0x5e <i2c_init_master>
+
+sei();
+ 18e:	78 94       	sei
+i2c_Active_Save = 0x42;
+ 190:	82 e4       	ldi	r24, 0x42	; 66
+ 192:	80 93 6a 00 	sts	0x006A, r24
+i2c_direction = i2c_read;
+ 196:	10 92 69 00 	sts	0x0069, r1
+
+i2c_TX(main_i2c_array,2);
+ 19a:	c5 e6       	ldi	r28, 0x65	; 101
+ 19c:	d0 e0       	ldi	r29, 0x00	; 0
+ 19e:	ce 01       	movw	r24, r28
+ 1a0:	62 e0       	ldi	r22, 0x02	; 2
+ 1a2:	68 df       	rcall	.-304    	; 0x74 <i2c_TX>
+//i2c_direction = i2c_read;
+i2c_Rx(main_i2c_array,4);
+ 1a4:	ce 01       	movw	r24, r28
+ 1a6:	64 e0       	ldi	r22, 0x04	; 4
+ 1a8:	71 df       	rcall	.-286    	; 0x8c <i2c_Rx>
+ 1aa:	ff cf       	rjmp	.-2      	; 0x1aa <main+0x26>
+
+000001ac <_exit>:
+ 1ac:	f8 94       	cli
+
+000001ae <__stop_program>:
+ 1ae:	ff cf       	rjmp	.-2      	; 0x1ae <__stop_program>
