@@ -5,22 +5,28 @@
  *  Author: Kartsev Pavel
  */ 
 
-#define F_CPU 1000000UL
+#define F_CPU 8000000UL
 //#define DEBUG
 #define TurnControl //if turn control used //now work only blink version
 #define TurnBlink //if turn signal must blink
+#define TurnBlinkTime03s //aternative TurnBlinkTime025s 
 #define HeadLightControl // if headlight control used 
 //#define HeadLight_Dual_Beam //use for classic bulb with 2 separate spring
 #define HeadLight_Single_Beam //Used for bi-xenon lo beam work forever, hi control beam solenoid. 
 //#define adc7Use //разобраться с переключением каналов в прерывании - на будущее
 //#define i2c_Comm //if present i2c communication with other device 
+//define i2c_addres 0x40 //my i2c adress
 #define Strobe // if stroboscope present 
 #define Strobe_Bink // if strobe must blink
 #define DayLight // DayLight switch //now not used
 #define DayLightOnStart //define if U want get daylight turned on sturtup
-#define Strobe_TIME 64 //*0.015s? = strobe work time after single button press, see Strob_blink define 
+#define Strobe_TIME 128 //strobe work time after single button press, see Strob_blink define 
 #define debounce_delay //if defined present key debounce delay, but logic work not need it, it can be removed. 
-#define debounce_time 50 //time in MS
+#define debounce_time 30 //time in MS
+//#define OutPort PORTD
+
+
+#ifdef DEBUG_LEDS
 
 #define LED1 0
 #define LED2 1
@@ -28,11 +34,26 @@
 #define LED4 3
 #define LED_PORT PORTB
 #define LED_DDR DDRB
+#define SetLed1 LED_PORT|= 1<<LED1; //set
+#define SetLed2 LED_PORT|= 1<<LED2; //set
+#define SetLed3 LED_PORT|= 1<<LED3; //set
+#define SetLed4 LED_PORT|= 1<<LED4; //set
+#define ClearLed1 LED_PORT&= ~(1<<LED1);//clear
+#define ClearLed2 LED_PORT&= ~(1<<LED2);//clear
+#define ClearLed3 LED_PORT&= ~(1<<LED3);//clear
+#define ClearLed4 LED_PORT&= ~(1<<LED4);//clear
+#define SwitchLed1 LED_PORT = LED_PORT ^ (1<<LED1); //switch
+#define SwitchLed2 LED_PORT = LED_PORT ^ (1<<LED2); //switch
+#define SwitchLed3 LED_PORT = LED_PORT ^ (1<<LED3); //switch
+#define SwitchLed4 LED_PORT = LED_PORT ^ (1<<LED4); //switch
+
+#endif
 
 #include <avr/io.h>
 #include <avr/delay.h>
 #include <avr/interrupt.h>
 #include <util/twi.h>
+#include "i2c_Slave.h"
 
 //gobal VAR
 unsigned char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
@@ -44,7 +65,7 @@ unsigned char turnOn = 0;
 unsigned char T1temp = 0;
 
 
-
+/*
 
 #ifdef i2c_Comm
 #define i2c_MasterAddress 	0xA2	// Адрес на который будем отзываться
@@ -81,6 +102,7 @@ volatile static uint8_t twiMsgSize;
 volatile static uint8_t twiState = TW_NO_INFO;
 
 #endif
+*/
 #ifdef adc7Use
 char adc7,adcstate=0; //For ADC ch6 vector
 #endif
@@ -193,8 +215,65 @@ if (adcstate = 1)
 	
 	
 }
+
+ISR(TIMER1_OVF_vect)
+{
+	#ifdef TurnBlinkTime03s 
+	// Reinitialize Timer1 value /0,3c
+	TCNT1H=0x6D84 >> 8;
+	TCNT1L=0x6D84 & 0xff;
+	#endif
+	#ifdef TurnBlinkTime025s 
+	// Reinitialize Timer1 value /0,249c
+	TCNT1H=0xB403 >> 8;
+	TCNT1L=0xB403 & 0xff;
+	#endif
+
+	if (T1temp == 0)
+	{
+		if (turnOn == 0b00000001 )
+		{
+			OutPort |=0b10000000;
+		}
+		if (turnOn == 0b00000010)
+		{
+			OutPort |=0b01000000;
+		}
+		if (turnOn == 0b00000011)
+		{
+			OutPort |= 0b11000000;
+		}
+		if (turnOn == 0b00000000 )
+		{
+			OutPort &= 0b00111111;
+		}
+		T1temp = 1;
+	}
+	else if (T1temp == 1)
+	{
+		if (turnOn == 0b00000001 )
+		{
+			OutPort &=0b01111111;
+		}
+		if (turnOn == 0b00000010)
+		{
+			OutPort &=0b10111111;
+		}
+		if (turnOn == 0b00000011)
+		{
+			OutPort &= 0b00111111;
+		}
+		if (turnOn == 0b00000000 )
+		{
+			OutPort &= 0b00111111;
+		}
+		T1temp = 0;
+	}
+	
+}
 ISR(TIMER1_COMPA_vect)//turn signal blink 
 {
+	
 if (T1temp == 0)
 {
 	if (turnOn == 0b00000001 )
@@ -238,7 +317,8 @@ else if (T1temp == 1)
 
 		
 }
-#ifdef i2c_Comm
+//#ifdef i2c_Comm
+/*
 ISR(TWI_vect)
 {
 	
@@ -248,7 +328,7 @@ uint8_t stat = TWSR & 0xF8;
 //обрабатываем его
 switch (stat)
 {
-	/*case TW_START:
+	*//*case TW_START:
 	case TW_REP_START:
 	ptr = 0; //индексная переменная для массива
 		LED_PORT|= 1<<LED2;
@@ -298,7 +378,9 @@ switch (stat)
 	case TW_MT_ARB_LOST:
 		TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWSTA);
 		break;
+	*/
 	/*дальше коды для слейва*/
+	/*
 	case TW_ST_SLA_ACK: //0xA8 SLA+R received, ACK returned  нам какой то другой мастер по имени обращается и просить ему передать байтиков.
 			 //and load first data
 			 LED_PORT|= 1<<LED1; //set на чтение
@@ -328,7 +410,8 @@ switch (stat)
 			LED_PORT|= 1<<LED2;
 			TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
 			break;
-	/*общие сообщения об ошибках*/
+	*//*общие сообщения об ошибках*/
+	/*
 	case TW_MT_SLA_NACK:
 	case TW_MR_SLA_NACK:
 	case TW_MT_DATA_NACK:
@@ -357,16 +440,19 @@ void TWI_SendData(uint8_t *msg, uint8_t msgSize)
 {
    uint8_t i;
  
-   /*ждем ,когда TWI модуль освободится*/
+   *//*ждем ,когда TWI модуль освободится*/
+   /*
    while(TWCR & (1<<TWIE)); 
  
-   /*сохр. количество байт для передачи
+   *//*сохр. количество байт для передачи
    и первый байт сообщения*/
+   /*
    twiMsgSize = msgSize;
    twiBuf[0] = msg[0]; 
  
-   /*если первый байт типа SLA+W, то 
+   *//*если первый байт типа SLA+W, то 
    остальное сообщение тоже сохраняем*/
+   /*
    if (!(msg[0] & (1<<TW_READ))){ 
       for (i = 1; i < msgSize; i++){ 
          twiBuf[i] = msg[i];
@@ -375,28 +461,28 @@ void TWI_SendData(uint8_t *msg, uint8_t msgSize)
  
    twiState = TW_NO_INFO ;
  
-   /*разрешаем прерывание и формируем состояние старт */
+   *//*разрешаем прерывание и формируем состояние старт *//*
    TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWSTA); 
 }
-/****************************************************************************
+*//****************************************************************************
  Проверка - не занят ли TWI модуль. Используется внутри модуля
-****************************************************************************/
+****************************************************************************//*
 static uint8_t TWI_TransceiverBusy(void)
 {
   return (TWCR & (1<<TWIE));                 
 }
 
-/****************************************************************************
+*//****************************************************************************
  Взять статус TWI модуля
-****************************************************************************/
+****************************************************************************//*
 uint8_t TWI_GetState(void)
 {
   while (TWI_TransceiverBusy());             
   return twiState;                        
 }
-/****************************************************************************
+*//****************************************************************************
  Переписать полученные данные в буфер msg в количестве msgSize байт. 
-****************************************************************************/
+****************************************************************************//*
 uint8_t TWI_GetData(uint8_t *msg, uint8_t msgSize)
 {
 	uint8_t i;
@@ -430,18 +516,37 @@ void Init_Slave_i2c(int Addr)				// Настройка режима слейва (если нужно)
 }
 #endif
 
-
+*/
 int main(void)
 {
 	
 unsigned char butt,butt1,swadc6;
 //настройка 8бит таймера 
-TCCR0|=(1<<CS00)|(1<<CS01); // Тактировать с коэффициентом 64. 1 переполнение = 0.016384 сек
-TIMSK|=(1<<TOIE0)|(1<<OCIE1A);
-//настройка 16 бит таймера
+// Clock value: 31,250 kHz
+TCCR0=(1<<CS02) | (0<<CS01) | (0<<CS00);// 1 переполнение = 0.08192 сек (8,192 мс)
+//TCCR0|=(1<<CS00)|(1<<CS01); // Тактировать с коэффициентом 64. 1 переполнение = 0.016384 сек #####1mhz
+// Timer(s)/Counter(s) Interrupt(s) initialization
+TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (1<<TOIE1) | (1<<TOIE0);
+//TIMSK|=(1<<TOIE0)|(1<<OCIE1A); #####1mhz
+//настройка 16 бит таймера 
+// Clock value: 125,000 kHz
+//ovf time = 0,52429c
 TCCR1A|=(0<<COM1A0)|(0<<COM1A1)|(0<<COM1B0)|(0<<COM1B1)|(0<<FOC1A)|(0<<FOC1B)|(0<<WGM11)|(0<<WGM10);
-TCCR1B|=(0<<ICNC1)|(0<<ICES1)|(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(1<<CS11)|(0<<CS10);//prescalar = 8
-OCR1A = 0x7A11;
+TCCR1B|=(0<<ICNC1)|(0<<ICES1)|(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(1<<CS11)|(1<<CS10);//prescalar = 64
+//TCCR1B|=(0<<ICNC1)|(0<<ICES1)|(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(1<<CS11)|(0<<CS10);//prescalar = 8 #####1mhz
+
+#ifdef TurnBlinkTime03s 
+TCNT1H=0x6D;//0.3c
+TCNT1L=0x84;//0,3c
+#endif
+#ifdef TurnBlinkTime025s 
+TCNT1H=0xB4;//0,249c
+TCNT1L=0x03;//0,249c
+#endif
+
+Init_Slave_i2c();
+
+//OCR1A = 0x7A11; #####1mhz
 
 
 	//настройка портов для кнопок
@@ -454,9 +559,8 @@ OCR1A = 0x7A11;
 	//PINx регистр чтения
 	//PORTx 1=pullup(in)
 	//DDRx 0=in 1=out
-	//настройка портов
-	DDRB = 0b00001111;  //TestLed port
-	PORTB = 0b00000000; //TestLed port
+	LED_DDR|= (1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4);     //Led port
+	LED_PORT&= ~(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4); //Led port
 	//конец настройки портов
 
 #ifdef HeadLightControl
