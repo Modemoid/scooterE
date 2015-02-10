@@ -4,11 +4,12 @@
  * Created: 14.01.2015 12:29:50
  *  Author: skota
  */ 
-#define F_CPU 3276800
+#define F_CPU 8000000// 3276800
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "MSCS_lib.h"
+//#define URT_EN 1
+//#include "MSCS_lib.h"
 
 float koof;
 unsigned int time;
@@ -18,16 +19,21 @@ unsigned int delay=0;
 
 ISR(INT0_vect){
 	asm("cli");
-unsigned char buf[10];
+
 	TCCR1B=0x03;
 	time=TCNT1;
 	TCNT1=0;
-	delay=time/koof;
+	delay=time*koof;
 	OCR1A=delay;
+	OCR1B=time/2-OCR1A;
+	#ifdef URT_EN
+	unsigned char buf[10];
 		 sprintf(buf,"%u - %u\r\n",time,delay);
 		 USART_TransmitString(buf);
-		 
-	if (time<3200) igt=64; else igt=0;
+	#endif		 
+	//if (time<3200) 
+	igt=64; 
+	//else igt=0;
 	asm("sei");
 }
 
@@ -37,8 +43,8 @@ ISR(TIMER1_COMPA_vect){
 	PORTB^=(1<<3);
 	// Place your code here
 	PORTD|=(1<<4);
-	OCR1B=OCR1A+16;
-	igt++;
+	//OCR1B=OCR1A+OCR1A/2+OCR1A/4;
+	//igt++;
 	asm("sei");
 	
 }
@@ -48,10 +54,10 @@ ISR(TIMER1_COMPB_vect){
 	asm("cli");
 	// Place your code here
 	PORTD&=~(1<<4);
-	if (igt<=2) {
-		OCR1A=OCR1B+16;
-	}
-	else igt=0;
+// 	if (igt<=2) {
+// 		OCR1A=OCR1B+600;
+// 	}
+// 	else igt=0;
 
 	asm("sei");
 	
@@ -63,10 +69,8 @@ ISR(TIMER1_OVF_vect){
 	
 }
 
-ISR(USART_RXC_vect){
-	
-}
 
+#ifdef URT_EN
 void USART_Transmit(unsigned char data)
 {
 	while (!(UCSRA & (1<<UDRE)));
@@ -82,7 +86,7 @@ unsigned char USART_Receive(void)
 	return UDR;
 }
 
-
+#endif
 
 int main(void)
 {
@@ -168,13 +172,31 @@ TIMSK=0x1C;
 //UBRRL=0x14;
 	// USART settings: 9600 baud 8-n-1
 	// WARNING: real baud = 9752: err = 1,58333333333334%
-	UBRRH = 0;
+/*	UBRRH = 0;
 	UBRRL = 20;
 	UCSRB = (1<<RXCIE) | (1<<RXEN) | (1<<TXEN);
 	UCSRC = (1<<URSEL) | (1<<UCSZ1) | (1<<UCSZ0);
 	SREG |= (1<<7); // enable interrupts
 	USART_TransmitString("dsgfgsdg\r\n");
+// */
 
+
+#ifdef URT_EN
+
+// USART initialization
+// Communication Parameters: 8 Data, 1 Stop, No Parity
+// USART Receiver: Off
+// USART Transmitter: On
+// USART Mode: Asynchronous
+// USART Baud Rate: 9600
+UCSRA=0;//(0<<RXC) | (0<<TXC) | (0<<UDRE) | (0<<FE) | (0<<DOR) | (0<<UPE) | (0<<U2X) | (0<<MPCM);
+UCSRB=(0<<RXCIE) | (0<<TXCIE) | (0<<UDRIE) | (0<<RXEN) | (1<<TXEN) | (0<<UCSZ2) | (0<<RXB8) | (0<<TXB8);
+UCSRC=(1<<URSEL) | (0<<UMSEL) | (0<<UPM1) | (0<<UPM0) | (0<<USBS) | (1<<UCSZ1) | (1<<UCSZ0) | (0<<UCPOL);
+UBRRH=0x00;
+UBRRL=0x33;
+	USART_TransmitString("dsgfgsdg\r\n");
+
+#endif
 
 
 // Analog Comparator initialization
@@ -194,7 +216,7 @@ SPCR=0x00;
 // TWI initialization
 // TWI disabled
 TWCR=0x00;
-	koof=360/84.3;
+	koof=0.19067;
 /*MSCS_init();
 unsigned char transmit_buf[17],resiv_buf[17];
 unsigned int fractional;
@@ -217,15 +239,16 @@ asm("sei");
 		transmit_buf[4]=fractional%100;
 		MSCS_com(transmit_buf,0,resiv_buf);
 		*/
-		if (!( (1 << PB4) & PINB)){
+		if (!( (1 << PB4) & PINB))
+		{
 			PORTD|=(1<<4);
 			PORTB|=(1<<3);
-			_delay_ms(4);
+			_delay_ms(400);
 			PORTD&=~(1<<4);
 			PORTB&=~(1<<3);
-			_delay_ms(10);
+			_delay_ms(1000);
 		}
-		USART_Transmit(USART_Receive());
+		//USART_Transmit(USART_Receive());
 		
 
 	}
