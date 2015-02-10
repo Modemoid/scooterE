@@ -19,7 +19,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 000001e5  00000000  00000000  0000138f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000003f0  00000000  00000000  00001574  2**0
+  8 .debug_line   000003ed  00000000  00000000  00001574  2**0
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  00000108  00000000  00000000  00001964  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -246,7 +246,7 @@ void Init_Slave_i2c(void)				// Настройка режима слейва (если нужно)
 {
 	//LED_PORT|= 1<<LED3; //set
 	TWAR = i2c_MasterAddress;					// Внесем в регистр свой адрес, на который будем отзываться.
- 122:	86 e4       	ldi	r24, 0x46	; 70
+ 122:	80 ef       	ldi	r24, 0xF0	; 240
  124:	82 b9       	out	0x02, r24	; 2
 	// 1 в нулевом бите означает, что мы отзываемся на широковещательные пакеты
 	//SlaveOutFunc = Addr;						// Присвоим указателю выхода по слейву функцию выхода
@@ -447,11 +447,11 @@ ISR(ADC_vect) //buttons
 	adc6 = ADCH;
  226:	85 b1       	in	r24, 0x05	; 5
  228:	80 93 6f 00 	sts	0x006F, r24
+	adcstate = 0;
+	ADCSRA = (1<<ADSC);
 	}
 #endif	
-	
-	
-	
+
 }
  22c:	8f 91       	pop	r24
  22e:	0f 90       	pop	r0
@@ -699,8 +699,6 @@ else if (T1temp == 1)
 	T1temp = 0;
  39e:	10 92 62 00 	sts	0x0062, r1
 }
-
-		
 }
  3a2:	9f 91       	pop	r25
  3a4:	8f 91       	pop	r24

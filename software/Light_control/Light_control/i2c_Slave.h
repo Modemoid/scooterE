@@ -52,7 +52,7 @@
 #include <avr/interrupt.h>
 #include <util/twi.h>
 
-#define i2c_MasterAddress 	0x46	// Адрес на который будем отзываться
+#define i2c_MasterAddress 	0xF0	// Адрес на который будем отзываться
 #define i2c_i_am_slave		1	// Если мы еще и слейвом работаем то 1. А то не услышит!
 #define twi_port PORTC
 #define twi_ddr DDRC

@@ -193,8 +193,7 @@ if 	(adcstate = 0)
 	
 		
 }
-if (adcstate = 1)
-{
+if (adcstate = 1){
 	ADMUX = (0<<REFS0|0<<REFS1|1<<ADLAR|1<<ADIE|0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3);
 	//1<<REFS0|1<<REFS1 = от внутренних 2.5в,
 	//0<<REFS0|0<<REFS1 = AREF
@@ -211,9 +210,7 @@ if (adcstate = 1)
 	ADCSRA = (1<<ADSC);
 	}
 #endif	
-	
-	
-	
+
 }
 
 ISR(TIMER1_OVF_vect)
@@ -314,209 +311,8 @@ else if (T1temp == 1)
 	}
 	T1temp = 0;
 }
-
-		
-}
-//#ifdef i2c_Comm
-/*
-ISR(TWI_vect)
-{
-	
-//берем статусный код модуля
-uint8_t stat = TWSR & 0xF8;
-//LED_PORT|= 1<<LED1;
-//обрабатываем его
-switch (stat)
-{
-	*//*case TW_START:
-	case TW_REP_START:
-	ptr = 0; //индексная переменная для массива
-		LED_PORT|= 1<<LED2;
-	case TW_MT_SLA_ACK:
-	case TW_MT_DATA_ACK:
-
-	if (ptr < twiMsgSize)
-	{ //если не все передано
-		//загружаем байт сообщения
-		TWDR = twiBuf[ptr];
-		
-		//сбрасываем флаг TWINT
-		TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT);
-		
-		//увеличиваем индексную переменную
-		ptr++;
-	}
-	else{ //если передано все
-
-	//устанавливаем состояние, что данные переданы
-	twiState = TWI_SUCCESS;
-
-	//формируем СТОП, запрещаем прерывания
-	TWCR = (1<<TWEN)|(1<<TWINT)|(1<<TWSTO)|(0<<TWIE);
-	}
-	break;
-
-	case TW_MR_DATA_ACK:
-	twiBuf[ptr] = TWDR; //сохраняем байт данных
-	ptr++;
-	case TW_MR_SLA_ACK:
-
-	if (ptr < (twiMsgSize-1)){ //это предпоследний байт?
-	//нет, формируем подтверждение
-	TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWEA);
-		}
-		else {
-		//да, подтверждение не формируем
-		TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT);
-		}
-		break;
-	case TW_MR_DATA_NACK:
-		twiBuf[ptr] = TWDR;
-		twiState = TWI_SUCCESS;
-		TWCR = (1<<TWEN)|(1<<TWINT)|(1<<TWSTO);
-		break;
-	case TW_MT_ARB_LOST:
-		TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWSTA);
-		break;
-	*/
-	/*дальше коды для слейва*/
-	/*
-	case TW_ST_SLA_ACK: //0xA8 SLA+R received, ACK returned  нам какой то другой мастер по имени обращается и просить ему передать байтиков.
-			 //and load first data
-			 LED_PORT|= 1<<LED1; //set на чтение
-			 //LED_PORT&= ~(1<<LED3);//clear
-				//i2c_Buffer[0] = 0xAC;
-				//i2c_Buffer[1] = 0xCE;
-				ptr=0;
-				TWDR = 0xEE;
-				//TWDR = i2c_Buffer[0];
-				TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
-				
-				break;
-	case TW_SR_SLA_ACK: //0x60 Receive SLA+W Сидим на шине, никого не трогаем, ни с кем не общаемся. А тут нас по имени… Конечно отзовемся :)	
-			LED_PORT|= 1<<LED2; //на запись
-			//set				ptr=0;
-			TWDR = OutPort;
-			//TWDR = i2c_Buffer[0];
-			TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
-			break;
-	case TW_ST_DATA_ACK: //Send Byte Receive ACK Ну дали мы ему байт. Он нам ACK. А мы тем временем думаем слать ему еще один (последний) и говорить «иди NACK». Или же у нас дофига их и можно еще пообщаться.	
-			//TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|(0<<TWWC);
-			////////ТВИ можно    инт=можно   флаг     посл.Аск  посл.старт посл.стоп  коллизия
-			LED_PORT|= 1<<LED4; //на запись
-			//TWCR = (1<<TWINT)|(1<<TWEN)|(0<<TWSTO);
-			break;
-	case TW_ST_DATA_NACK:
-			LED_PORT|= 1<<LED2;
-			TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
-			break;
-	*//*общие сообщения об ошибках*/
-	/*
-	case TW_MT_SLA_NACK:
-	case TW_MR_SLA_NACK:
-	case TW_MT_DATA_NACK:
-	case TW_BUS_ERROR:
-		//сохраняем статусный код
-		twiState = stat;
-		LED_PORT|= 1<<LED3; 
-		//запрещаем прерывания модуля
-		TWCR = (1<<TWEN)|(0<<TWIE);
-		break;
-	default:
-			//сохраняем статусный код
-			twiState = stat;
-
-	}	
 }
 
-void Init_i2c(void)							// Настройка режима мастера
-{
-	twi_port |= 1<<SCL_pin|1<<SDA_pin;			// Включим подтяжку на ноги, вдруг юзер на резисторы пожмотился
-	twi_ddr &=~(1<<SCL_pin|1<<SDA_pin);
-	TWBR = 0x50;         						// Настроим битрейт 8Mhz = 23809 гц
-	TWSR = 0x00;
-}
-void TWI_SendData(uint8_t *msg, uint8_t msgSize)
-{
-   uint8_t i;
- 
-   *//*ждем ,когда TWI модуль освободится*/
-   /*
-   while(TWCR & (1<<TWIE)); 
- 
-   *//*сохр. количество байт для передачи
-   и первый байт сообщения*/
-   /*
-   twiMsgSize = msgSize;
-   twiBuf[0] = msg[0]; 
- 
-   *//*если первый байт типа SLA+W, то 
-   остальное сообщение тоже сохраняем*/
-   /*
-   if (!(msg[0] & (1<<TW_READ))){ 
-      for (i = 1; i < msgSize; i++){ 
-         twiBuf[i] = msg[i];
-      }
-   }
- 
-   twiState = TW_NO_INFO ;
- 
-   *//*разрешаем прерывание и формируем состояние старт *//*
-   TWCR = (1<<TWEN)|(1<<TWIE)|(1<<TWINT)|(1<<TWSTA); 
-}
-*//****************************************************************************
- Проверка - не занят ли TWI модуль. Используется внутри модуля
-****************************************************************************//*
-static uint8_t TWI_TransceiverBusy(void)
-{
-  return (TWCR & (1<<TWIE));                 
-}
-
-*//****************************************************************************
- Взять статус TWI модуля
-****************************************************************************//*
-uint8_t TWI_GetState(void)
-{
-  while (TWI_TransceiverBusy());             
-  return twiState;                        
-}
-*//****************************************************************************
- Переписать полученные данные в буфер msg в количестве msgSize байт. 
-****************************************************************************//*
-uint8_t TWI_GetData(uint8_t *msg, uint8_t msgSize)
-{
-	uint8_t i;
-
-	while(TWI_TransceiverBusy());    //ждем, когда TWI модуль освободится
-
-	if(twiState == TWI_SUCCESS){     //если сообщение успешно принято,
-	for(i = 0; i < msgSize; i++){  //то переписываем его из внутреннего буфера в переданный
-	msg[i] = twiBuf[i];
-}
-  }
-  
-  return twiState;                                   
-}
-
-void Init_Slave_i2c(int Addr)				// Настройка режима слейва (если нужно)
-{
-	//LED_PORT|= 1<<LED3; //set
-	TWAR = i2c_MasterAddress;					// Внесем в регистр свой адрес, на который будем отзываться.
-	// 1 в нулевом бите означает, что мы отзываемся на широковещательные пакеты
-	//SlaveOutFunc = Addr;						// Присвоим указателю выхода по слейву функцию выхода
-	// TWCR = (1<<TWEN)|(1<<TWEA)|(1<<TWIE);
-	
-	TWCR = 	0<<TWSTA|
-			0<<TWSTO|
-			0<<TWINT|
-			1<<TWEA|
-			1<<TWEN|
-			1<<TWIE;							// Включаем агрегат и начинаем слушать шину.
-
-}
-#endif
-
-*/
 int main(void)
 {
 	
