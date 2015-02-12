@@ -32,7 +32,7 @@ ISR(INT0_vect){
 		 USART_TransmitString(buf);
 	#endif		 
 	//if (time<3200) 
-	igt=64; 
+	//igt=64; 
 	//else igt=0;
 	asm("sei");
 }
@@ -42,8 +42,8 @@ ISR(TIMER1_COMPA_vect){
 	asm("cli");
 	PORTB^=(1<<3);
 	// Place your code here
-	PORTD|=(1<<4);
-	//OCR1B=OCR1A+OCR1A/2+OCR1A/4;
+	PORTD&=~(1<<4);
+	OCR1B=OCR1A+600;
 	//igt++;
 	asm("sei");
 	
@@ -53,7 +53,7 @@ ISR(TIMER1_COMPB_vect){
 	
 	asm("cli");
 	// Place your code here
-	PORTD&=~(1<<4);
+	PORTD|=(1<<4);
 // 	if (igt<=2) {
 // 		OCR1A=OCR1B+600;
 // 	}
@@ -64,7 +64,7 @@ ISR(TIMER1_COMPB_vect){
 }
 
 ISR(TIMER1_OVF_vect){
-	
+	PORTD|=(1<<4);
 	TCCR1B=0x00;
 	
 }
@@ -217,6 +217,8 @@ SPCR=0x00;
 // TWI disabled
 TWCR=0x00;
 	koof=0.19067;
+	
+	PORTD|=(1<<4);
 /*MSCS_init();
 unsigned char transmit_buf[17],resiv_buf[17];
 unsigned int fractional;
@@ -241,12 +243,12 @@ asm("sei");
 		*/
 		if (!( (1 << PB4) & PINB))
 		{
-			PORTD|=(1<<4);
-			PORTB|=(1<<3);
-			_delay_ms(400);
 			PORTD&=~(1<<4);
+			PORTB|=(1<<3);
+			_delay_ms(40);
+			PORTD|=(1<<4);
 			PORTB&=~(1<<3);
-			_delay_ms(1000);
+			_delay_ms(100);
 		}
 		//USART_Transmit(USART_Receive());
 		
