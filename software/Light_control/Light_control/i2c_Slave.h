@@ -52,7 +52,7 @@
 #include <avr/interrupt.h>
 #include <util/twi.h>
 
-#define i2c_MasterAddress 	0x42	// Адрес на который будем отзываться
+#define i2c_MasterAddress 	0xF0	// Адрес на который будем отзываться
 #define i2c_i_am_slave		1	// Если мы еще и слейвом работаем то 1. А то не услышит!
 #define twi_port PORTC
 #define twi_ddr DDRC
@@ -90,10 +90,10 @@ switch (TWIstatus)
 			 
 			SetLed1
 			i2c_Index = 0;
-				i2c_Buffer[0] = 0xF0;
-				i2c_Buffer[1] = 0x0F;
-				i2c_Buffer[2] = 0xAA;
-				i2c_Buffer[3] = 0xBB;
+				i2c_Buffer[0] = 0xAA;
+				i2c_Buffer[1] = 0x55;
+				i2c_Buffer[2] = 0xFF;
+				i2c_Buffer[3] = 0x00;
 				TWDR = i2c_Buffer[i2c_Index++];
 				TWCR|= (0<<TWINT)|(1<<TWEA)|(1<<TWEN)|(1<<TWIE);
 				break;
@@ -150,6 +150,7 @@ void Init_Slave_i2c(void)				// Настройка режима слейва (если нужно)
 	// 1 в нулевом бите означает, что мы отзываемся на широковещательные пакеты
 	//SlaveOutFunc = Addr;						// Присвоим указателю выхода по слейву функцию выхода
 	// TWCR = (1<<TWEN)|(1<<TWEA)|(1<<TWIE);
+	TWBR=32;// Bit Rate: 100,000 kHz @8MHz
 	
 	TWCR = 	0<<TWSTA|
 			0<<TWSTO|
