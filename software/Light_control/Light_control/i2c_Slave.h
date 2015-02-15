@@ -52,7 +52,7 @@
 #include <avr/interrupt.h>
 #include <util/twi.h>
 
-#define i2c_MasterAddress 	0xF0	// Адрес на который будем отзываться
+#define i2c_MasterAddress 	0x46	// Адрес на который будем отзываться
 #define i2c_i_am_slave		1	// Если мы еще и слейвом работаем то 1. А то не услышит!
 #define twi_port PORTC
 #define twi_ddr DDRC
@@ -108,10 +108,15 @@ switch (TWIstatus)
 			else 
 			{
 				TWCR|= (0<<TWINT);
+				i2c_Index =0;
 			}
 			break;
 	case TW_ST_DATA_NACK: //влетаю сюда - что делать еще не азобрался, хотя вроде все правильно.
 			//SetLed3
+			
+			{
+				i2c_Index =0;
+			}
 	case TW_ST_LAST_DATA:
 			//SetLed4
 			TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
