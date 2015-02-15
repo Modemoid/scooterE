@@ -37,7 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../Light_control.c
+../Light_control.c \
+../uart.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,16 +48,20 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-Light_control.o
+Light_control.o \
+uart.o
 
 OBJS_AS_ARGS +=  \
-Light_control.o
+Light_control.o \
+uart.o
 
 C_DEPS +=  \
-Light_control.d
+Light_control.d \
+uart.d
 
 C_DEPS_AS_ARGS +=  \
-Light_control.d
+Light_control.d \
+uart.d
 
 OUTPUT_FILE_PATH +=Light_control.elf
 
@@ -72,6 +77,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

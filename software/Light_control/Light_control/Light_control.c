@@ -14,8 +14,8 @@
 //#define HeadLight_Dual_Beam //use for classic bulb with 2 separate spring
 #define HeadLight_Single_Beam //Used for bi-xenon lo beam work forever, hi control beam solenoid. 
 //#define adc7Use //разобраться с переключением каналов в прерывании - на будущее
-//#define i2c_Comm //if present i2c communication with other device 
-//define i2c_addres 0x40 //my i2c adress
+#define UART_comm //if present communication with other device 
+//#define Comm_addres 0x40 //my  adress
 #define Strobe // if stroboscope present 
 #define Strobe_Bink // if strobe must blink
 #define DayLight // DayLight switch //now not used
@@ -23,8 +23,7 @@
 #define Strobe_TIME 128 //strobe work time after single button press, see Strob_blink define 
 #define debounce_delay //if defined present key debounce delay, but logic work not need it, it can be removed. 
 #define debounce_time 30 //time in MS
-//#define OutPort PORTD
-
+#define DEBUG_LEDS
 
 #ifdef DEBUG_LEDS
 
@@ -49,11 +48,16 @@
 
 #endif
 
+#define UART_RX_BUFFER_SIZE 8
+#define UART_TX_BUFFER_SIZE 8
+
 #include <avr/io.h>
 #include <avr/delay.h>
 #include <avr/interrupt.h>
-#include <util/twi.h>
-#include "i2c_Slave.h"
+#include "uart.h"
+
+
+
 
 //gobal VAR
 unsigned char OutPort; //for output port D (use only 6 end bit, 0 and 1 bit - UART now reserved for future options)
@@ -63,46 +67,10 @@ unsigned char adc6;
 unsigned char AdcKey = 0;
 unsigned char turnOn = 0; 
 unsigned char T1temp = 0;
+char RXBUFF[UART_RX_BUFFER_SIZE];
+char TXBUFF[UART_TX_BUFFER_SIZE];
+uint8_t buffer_index = 0;
 
-
-/*
-
-#ifdef i2c_Comm
-#define i2c_MasterAddress 	0xA2	// Адрес на который будем отзываться
-#define i2c_i_am_slave		1	// Если мы еще и слейвом работаем то 1. А то не услышит!
-#define twi_port PORTC
-#define twi_ddr DDRC
-#define SDA_pin 4
-#define SCL_pin 5
-#define i2cBuffSize 2
-//#define i2c_MaxPageAddrLgth	2	// Максимальная величина адреса страницы. Обычно адрес страницы это один или два байта.
-								// Зависит от типа ЕЕПРОМ или другой микросхемы.
-#define TWI_SUCCESS 0xff
-#define TWI_ADR_BITS     1       // позиция адреса в адресном пакете
-#define TRUE             1
-#define FALSE            0
-
-//char i2c_SlaveAddress = 0xD0;// 0xD0 = ds1307; 0x90 = lm75
-char i2c_Buffer[i2cBuffSize];//TX buffer
-//char i2c_BufferR[i2cBuffSize];//RXbuffer
-char i2c_index = 0;
-char i2c_ByteCount;				// Число байт передаваемых
-//char i2c_PageAddress[i2c_MaxPageAddrLgth];	// Буфер адреса страниц (для режима с sawsarp)
-//char i2c_PageAddrIndex;				// Индекс буфера адреса страниц
-//char i2c_PageAddrCount;				// Число байт в адресе страницы для текущего Slave
-char ptr = 0; //индексная переменная для массива
-
-//буфер для сообщения
-volatile static uint8_t twiBuf[i2cBuffSize];
-
-//сколько байт нужно передать
-volatile static uint8_t twiMsgSize;
-
-//статус модуля
-volatile static uint8_t twiState = TW_NO_INFO;
-
-#endif
-*/
 #ifdef adc7Use
 char adc7,adcstate=0; //For ADC ch6 vector
 #endif
@@ -110,6 +78,7 @@ char adc7,adcstate=0; //For ADC ch6 vector
 //End of globa var
 ISR(TIMER0_OVF_vect) //used for strobe //ok. work
 {
+	//cli();
  #ifndef Strobe_Bink//ok. work
 	 if (Strobe_on)
 	 {
@@ -173,9 +142,11 @@ ISR(TIMER0_OVF_vect) //used for strobe //ok. work
   	{
 	  	Strobe_on = 0;
   	}
+	  sei();
 } 
 ISR(ADC_vect) //buttons 
 {
+	//cli();
 #ifndef adc7Use	
 	adc6 = ADCL;
 	adc6 = ADCH;
@@ -210,11 +181,11 @@ if (adcstate = 1){
 	ADCSRA = (1<<ADSC);
 	}
 #endif	
-
+sei();
 }
-
 ISR(TIMER1_OVF_vect)
 {
+//	cli();
 	#ifdef TurnBlinkTime03s 
 	// Reinitialize Timer1 value /0,3c
 	TCNT1H=0x6D84 >> 8;
@@ -266,10 +237,11 @@ ISR(TIMER1_OVF_vect)
 		}
 		T1temp = 0;
 	}
-	
+sei();	
 }
 ISR(TIMER1_COMPA_vect)//turn signal blink 
 {
+//	cli();
 	
 if (T1temp == 0)
 {
@@ -311,7 +283,36 @@ else if (T1temp == 1)
 	}
 	T1temp = 0;
 }
+sei();
 }
+
+void UartTX(char count,char *arr)
+{
+	for(int counter = 0; counter < count; counter ++)
+	{
+		
+		uart_putc(RXBUFF[counter]);
+		
+	}
+
+}
+void InitUSART()
+{
+	#define baudrate 9600L
+	#define bauddivider (F_CPU/(16*baudrate)-1)
+	#define HI(x) ((x)>>8)
+	#define LO(x) ((x)& 0xFF)
+
+	//Init UART
+	UBRRL = LO(bauddivider);
+	UBRRH = HI(bauddivider);
+	UCSRA = 0;
+	UCSRB = 1<<RXEN|1<<TXEN|0<<RXCIE|0<<TXCIE;
+	UCSRC = 1<<URSEL|1<<UCSZ0|1<<UCSZ1;
+
+
+}
+
 
 int main(void)
 {
@@ -340,8 +341,6 @@ TCNT1H=0xB4;//0,249c
 TCNT1L=0x03;//0,249c
 #endif
 
-Init_Slave_i2c();
-
 //OCR1A = 0x7A11; #####1mhz
 
 
@@ -355,10 +354,11 @@ Init_Slave_i2c();
 	//PINx регистр чтения
 	//PORTx 1=pullup(in)
 	//DDRx 0=in 1=out
+	#ifdef DEBUG_LEDS
 	LED_DDR|= (1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4);     //Led port
 	LED_PORT&= ~(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4); //Led port
 	//конец настройки портов
-
+    #endif
 #ifdef HeadLightControl
 	//adc setup
 	ADMUX = (0<<REFS0|0<<REFS1|1<<ADLAR|0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3);
@@ -383,37 +383,25 @@ OutPort |=0b00000100;
 OutPort &=0b11100111;
 #endif
 
-
-
-
-#ifdef i2c_Comm_master
-{
-	Init_i2c();
-
-	/*подготавливаем сообщение*/
-	i2c_Buffer[0] = (i2c_SlaveAddress &= 0xFE);
-	i2c_Buffer[1] = 0x00;
-	i2c_Buffer[2] = 0b10000101;
-	i2c_Buffer[3] = 0b01000100;
-	i2c_Buffer[4] = 0b00100010;
-
-	/*отправляем его*/
-	TWI_SendData(i2c_Buffer, 6);
-	i2c_Buffer[0] = (i2c_SlaveAddress &= 0xFE);
-	i2c_Buffer[1] = 0x07;
-	i2c_Buffer[2] = 0b10010000;
-	TWI_SendData(i2c_Buffer, 3);
-}
+#ifdef UART_comm
+InitUSART();
 #endif
-#ifdef i2c_Comm
-//{
-//LED_PORT|= 1<<LED4; //set
-Init_Slave_i2c(i2c_MasterAddress);
-	
-//}
-#endif
-_delay_ms(50);
+
+
+//_delay_ms(50);
 sei();//разрешаем прерывания глобально	
+
+
+#ifdef UART_comm
+InitUSART();
+RXBUFF[0] = '0';
+RXBUFF[1] = '1';
+RXBUFF[2] = '2';
+RXBUFF[3] = '3';
+UartTX(4,RXBUFF);
+//uart_putc(RXBUFF[0]);
+
+#endif
     while(1)
     {	
 #ifdef TurnControl

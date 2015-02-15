@@ -87,10 +87,13 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="i2c_Slave.h">
+    <Compile Include="Light_control.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Light_control.c">
+    <Compile Include="uart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="uart.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
