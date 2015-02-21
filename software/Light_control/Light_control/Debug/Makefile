@@ -37,8 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../Light_control.c \
-../uart.c
+../Light_control.c
 
 
 PREPROCESSING_SRCS += 
@@ -48,20 +47,16 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-Light_control.o \
-uart.o
+Light_control.o
 
 OBJS_AS_ARGS +=  \
-Light_control.o \
-uart.o
+Light_control.o
 
 C_DEPS +=  \
-Light_control.d \
-uart.d
+Light_control.d
 
 C_DEPS_AS_ARGS +=  \
-Light_control.d \
-uart.d
+Light_control.d
 
 OUTPUT_FILE_PATH +=Light_control.elf
 
@@ -80,12 +75,10 @@ LINKER_SCRIPT_DEP+=
 
 
 
-
-
 ./%.o: .././%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.8.1
-	$(QUOTE)C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega8 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -Wundef -mmcu=atmega8 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 

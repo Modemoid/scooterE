@@ -4,5 +4,3 @@
 
 Light_control.c
 
-uart.c
-

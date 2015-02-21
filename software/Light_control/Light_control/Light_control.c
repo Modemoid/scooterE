@@ -14,8 +14,15 @@
 //#define HeadLight_Dual_Beam //use for classic bulb with 2 separate spring
 #define HeadLight_Single_Beam //Used for bi-xenon lo beam work forever, hi control beam solenoid. 
 //#define adc7Use //разобраться с переключением каналов в прерывании - на будущее
-#define UART_comm //if present communication with other device 
-//#define Comm_addres 0x40 //my  adress
+#define UART_comm //if present communication with other device  use it for 2TDataBus communication, if U have it. 
+/*
+* 2TDataBus use logic level USART 9600-8-1-none packet has 6 byte: 
+* 1- device adders, 2 - bit reversed device adders
+* 3- data byte, 4- bit reversed data byte
+* 5 and 6 byte must be 0xff
+* data corruption check simple if (!(byte | reversed byte) == 0xff) {data corrupted action}
+*/
+#define UART_Addr 0xCC //my  adress for identification into 2TDataBus
 #define Strobe // if stroboscope present 
 #define Strobe_Bink // if strobe must blink
 #define DayLight // DayLight switch //now not used
@@ -54,7 +61,7 @@
 #include <avr/io.h>
 #include <avr/delay.h>
 #include <avr/interrupt.h>
-#include "uart.h"
+//#include "uart.h"
 
 
 
@@ -69,7 +76,12 @@ unsigned char turnOn = 0;
 unsigned char T1temp = 0;
 char RXBUFF[UART_RX_BUFFER_SIZE];
 char TXBUFF[UART_TX_BUFFER_SIZE];
-uint8_t buffer_index = 0;
+char UART_Temp,UART_Temp1;
+//char RXUART_index = 0;
+char TXUART_index = 0;
+char TXCount = 0;
+//char RXCount = 0;
+
 
 #ifdef adc7Use
 char adc7,adcstate=0; //For ADC ch6 vector
@@ -285,20 +297,25 @@ else if (T1temp == 1)
 }
 sei();
 }
-
-void UartTX(char count,char *arr)
+ISR(USART_UDRE_vect)
 {
-	for(int counter = 0; counter < count; counter ++)
-	{
-		
-		uart_putc(RXBUFF[counter]);
-		
+	if (TXUART_index < TXCount){
+	 TXUART_index++;	
+	 UDR = TXBUFF[TXUART_index];
 	}
-
+	else
+	{
+		UCSRB &=~(1<<UDRIE);//запрещаем перерывание по опустошению буфера
+		TXCount = 0 ;
+		TXUART_index = 0;
+	} 
 }
+
 void InitUSART()
 {
-	#define baudrate 9600L
+	SetLed1
+	//19.2k ubrr=25 err=0.2%
+	#define baudrate 9600UL
 	#define bauddivider (F_CPU/(16*baudrate)-1)
 	#define HI(x) ((x)>>8)
 	#define LO(x) ((x)& 0xFF)
@@ -307,7 +324,7 @@ void InitUSART()
 	UBRRL = LO(bauddivider);
 	UBRRH = HI(bauddivider);
 	UCSRA = 0;
-	UCSRB = 1<<RXEN|1<<TXEN|0<<RXCIE|0<<TXCIE;
+	UCSRB = 1<<RXEN|1<<TXEN|0<<RXCIE|0<<TXCIE|1<<UDRIE;
 	UCSRC = 1<<URSEL|1<<UCSZ0|1<<UCSZ1;
 
 
@@ -383,25 +400,14 @@ OutPort |=0b00000100;
 OutPort &=0b11100111;
 #endif
 
-#ifdef UART_comm
-InitUSART();
-#endif
-
-
 //_delay_ms(50);
 sei();//разрешаем прерывания глобально	
 
 
 #ifdef UART_comm
 InitUSART();
-RXBUFF[0] = '0';
-RXBUFF[1] = '1';
-RXBUFF[2] = '2';
-RXBUFF[3] = '3';
-UartTX(4,RXBUFF);
-//uart_putc(RXBUFF[0]);
-
 #endif
+
     while(1)
     {	
 #ifdef TurnControl
@@ -464,7 +470,6 @@ if (150<adc6)
 }
 
 #endif
-
 #ifdef HeadLight_Single_Beam
 {
 	switch (AdcKey)
@@ -500,7 +505,6 @@ if (150<adc6)
 }
 
 #endif
-
 #ifdef HeadLight_Dual_Beam
 {
 switch (AdcKey)
@@ -538,7 +542,25 @@ switch (AdcKey)
 #ifdef debounce_delay
 _delay_ms(debounce_time);
 #endif	
+#ifdef UART_comm
 
+if (!(UART_Temp == OutPort))
+{
+TXBUFF[0] = UART_Addr;
+TXBUFF[1] = ~UART_Addr;
+UART_Temp = OutPort;
+TXBUFF[2] = UART_Temp;
+UART_Temp1 = ~UART_Temp;
+TXBUFF[3] = UART_Temp1;
+TXBUFF[4] = 0xff;
+TXBUFF[5] = 0xff;
+//TXUART_index = 0;
+TXCount = 5;
+//while ( !( UCSRA & (1<<UDRE)) )
+UDR = TXBUFF[0];
+UCSRB|=(1<<UDRIE);	// Разрешаем прерывание UDRE
+}
+#endif	
 	
 	PORTD = OutPort;	
 	//PORTB = turnOn;	
