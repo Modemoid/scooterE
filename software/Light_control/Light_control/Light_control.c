@@ -552,10 +552,12 @@ UART_Temp = OutPort;
 TXBUFF[2] = UART_Temp;
 UART_Temp1 = ~UART_Temp;
 TXBUFF[3] = UART_Temp1;
-TXBUFF[4] = 0xff;
-TXBUFF[5] = 0xff;
+TXBUFF[4] = 0xb7;
+TXBUFF[5] = 0x48;
+TXBUFF[6] = 0xff;
+TXBUFF[7] = 0xff;
 //TXUART_index = 0;
-TXCount = 5;
+TXCount = 7;
 //while ( !( UCSRA & (1<<UDRE)) )
 UDR = TXBUFF[0];
 UCSRB|=(1<<UDRIE);	// Разрешаем прерывание UDRE
