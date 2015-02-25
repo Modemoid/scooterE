@@ -11,21 +11,23 @@
 //#define URT_EN 1
 //#include "MSCS_lib.h"
 
-float koof;
+#define PP 32
+#define  PTF 0xFF-PP
+
+#define TF 0xFF-(PP*2)+2
 unsigned int time;
 unsigned char igt=0;
 unsigned int delay=0;
 
 
 ISR(INT0_vect){
-	asm("cli");
 
 	TCCR1B=0x03;
 	time=TCNT1;
 	TCNT1=0;
-	delay=time*koof;
+	delay=(time*1000)/5236; 
 	OCR1A=delay;
-	OCR1B=time/2-OCR1A;
+	//OCR1B=time/2-OCR1A;
 	#ifdef URT_EN
 	unsigned char buf[10];
 		 sprintf(buf,"%u - %u\r\n",time,delay);
@@ -34,41 +36,53 @@ ISR(INT0_vect){
 	//if (time<3200) 
 	//igt=64; 
 	//else igt=0;
-	asm("sei");
+
 }
 
 ISR(TIMER1_COMPA_vect){
-	
-	asm("cli");
+
 	PORTB^=(1<<3);
 	// Place your code here
-	PORTD&=~(1<<4);
-	OCR1B=OCR1A+600;
+	//PORTD&=~(1<<4);
+	TCCR2=0x02;
+	 	TCNT2=TF;
+	 	OCR2=PTF;
+	OCR1B=OCR1A+1000;
 	//igt++;
-	asm("sei");
-	
+
 }
 
 ISR(TIMER1_COMPB_vect){
-	
-	asm("cli");
+
 	// Place your code here
-	PORTD|=(1<<4);
+	PORTD&=~(1<<4);
+	TCCR2=0;
 // 	if (igt<=2) {
 // 		OCR1A=OCR1B+600;
 // 	}
 // 	else igt=0;
 
-	asm("sei");
-	
 }
 
 ISR(TIMER1_OVF_vect){
-	PORTD|=(1<<4);
+	PORTD&=~(1<<4);
 	TCCR1B=0x00;
+	TCCR2=0;
 	
 }
 
+ISR (TIMER2_COMP_vect){
+
+PORTD|=(1<<4);	
+	
+}
+
+ISR(TIMER2_OVF_vect){
+	
+PORTD&=~(1<<4);	
+TCNT2=TF;
+
+}
 
 #ifdef URT_EN
 void USART_Transmit(unsigned char data)
@@ -159,6 +173,10 @@ GIFR=0x40;
 // Timer(s)/Counter(s) Interrupt(s) initialization
 TIMSK=0x1C;
 
+// Timer(s)/Counter(s) Interrupt(s) initialization
+TIMSK=(1<<OCIE2) | (1<<TOIE2) | (0<<TICIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<TOIE1) | (0<<TOIE0);
+
+
 // USART initialization
 // Communication Parameters: 8 Data, 1 Stop, No Parity
 // USART Receiver: On
@@ -216,9 +234,9 @@ SPCR=0x00;
 // TWI initialization
 // TWI disabled
 TWCR=0x00;
-	koof=0.19067;
+
 	
-	PORTD|=(1<<4);
+//	PORTD|=(1<<4);
 /*MSCS_init();
 unsigned char transmit_buf[17],resiv_buf[17];
 unsigned int fractional;
@@ -241,15 +259,16 @@ asm("sei");
 		transmit_buf[4]=fractional%100;
 		MSCS_com(transmit_buf,0,resiv_buf);
 		*/
-		if (!( (1 << PB4) & PINB))
-		{
-			PORTD&=~(1<<4);
-			PORTB|=(1<<3);
-			_delay_ms(40);
-			PORTD|=(1<<4);
-			PORTB&=~(1<<3);
-			_delay_ms(100);
-		}
+ if (!( (1 << PB4) & PINB))
+ 		{
+ 	TCCR2=0x02;
+ 	TCNT2=TF;
+ 	OCR2=PTF;		
+ 	_delay_ms(400);
+ 	TCCR2=0x00;
+	 PORTD&=~(1<<4);
+ 	_delay_ms(1000);
+	}
 		//USART_Transmit(USART_Receive());
 		
 

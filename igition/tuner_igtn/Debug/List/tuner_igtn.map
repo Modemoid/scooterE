@@ -25,13 +25,13 @@ _lcd_x                                                                          
 FLASH Allocation [words]
 Function                                                                          Address   Size
 ------------------------------------------------------------------------------------------------
-adc_isr                                                                           0x001BF     17
-timer1_compa_isr                                                                  0x001D0     10
-timer1_compb_isr                                                                  0x001DA      2
-encoder                                                                           0x001DC     59
-encoder_int                                                                       0x00217     70
-MSCS_com_veryfy                                                                   0x0025D     25
-main                                                                              0x00276    576
+adc_isr                                                                           0x001BE     17
+timer1_compa_isr                                                                  0x001CF     10
+timer1_compb_isr                                                                  0x001D9      2
+encoder                                                                           0x001DB     59
+encoder_int                                                                       0x00216     70
+MSCS_com_veryfy                                                                   0x0025C     25
+main                                                                              0x00275    577
 MSCS_delay                                                                        0x004B6      3
 mosi                                                                              0x004B9      8
 clk                                                                               0x004C1      8

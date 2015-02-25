@@ -553,9 +553,9 @@
         Vol=1;
         m4=1;             
        // TCCR1A|=(1<<COM1B0);
-        TCCR1B|=(1<<CS12)|(1<<CS10);
+        TCCR1B|=0x02;;
         OCR1A=0xffff;
-        OCR1B=15625;
+        OCR1B=50;
         Vol_int=OCR1B;
         // Timer(s)/Counter(s) Interrupt(s) initialization
         TIMSK|=(1<<OCIE1A) | (1<<OCIE1B);
@@ -566,10 +566,10 @@
         TIMSK&=~((1<<OCIE1A) | (1<<OCIE1B));
         }          
     }    
-            Vol_int=encoder_int(Vol_int,100);
+            Vol_int=encoder_int(Vol_int,10);
         OCR1B=Vol_int; 
-        OCR1A=Vol_int+4;
-        if (m4)    sprintf(buf,"PulseGen        ON %u OB",15625/Vol_int);
+        OCR1A=Vol_int*2;
+        if (m4)    sprintf(buf,"PulseGen        ON %u",Vol_int);
         else sprintf(buf,"PulseGen        OFF     ");     
         break;
         case 0x3: //15
