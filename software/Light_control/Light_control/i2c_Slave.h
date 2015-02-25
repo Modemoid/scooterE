@@ -52,13 +52,13 @@
 #include <avr/interrupt.h>
 #include <util/twi.h>
 
-#define i2c_MasterAddress 	0xF0	// Адрес на который будем отзываться
+#define i2c_MasterAddress 	0x46	// Адрес на который будем отзываться
 #define i2c_i_am_slave		1	// Если мы еще и слейвом работаем то 1. А то не услышит!
 #define twi_port PORTC
 #define twi_ddr DDRC
 #define SDA_pin 4
 #define SCL_pin 5
-#define i2cBuffSize 4
+
 
 #define TWI_SUCCESS 0xFF
 #define TWI_ERR 0xAA
@@ -68,7 +68,7 @@
 #define TWI_Read 
 #define TWI_Wright
 
-char i2c_Buffer[i2cBuffSize];//TX buffer
+
 uint8_t i2c_ByteCount;				// Число байт передаваемых
 uint8_t i2c_Index = 0; //индексная переменная для массива
 char I2c_DEbug = 0, I2c_DEbug1 = 0, I2c_DEbug2 = 0;
@@ -78,6 +78,7 @@ volatile static uint8_t twiState = TW_NO_INFO;
 
 ISR(TWI_vect)
 {
+	cli();
 	
 //берем статусный код модуля
 uint8_t TWIstatus = TWSR & 0xF8;
@@ -90,10 +91,10 @@ switch (TWIstatus)
 			 
 			SetLed1
 			i2c_Index = 0;
-				i2c_Buffer[0] = 0xAA;
+				i2c_Buffer[0] = 0xA5;
 				i2c_Buffer[1] = 0x55;
-				i2c_Buffer[2] = 0xFF;
-				i2c_Buffer[3] = 0x00;
+				i2c_Buffer[2] = 0xbb;
+				i2c_Buffer[3] = 0x5a;
 				TWDR = i2c_Buffer[i2c_Index++];
 				TWCR|= (0<<TWINT)|(1<<TWEA)|(1<<TWEN)|(1<<TWIE);
 				break;
@@ -101,19 +102,24 @@ switch (TWIstatus)
 			SetLed2
 			if (i2c_Index < i2cBuffSize)
 			{
-			TWDR = i2c_Buffer[i2c_Index++];
+				TWDR = i2c_Buffer[i2c_Index++];
 			TWCR|= (0<<TWINT)|(1<<TWEA)|(1<<TWEN)|(1<<TWIE);
 			//LED_PORT|= 1<<LED4; //на запись
 			}
 			else 
 			{
 				TWCR|= (0<<TWINT);
+				i2c_Index =0;
 			}
 			break;
 	case TW_ST_DATA_NACK: //влетаю сюда - что делать еще не азобрался, хотя вроде все правильно.
-			//SetLed3
+			SetLed3
+			
+			{
+				i2c_Index =0;
+			}
 	case TW_ST_LAST_DATA:
-			//SetLed4
+			SetLed4
 			TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA);
 			i2c_Index = 0;
 			break;
@@ -141,6 +147,7 @@ switch (TWIstatus)
 			twiState = TWIstatus;
 
 	}
+	sei();
 }
 
 void Init_Slave_i2c(void)				// Настройка режима слейва (если нужно)
