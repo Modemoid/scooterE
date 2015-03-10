@@ -257,39 +257,47 @@ ISR(TIMER1_COMPA_vect)//turn signal blink
 	
 if (T1temp == 0)
 {
-	if (turnOn == 0b00000001 )
+	
+	if (turnOn == 0b00000011)//3
 	{
-		OutPort |=0b10000000;
-	}
-	if (turnOn == 0b00000010)
-	{
-		OutPort |=0b01000000;
-	}
-	if (turnOn == 0b00000011)
-	{
+		OutPort &= 0b00111111;
 		OutPort |= 0b11000000;
 	}
-	if (turnOn == 0b00000000 )
+	if (turnOn == 0b00000001 )//1
+	{
+		OutPort &= 0b00111111;
+		OutPort |= 0b10000000;
+	}
+	if (turnOn == 0b00000010)//2
+	{
+		OutPort &= 0b00111111;
+		OutPort |=0b01000000;
+	}
+
+	if (turnOn == 0b00000000)//0
 	{
 		 OutPort &= 0b00111111;
 	}
 T1temp = 1;
 }
-else if (T1temp == 1)
+else if (T1temp == 1)//here!
 {
-	if (turnOn == 0b00000001 )
-	{
-		OutPort &=0b01111111;
-	}
-	if (turnOn == 0b00000010)
-	{
-		OutPort &=0b10111111;
-	}
-	if (turnOn == 0b00000011)
+	if (turnOn == 0b00000011) //3
 	{
 		OutPort &= 0b00111111;
 	}
-	if (turnOn == 0b00000000 )
+	
+	if (turnOn == 0b00000001 ) //1
+	{
+		//OutPort |=0b11000000;
+		OutPort &=0b01111111;
+	}
+	if (turnOn == 0b00000010)//2
+	{
+		OutPort &=0b10111111;
+	}
+
+	if (turnOn == 0b00000000 )//0
 	{
 		OutPort &= 0b00111111;
 	}
@@ -413,13 +421,34 @@ InitUSART();
 #ifdef TurnControl
 		butt = 	PINC&0b00000111;
 		
-#ifdef TurnBlink
+#ifdef TurnBlink//here
 {
 	switch (butt)
 	{
-		case 0b00000110: turnOn |= 0b00000001;break;
-		case 0b00000101: turnOn = 0;break;
-		case 0b00000011: turnOn |= 0b00000010;break;
+		case 0b00000010: //r+l
+		{
+			turnOn&= 0b11111100;
+			turnOn|= 0b00000011;
+			break;
+		}
+		case 0b00000110: //turn right
+		{ 
+			turnOn&= 0b11111100;
+			turnOn|= 0b00000001;
+			break;
+		}
+		case 0b00000101: //off
+		{ 
+			turnOn&= 0b11111100;
+			break;
+		}
+		case 0b00000011: //turn Left
+		{ 
+			turnOn&= 0b11111100;
+			turnOn|= 0b00000010;
+			break;
+		}
+		
 		default: ;
 	}
 }

@@ -200,6 +200,78 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
 	
 }
 
+char LightShow(char decoded[4])
+{
+	lcd_gotoxy(0,0);
+	if (decoded[0]==0xCC)//if into decoded array data from ight controller 
+	{
+	//	lcd_puts("ok data");
+	if decoded[1] 
+		
+	switch (decoded[1])
+	{
+		case 0: 
+		{
+			turnOn |= 0b00000001;break;
+		}
+		default: ;
+	}
+	
+	}
+	else
+	{
+	//	lcd_puts("wrong data");
+	}
+	
+	
+/*
+	lcd_puts("!:");
+	lcd_puts(decoded[0]);
+	lcd_puts(decoded[1]);
+	lcd_puts(decoded[2]);
+	lcd_puts(decoded[3]);
+	*/
+	//itoa(*decoded[0],LCD_Line1,16);
+	//lcd_puts(LCD_Line1);
+	_delay_ms(100);
+	
+} 
+void DebugOut(void)
+{
+			
+			lcd_gotoxy(0,0);
+			lcd_puts(RXBUFF);
+			lcd_puts(" !");
+			//	 lcd_putc('@');
+			//	 itoa(num, buffer, 10);
+			// lcd_gotoxy(0,1);
+			// lcd_putc(0);
+			// lcd_putc(2);
+			//_delay_ms(200);
+			lcd_gotoxy(0,1);
+			// lcd_putc(1);
+			//lcd_putc(3);
+			// lcd_puts(" DataEnd = ");
+			itoa(DataRXBuff[0],LCD_Line1,16);
+			lcd_puts(LCD_Line1);
+			lcd_putc(' ');
+			lcd_gotoxy(3,1);
+			itoa(DataRXBuff[1],LCD_Line1,16);
+			lcd_puts(LCD_Line1);
+			lcd_putc(' ');
+			lcd_gotoxy(6,1);
+			itoa(DataRXBuff[2],LCD_Line1,16);
+			lcd_puts(LCD_Line1);
+			lcd_putc(' ');
+			lcd_gotoxy(9,1);
+			itoa(DataRXBuff[3],LCD_Line1,16);
+			lcd_puts(LCD_Line1);
+			lcd_putc(' ');
+			_delay_ms(50);
+			//SwitchLed3
+			//_delay_ms(500);
+			//SwitchLed1
+}
 int main(void)
 {
 
@@ -227,37 +299,9 @@ for(i=0; i<32; i++)
 		DataEndSearch();
 		DataCheck();
 		lcd_clrscr();
-				lcd_gotoxy(0,0);
-				lcd_puts(RXBUFF);
- 				lcd_puts(" !");
-			//	 lcd_putc('@');
-			//	 itoa(num, buffer, 10);
-			      // lcd_gotoxy(0,1);
-			      // lcd_putc(0);
-			      // lcd_putc(2);
-				  //_delay_ms(200);
-				   lcd_gotoxy(0,1);
-				  // lcd_putc(1);
-				  //lcd_putc(3);
-				  // lcd_puts(" DataEnd = ");
-				  itoa(DataRXBuff[0],LCD_Line1,16);
-				   lcd_puts(LCD_Line1);
-				   lcd_putc(' ');
-				   lcd_gotoxy(3,1);
-				     itoa(DataRXBuff[1],LCD_Line1,16);
-				     lcd_puts(LCD_Line1);
-				     lcd_putc(' ');
-					 lcd_gotoxy(6,1);
-					   itoa(DataRXBuff[2],LCD_Line1,16);
-					   lcd_puts(LCD_Line1);
-					   lcd_putc(' ');
-					   lcd_gotoxy(9,1);
-					     itoa(DataRXBuff[3],LCD_Line1,16);
-					     lcd_puts(LCD_Line1);
-					     lcd_putc(' ');
-				_delay_ms(50);
-				SwitchLed3
-		//_delay_ms(500);
-		//SwitchLed1
+		LightShow(DataRXBuff);
+		
+		//DebugOut();
+
 	}
 }
