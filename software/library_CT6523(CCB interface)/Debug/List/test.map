@@ -1,0 +1,30 @@
+RAM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+lcd_buf                                                                           0x0500      20
+glcd_state                                                                        0x0514      29
+st7920_graphics_on                                                                0x0531       1
+st7920_bits8_15                                                                   0x0532       1
+xt                                                                                0x0533       1
+yt                                                                                0x0534       1
+_seed                                                                             0x0535       4
+
+EEPROM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                                          Register  Size
+------------------------------------------------------------------------------------------------
+
+FLASH Allocation [words]
+Function                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+main                                                                              0x0008D    113
+portsInit                                                                         0x000FE      8
+BusPause_G001                                                                     0x00106      4
+BusOutH2L                                                                         0x0010A     26
+ct6523_set_bit                                                                    0x00124     23
+ct6523_clr_bit                                                                    0x0013B     29
+send_lcd_bufer                                                                    0x00158     22
+ct6523_init                                                                       0x0016E      2

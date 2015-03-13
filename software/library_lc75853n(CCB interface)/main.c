@@ -235,10 +235,13 @@ glcd_outtextxy(0,0,"START!");
         send_lcd_bufer();            
 while (1)
       {
-//lc75853n_key_scan();
-//delay_ms(30);
-//sprintf(str,"%X -%X -%X -%X",lcd_key[0],lcd_key[1],lcd_key[2],lcd_key[3]);
-//glcd_outtextxy(0,0,str);
+lc75853n_key_scan();
+delay_ms(30);
+sprintf(str,"%X -%X -%X -%X",lcd_key[0],lcd_key[1],lcd_key[2],lcd_key[3]);
+glcd_outtextxy(0,0,str);
 for(t=0;t<126;t++) lc75853n_set_bit(t);
+delay_ms(100);
+for(t=0;t<126;t++) lc75853n_clr_bit(t);
+
       }
 }

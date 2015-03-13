@@ -1,9 +1,6 @@
 main DSTACK_USAGE:16 DSTACK_LEVEL:16 FILE:"main.c" LINE:38
-glcd_outtextxy DSTACK_USAGE:5 DSTACK_LEVEL:21 FILE:"C:\cvavr\lib\graphics.lib" LINE:452
-glcd_putchar DSTACK_USAGE:8 DSTACK_LEVEL:29 FILE:"C:\cvavr\lib\graphics.lib" LINE:344
-glcd_block DSTACK_USAGE:21 DSTACK_LEVEL:50 FILE:"C:\cvavr\lib\glcd_st7920.lib" LINE:792
-st7920_wrmasked DSTACK_USAGE:6 DSTACK_LEVEL:56 FILE:"C:\cvavr\lib\glcd_st7920.lib" LINE:738
-st7920_wrbyte DSTACK_USAGE:3 DSTACK_LEVEL:59 FILE:"C:\cvavr\lib\glcd_st7920.lib" LINE:692
-st7920_setxy DSTACK_USAGE:2 DSTACK_LEVEL:61 FILE:"C:\cvavr\lib\glcd_st7920.lib" LINE:429
-st7920_wrcmd DSTACK_USAGE:1 DSTACK_LEVEL:62 FILE:"C:\cvavr\lib\glcd_st7920.lib" LINE:415
-st7920_busy DSTACK_USAGE:1 DSTACK_LEVEL:63 FILE:"C:\cvavr\lib\glcd_st7920.lib" LINE:314
+sprintf DSTACK_USAGE:14 DSTACK_LEVEL:30 FILE:"C:\cvavr\lib\stdio.lib" LINE:1462
+_print DSTACK_USAGE:94 DSTACK_LEVEL:124 FILE:"C:\cvavr\lib\stdio.lib" LINE:1209
+_ftoe DSTACK_USAGE:16 DSTACK_LEVEL:140 FILE:"C:\cvavr\lib\stdio.lib" LINE:1128
+floor DSTACK_USAGE:4 DSTACK_LEVEL:144 FILE:"C:\cvavr\lib\math.lib" LINE:659
+ftrunc DSTACK_USAGE:4 DSTACK_LEVEL:148 FILE:"C:\cvavr\lib\math.lib" LINE:544

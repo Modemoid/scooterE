@@ -1,0 +1,8 @@
+VERSION:3 SOURCE_TIMESTAMP:466D6F0B
+NODE:I LEVEL:0 LINE:24 "C:\cvavr\inc\mega128a.h"
+NODE:I LEVEL:0 LINE:25 "C:\cvavr\inc\delay.h"
+NODE:I LEVEL:0 LINE:26 "C:\cvavr\inc\stdio.h"
+NODE:I LEVEL:0 LINE:27 "C:\Users\skota\git\avr\scooterE\software\library_CT6523(CCB interface)\ct6523.h"
+NODE:I LEVEL:0 LINE:30 "C:\cvavr\inc\glcd.h"
+NODE:I LEVEL:0 LINE:34 "C:\cvavr\inc\font5x7.h"
+NODE:F LEVEL:0 LINE:38 "main(void)"
