@@ -233,11 +233,11 @@ ISR(TIMER1_OVF_vect)
 	{
 		if (turnOn == 0b00000001 )
 		{
-			OutPort &=0b01111111;
+			OutPort &=0b00111111;
 		}
 		if (turnOn == 0b00000010)
 		{
-			OutPort &=0b10111111;
+			OutPort &=0b00111111;
 		}
 		if (turnOn == 0b00000011)
 		{
@@ -321,7 +321,7 @@ ISR(USART_UDRE_vect)
 
 void InitUSART()
 {
-	SetLed1
+	//SetLed1
 	//19.2k ubrr=25 err=0.2%
 	#define baudrate 9600UL
 	#define bauddivider (F_CPU/(16*baudrate)-1)
@@ -506,20 +506,20 @@ if (150<adc6)
 		case 1:
 		{
 
-			OutPort |=0b00011000;
-			OutPort &=0b11111011;			
+			OutPort |=0b00001000;//lo
+			OutPort &=0b11101011;			
 			break;
 		}
 		case 2:
 		{
-			OutPort |=0b00001000;
-			OutPort &=0b11101011;
+			OutPort |=0b00011000;//lo+hi
+			OutPort &=0b11111011;
 
 			break;
 		}
 		case 3:
 		{
-			OutPort |=0b00000100;
+			OutPort |=0b00000100;//day
 			OutPort &=0b11100111;
 			break;
 		}

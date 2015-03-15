@@ -3,19 +3,19 @@ Light_control.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000004e6  00000000  00000000  00000074  2**1
+  0 .text         000004e4  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          0000001a  00800060  00800060  0000055a  2**0
+  1 .bss          0000001a  00800060  00800060  00000558  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  0000055a  2**0
+  2 .comment      00000030  00000000  00000000  00000558  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 00000050  00000000  00000000  0000058a  2**0
+  3 .debug_aranges 00000050  00000000  00000000  00000588  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   000002d2  00000000  00000000  000005da  2**0
+  4 .debug_info   000002d2  00000000  00000000  000005d8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 00000156  00000000  00000000  000008ac  2**0
+  5 .debug_abbrev 00000156  00000000  00000000  000008aa  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   00000242  00000000  00000000  00000a02  2**0
+  6 .debug_line   00000243  00000000  00000000  00000a00  2**0
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_frame  000000f4  00000000  00000000  00000c44  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -70,8 +70,8 @@ Disassembly of section .text:
   3c:	aa 37       	cpi	r26, 0x7A	; 122
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
-  42:	71 d1       	rcall	.+738    	; 0x326 <main>
-  44:	4e c2       	rjmp	.+1180   	; 0x4e2 <_exit>
+  42:	70 d1       	rcall	.+736    	; 0x324 <main>
+  44:	4d c2       	rjmp	.+1178   	; 0x4e0 <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
@@ -343,9 +343,9 @@ ISR(TIMER1_OVF_vect)
  1ba:	81 30       	cpi	r24, 0x01	; 1
  1bc:	31 f4       	brne	.+12     	; 0x1ca <__vector_8+0x80>
 		{
-			OutPort &=0b01111111;
+			OutPort &=0b00111111;
  1be:	90 91 79 00 	lds	r25, 0x0079
- 1c2:	9f 77       	andi	r25, 0x7F	; 127
+ 1c2:	9f 73       	andi	r25, 0x3F	; 63
  1c4:	90 93 79 00 	sts	0x0079, r25
  1c8:	10 c0       	rjmp	.+32     	; 0x1ea <__vector_8+0xa0>
 		}
@@ -353,9 +353,9 @@ ISR(TIMER1_OVF_vect)
  1ca:	82 30       	cpi	r24, 0x02	; 2
  1cc:	31 f4       	brne	.+12     	; 0x1da <__vector_8+0x90>
 		{
-			OutPort &=0b10111111;
+			OutPort &=0b00111111;
  1ce:	80 91 79 00 	lds	r24, 0x0079
- 1d2:	8f 7b       	andi	r24, 0xBF	; 191
+ 1d2:	8f 73       	andi	r24, 0x3F	; 63
  1d4:	80 93 79 00 	sts	0x0079, r24
  1d8:	0f c0       	rjmp	.+30     	; 0x1f8 <__vector_8+0xae>
 		}
@@ -569,445 +569,440 @@ ISR(USART_UDRE_vect)
  310:	18 95       	reti
 
 00000312 <InitUSART>:
-
-void InitUSART()
-{
-	SetLed1
- 312:	c0 9a       	sbi	0x18, 0	; 24
 	#define bauddivider (F_CPU/(16*baudrate)-1)
 	#define HI(x) ((x)>>8)
 	#define LO(x) ((x)& 0xFF)
 
 	//Init UART
 	UBRRL = LO(bauddivider);
- 314:	83 e3       	ldi	r24, 0x33	; 51
- 316:	89 b9       	out	0x09, r24	; 9
+ 312:	83 e3       	ldi	r24, 0x33	; 51
+ 314:	89 b9       	out	0x09, r24	; 9
 	UBRRH = HI(bauddivider);
- 318:	10 bc       	out	0x20, r1	; 32
+ 316:	10 bc       	out	0x20, r1	; 32
 	UCSRA = 0;
- 31a:	1b b8       	out	0x0b, r1	; 11
+ 318:	1b b8       	out	0x0b, r1	; 11
 	UCSRB = 1<<RXEN|1<<TXEN|0<<RXCIE|0<<TXCIE|1<<UDRIE;
- 31c:	88 e3       	ldi	r24, 0x38	; 56
- 31e:	8a b9       	out	0x0a, r24	; 10
+ 31a:	88 e3       	ldi	r24, 0x38	; 56
+ 31c:	8a b9       	out	0x0a, r24	; 10
 	UCSRC = 1<<URSEL|1<<UCSZ0|1<<UCSZ1;
- 320:	86 e8       	ldi	r24, 0x86	; 134
- 322:	80 bd       	out	0x20, r24	; 32
- 324:	08 95       	ret
+ 31e:	86 e8       	ldi	r24, 0x86	; 134
+ 320:	80 bd       	out	0x20, r24	; 32
+ 322:	08 95       	ret
 
-00000326 <main>:
+00000324 <main>:
 {
 	
 unsigned char butt,butt1,swadc6;
 //настройка 8бит таймера 
 // Clock value: 31,250 kHz
 TCCR0=(1<<CS02) | (0<<CS01) | (0<<CS00);// 1 переполнение = 0.08192 сек (8,192 мс)
- 326:	84 e0       	ldi	r24, 0x04	; 4
- 328:	83 bf       	out	0x33, r24	; 51
+ 324:	84 e0       	ldi	r24, 0x04	; 4
+ 326:	83 bf       	out	0x33, r24	; 51
 //TCCR0|=(1<<CS00)|(1<<CS01); // Тактировать с коэффициентом 64. 1 переполнение = 0.016384 сек #####1mhz
 // Timer(s)/Counter(s) Interrupt(s) initialization
 TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (1<<TOIE1) | (1<<TOIE0);
- 32a:	85 e0       	ldi	r24, 0x05	; 5
- 32c:	89 bf       	out	0x39, r24	; 57
+ 328:	85 e0       	ldi	r24, 0x05	; 5
+ 32a:	89 bf       	out	0x39, r24	; 57
 //TIMSK|=(1<<TOIE0)|(1<<OCIE1A); #####1mhz
 //настройка 16 бит таймера 
 // Clock value: 125,000 kHz
 //ovf time = 0,52429c
 TCCR1A|=(0<<COM1A0)|(0<<COM1A1)|(0<<COM1B0)|(0<<COM1B1)|(0<<FOC1A)|(0<<FOC1B)|(0<<WGM11)|(0<<WGM10);
- 32e:	8f b5       	in	r24, 0x2f	; 47
- 330:	8f bd       	out	0x2f, r24	; 47
+ 32c:	8f b5       	in	r24, 0x2f	; 47
+ 32e:	8f bd       	out	0x2f, r24	; 47
 TCCR1B|=(0<<ICNC1)|(0<<ICES1)|(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(1<<CS11)|(1<<CS10);//prescalar = 64
- 332:	8e b5       	in	r24, 0x2e	; 46
- 334:	83 60       	ori	r24, 0x03	; 3
- 336:	8e bd       	out	0x2e, r24	; 46
+ 330:	8e b5       	in	r24, 0x2e	; 46
+ 332:	83 60       	ori	r24, 0x03	; 3
+ 334:	8e bd       	out	0x2e, r24	; 46
 //TCCR1B|=(0<<ICNC1)|(0<<ICES1)|(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(1<<CS11)|(0<<CS10);//prescalar = 8 #####1mhz
 
 #ifdef TurnBlinkTime03s 
 TCNT1H=0x6D;//0.3c
- 338:	8d e6       	ldi	r24, 0x6D	; 109
- 33a:	8d bd       	out	0x2d, r24	; 45
+ 336:	8d e6       	ldi	r24, 0x6D	; 109
+ 338:	8d bd       	out	0x2d, r24	; 45
 TCNT1L=0x84;//0,3c
- 33c:	84 e8       	ldi	r24, 0x84	; 132
- 33e:	8c bd       	out	0x2c, r24	; 44
+ 33a:	84 e8       	ldi	r24, 0x84	; 132
+ 33c:	8c bd       	out	0x2c, r24	; 44
 
 //OCR1A = 0x7A11; #####1mhz
 
 
 	//настройка портов для кнопок
 	DDRC = 0b00110000;  //kb port
- 340:	80 e3       	ldi	r24, 0x30	; 48
- 342:	84 bb       	out	0x14, r24	; 20
+ 33e:	80 e3       	ldi	r24, 0x30	; 48
+ 340:	84 bb       	out	0x14, r24	; 20
 	PORTC = 0b00001111; //kb port
- 344:	8f e0       	ldi	r24, 0x0F	; 15
- 346:	85 bb       	out	0x15, r24	; 21
+ 342:	8f e0       	ldi	r24, 0x0F	; 15
+ 344:	85 bb       	out	0x15, r24	; 21
 
 	//настройка портов 
 	DDRD = 0b11111100;  //kb port
- 348:	8c ef       	ldi	r24, 0xFC	; 252
- 34a:	81 bb       	out	0x11, r24	; 17
+ 346:	8c ef       	ldi	r24, 0xFC	; 252
+ 348:	81 bb       	out	0x11, r24	; 17
 	PORTD = 0b00000000; //kb port
- 34c:	12 ba       	out	0x12, r1	; 18
+ 34a:	12 ba       	out	0x12, r1	; 18
 	//PINx регистр чтения
 	//PORTx 1=pullup(in)
 	//DDRx 0=in 1=out
 	#ifdef DEBUG_LEDS
 	LED_DDR|= (1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4);     //Led port
- 34e:	87 b3       	in	r24, 0x17	; 23
- 350:	8f 60       	ori	r24, 0x0F	; 15
- 352:	87 bb       	out	0x17, r24	; 23
+ 34c:	87 b3       	in	r24, 0x17	; 23
+ 34e:	8f 60       	ori	r24, 0x0F	; 15
+ 350:	87 bb       	out	0x17, r24	; 23
 	LED_PORT&= ~(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4); //Led port
- 354:	c0 98       	cbi	0x18, 0	; 24
+ 352:	c0 98       	cbi	0x18, 0	; 24
 	//конец настройки портов
     #endif
 #ifdef HeadLightControl
 	//adc setup
 	ADMUX = (0<<REFS0|0<<REFS1|1<<ADLAR|0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3);
- 356:	86 e2       	ldi	r24, 0x26	; 38
- 358:	87 b9       	out	0x07, r24	; 7
+ 354:	86 e2       	ldi	r24, 0x26	; 38
+ 356:	87 b9       	out	0x07, r24	; 7
 	//mux0-mux3 выбирать какой ацп 0-0<<MUX0|0<<MUX1|0<<MUX2|0<<MUX3 1-1<<MUX0|0<<MUX1|0<<MUX2|0<<MUX3
 	//0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC6
 	//1<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC7
 #ifndef adc7Use
 
 	ADCSRA = (1<<ADEN|1<<ADSC|1<<ADFR|1<<ADIE|1<<ADPS0|1<<ADPS1|1<<ADPS2);
- 35a:	8f ee       	ldi	r24, 0xEF	; 239
- 35c:	86 b9       	out	0x06, r24	; 6
+ 358:	8f ee       	ldi	r24, 0xEF	; 239
+ 35a:	86 b9       	out	0x06, r24	; 6
 	//adcstate = 0;
 
 #endif
 #ifdef DayLightOnStart
 OutPort |=0b00000100;
 OutPort &=0b11100111;
- 35e:	80 91 79 00 	lds	r24, 0x0079
- 362:	87 7e       	andi	r24, 0xE7	; 231
- 364:	84 60       	ori	r24, 0x04	; 4
- 366:	80 93 79 00 	sts	0x0079, r24
+ 35c:	80 91 79 00 	lds	r24, 0x0079
+ 360:	87 7e       	andi	r24, 0xE7	; 231
+ 362:	84 60       	ori	r24, 0x04	; 4
+ 364:	80 93 79 00 	sts	0x0079, r24
 #endif
 
 //_delay_ms(50);
 sei();//разрешаем прерывания глобально	
- 36a:	78 94       	sei
+ 368:	78 94       	sei
 
 
 #ifdef UART_comm
 InitUSART();
- 36c:	d2 df       	rcall	.-92     	; 0x312 <InitUSART>
+ 36a:	d3 df       	rcall	.-90     	; 0x312 <InitUSART>
 #endif
 #ifdef Strobe //set strob_on if button pressed
 	butt1 = 	PINC&0b00001000;
 	if (!butt1) 
 	{
 		Strobe_on = 1;
- 36e:	cc 24       	eor	r12, r12
- 370:	c3 94       	inc	r12
+ 36c:	cc 24       	eor	r12, r12
+ 36e:	c3 94       	inc	r12
 	AdcKey=1;
 }
 
 if (100>adc6 && adc6>60)
 {
 	AdcKey=2;
- 372:	68 94       	set
- 374:	66 24       	eor	r6, r6
- 376:	61 f8       	bld	r6, 1
+ 370:	68 94       	set
+ 372:	66 24       	eor	r6, r6
+ 374:	61 f8       	bld	r6, 1
 }
 if (150>adc6 && adc6>100)
 {
 	AdcKey=3;
- 378:	0f 2e       	mov	r0, r31
- 37a:	f3 e0       	ldi	r31, 0x03	; 3
- 37c:	7f 2e       	mov	r7, r31
- 37e:	f0 2d       	mov	r31, r0
+ 376:	0f 2e       	mov	r0, r31
+ 378:	f3 e0       	ldi	r31, 0x03	; 3
+ 37a:	7f 2e       	mov	r7, r31
+ 37c:	f0 2d       	mov	r31, r0
 #endif	
 #ifdef UART_comm
 
 if (!(UART_Temp == OutPort))
 {
 TXBUFF[0] = UART_Addr;
- 380:	09 e6       	ldi	r16, 0x69	; 105
- 382:	10 e0       	ldi	r17, 0x00	; 0
- 384:	0f 2e       	mov	r0, r31
- 386:	fc ec       	ldi	r31, 0xCC	; 204
- 388:	df 2e       	mov	r13, r31
- 38a:	f0 2d       	mov	r31, r0
+ 37e:	09 e6       	ldi	r16, 0x69	; 105
+ 380:	10 e0       	ldi	r17, 0x00	; 0
+ 382:	0f 2e       	mov	r0, r31
+ 384:	fc ec       	ldi	r31, 0xCC	; 204
+ 386:	df 2e       	mov	r13, r31
+ 388:	f0 2d       	mov	r31, r0
 TXBUFF[1] = ~UART_Addr;
- 38c:	6a e6       	ldi	r22, 0x6A	; 106
- 38e:	70 e0       	ldi	r23, 0x00	; 0
- 390:	0f 2e       	mov	r0, r31
- 392:	f3 e3       	ldi	r31, 0x33	; 51
- 394:	8f 2e       	mov	r8, r31
- 396:	f0 2d       	mov	r31, r0
+ 38a:	6a e6       	ldi	r22, 0x6A	; 106
+ 38c:	70 e0       	ldi	r23, 0x00	; 0
+ 38e:	0f 2e       	mov	r0, r31
+ 390:	f3 e3       	ldi	r31, 0x33	; 51
+ 392:	8f 2e       	mov	r8, r31
+ 394:	f0 2d       	mov	r31, r0
 UART_Temp = OutPort;
 TXBUFF[2] = UART_Temp;
- 398:	4b e6       	ldi	r20, 0x6B	; 107
- 39a:	50 e0       	ldi	r21, 0x00	; 0
+ 396:	4b e6       	ldi	r20, 0x6B	; 107
+ 398:	50 e0       	ldi	r21, 0x00	; 0
 UART_Temp1 = ~UART_Temp;
 TXBUFF[3] = UART_Temp1;
- 39c:	2c e6       	ldi	r18, 0x6C	; 108
- 39e:	30 e0       	ldi	r19, 0x00	; 0
+ 39a:	2c e6       	ldi	r18, 0x6C	; 108
+ 39c:	30 e0       	ldi	r19, 0x00	; 0
 TXBUFF[4] = 0xb7;
- 3a0:	0f 2e       	mov	r0, r31
- 3a2:	fd e6       	ldi	r31, 0x6D	; 109
- 3a4:	2f 2e       	mov	r2, r31
- 3a6:	f0 e0       	ldi	r31, 0x00	; 0
- 3a8:	3f 2e       	mov	r3, r31
- 3aa:	f0 2d       	mov	r31, r0
- 3ac:	0f 2e       	mov	r0, r31
- 3ae:	f7 eb       	ldi	r31, 0xB7	; 183
- 3b0:	9f 2e       	mov	r9, r31
- 3b2:	f0 2d       	mov	r31, r0
+ 39e:	0f 2e       	mov	r0, r31
+ 3a0:	fd e6       	ldi	r31, 0x6D	; 109
+ 3a2:	2f 2e       	mov	r2, r31
+ 3a4:	f0 e0       	ldi	r31, 0x00	; 0
+ 3a6:	3f 2e       	mov	r3, r31
+ 3a8:	f0 2d       	mov	r31, r0
+ 3aa:	0f 2e       	mov	r0, r31
+ 3ac:	f7 eb       	ldi	r31, 0xB7	; 183
+ 3ae:	9f 2e       	mov	r9, r31
+ 3b0:	f0 2d       	mov	r31, r0
 TXBUFF[5] = 0x48;
- 3b4:	ce e6       	ldi	r28, 0x6E	; 110
- 3b6:	d0 e0       	ldi	r29, 0x00	; 0
- 3b8:	0f 2e       	mov	r0, r31
- 3ba:	f8 e4       	ldi	r31, 0x48	; 72
- 3bc:	af 2e       	mov	r10, r31
- 3be:	f0 2d       	mov	r31, r0
+ 3b2:	ce e6       	ldi	r28, 0x6E	; 110
+ 3b4:	d0 e0       	ldi	r29, 0x00	; 0
+ 3b6:	0f 2e       	mov	r0, r31
+ 3b8:	f8 e4       	ldi	r31, 0x48	; 72
+ 3ba:	af 2e       	mov	r10, r31
+ 3bc:	f0 2d       	mov	r31, r0
 TXBUFF[6] = 0xff;
- 3c0:	af e6       	ldi	r26, 0x6F	; 111
- 3c2:	b0 e0       	ldi	r27, 0x00	; 0
- 3c4:	ee 24       	eor	r14, r14
- 3c6:	ea 94       	dec	r14
+ 3be:	af e6       	ldi	r26, 0x6F	; 111
+ 3c0:	b0 e0       	ldi	r27, 0x00	; 0
+ 3c2:	ee 24       	eor	r14, r14
+ 3c4:	ea 94       	dec	r14
 TXBUFF[7] = 0xff;
 //TXUART_index = 0;
 TXCount = 7;
- 3c8:	0f 2e       	mov	r0, r31
- 3ca:	f7 e0       	ldi	r31, 0x07	; 7
- 3cc:	bf 2e       	mov	r11, r31
- 3ce:	f0 2d       	mov	r31, r0
+ 3c6:	0f 2e       	mov	r0, r31
+ 3c8:	f7 e0       	ldi	r31, 0x07	; 7
+ 3ca:	bf 2e       	mov	r11, r31
+ 3cc:	f0 2d       	mov	r31, r0
 #endif
 
     while(1)
     {	
 #ifdef TurnControl
 		butt = 	PINC&0b00000111;
- 3d0:	83 b3       	in	r24, 0x13	; 19
- 3d2:	87 70       	andi	r24, 0x07	; 7
+ 3ce:	83 b3       	in	r24, 0x13	; 19
+ 3d0:	87 70       	andi	r24, 0x07	; 7
 		
 #ifdef TurnBlink//here
 {
 	switch (butt)
- 3d4:	83 30       	cpi	r24, 0x03	; 3
- 3d6:	e1 f0       	breq	.+56     	; 0x410 <main+0xea>
- 3d8:	18 f4       	brcc	.+6      	; 0x3e0 <main+0xba>
- 3da:	82 30       	cpi	r24, 0x02	; 2
- 3dc:	31 f0       	breq	.+12     	; 0x3ea <main+0xc4>
- 3de:	1e c0       	rjmp	.+60     	; 0x41c <main+0xf6>
- 3e0:	85 30       	cpi	r24, 0x05	; 5
- 3e2:	81 f0       	breq	.+32     	; 0x404 <main+0xde>
- 3e4:	86 30       	cpi	r24, 0x06	; 6
- 3e6:	39 f0       	breq	.+14     	; 0x3f6 <main+0xd0>
- 3e8:	19 c0       	rjmp	.+50     	; 0x41c <main+0xf6>
+ 3d2:	83 30       	cpi	r24, 0x03	; 3
+ 3d4:	e1 f0       	breq	.+56     	; 0x40e <main+0xea>
+ 3d6:	18 f4       	brcc	.+6      	; 0x3de <main+0xba>
+ 3d8:	82 30       	cpi	r24, 0x02	; 2
+ 3da:	31 f0       	breq	.+12     	; 0x3e8 <main+0xc4>
+ 3dc:	1e c0       	rjmp	.+60     	; 0x41a <main+0xf6>
+ 3de:	85 30       	cpi	r24, 0x05	; 5
+ 3e0:	81 f0       	breq	.+32     	; 0x402 <main+0xde>
+ 3e2:	86 30       	cpi	r24, 0x06	; 6
+ 3e4:	39 f0       	breq	.+14     	; 0x3f4 <main+0xd0>
+ 3e6:	19 c0       	rjmp	.+50     	; 0x41a <main+0xf6>
 	{
 		case 0b00000010: //r+l
 		{
 			turnOn&= 0b11111100;
- 3ea:	80 91 63 00 	lds	r24, 0x0063
+ 3e8:	80 91 63 00 	lds	r24, 0x0063
 			turnOn|= 0b00000011;
- 3ee:	83 60       	ori	r24, 0x03	; 3
- 3f0:	80 93 63 00 	sts	0x0063, r24
+ 3ec:	83 60       	ori	r24, 0x03	; 3
+ 3ee:	80 93 63 00 	sts	0x0063, r24
 			break;
- 3f4:	13 c0       	rjmp	.+38     	; 0x41c <main+0xf6>
+ 3f2:	13 c0       	rjmp	.+38     	; 0x41a <main+0xf6>
 		}
 		case 0b00000110: //turn right
 		{ 
 			turnOn&= 0b11111100;
- 3f6:	80 91 63 00 	lds	r24, 0x0063
- 3fa:	8c 7f       	andi	r24, 0xFC	; 252
+ 3f4:	80 91 63 00 	lds	r24, 0x0063
+ 3f8:	8c 7f       	andi	r24, 0xFC	; 252
 			turnOn|= 0b00000001;
- 3fc:	81 60       	ori	r24, 0x01	; 1
- 3fe:	80 93 63 00 	sts	0x0063, r24
+ 3fa:	81 60       	ori	r24, 0x01	; 1
+ 3fc:	80 93 63 00 	sts	0x0063, r24
 			break;
- 402:	0c c0       	rjmp	.+24     	; 0x41c <main+0xf6>
+ 400:	0c c0       	rjmp	.+24     	; 0x41a <main+0xf6>
 		}
 		case 0b00000101: //off
 		{ 
 			turnOn&= 0b11111100;
- 404:	80 91 63 00 	lds	r24, 0x0063
- 408:	8c 7f       	andi	r24, 0xFC	; 252
- 40a:	80 93 63 00 	sts	0x0063, r24
+ 402:	80 91 63 00 	lds	r24, 0x0063
+ 406:	8c 7f       	andi	r24, 0xFC	; 252
+ 408:	80 93 63 00 	sts	0x0063, r24
 			break;
- 40e:	06 c0       	rjmp	.+12     	; 0x41c <main+0xf6>
+ 40c:	06 c0       	rjmp	.+12     	; 0x41a <main+0xf6>
 		}
 		case 0b00000011: //turn Left
 		{ 
 			turnOn&= 0b11111100;
- 410:	80 91 63 00 	lds	r24, 0x0063
- 414:	8c 7f       	andi	r24, 0xFC	; 252
+ 40e:	80 91 63 00 	lds	r24, 0x0063
+ 412:	8c 7f       	andi	r24, 0xFC	; 252
 			turnOn|= 0b00000010;
- 416:	82 60       	ori	r24, 0x02	; 2
- 418:	80 93 63 00 	sts	0x0063, r24
+ 414:	82 60       	ori	r24, 0x02	; 2
+ 416:	80 93 63 00 	sts	0x0063, r24
 }
 #endif*/
 #endif
 #ifdef Strobe //set strob_on if button pressed
 	butt1 = 	PINC&0b00001000;
 	if (!butt1) 
- 41c:	9b 9b       	sbis	0x13, 3	; 19
+ 41a:	9b 9b       	sbis	0x13, 3	; 19
 	{
 		Strobe_on = 1;
- 41e:	c0 92 65 00 	sts	0x0065, r12
+ 41c:	c0 92 65 00 	sts	0x0065, r12
 {
 	
 }
 #endif
 #ifdef HeadLightControl
 if (30>adc6 && adc6>5 )
- 422:	80 91 68 00 	lds	r24, 0x0068
- 426:	9a ef       	ldi	r25, 0xFA	; 250
- 428:	98 0f       	add	r25, r24
- 42a:	98 31       	cpi	r25, 0x18	; 24
- 42c:	10 f4       	brcc	.+4      	; 0x432 <main+0x10c>
+ 420:	80 91 68 00 	lds	r24, 0x0068
+ 424:	9a ef       	ldi	r25, 0xFA	; 250
+ 426:	98 0f       	add	r25, r24
+ 428:	98 31       	cpi	r25, 0x18	; 24
+ 42a:	10 f4       	brcc	.+4      	; 0x430 <main+0x10c>
 {
 	AdcKey=1;
- 42e:	c0 92 64 00 	sts	0x0064, r12
+ 42c:	c0 92 64 00 	sts	0x0064, r12
 }
 
 if (100>adc6 && adc6>60)
- 432:	93 ec       	ldi	r25, 0xC3	; 195
- 434:	98 0f       	add	r25, r24
- 436:	97 32       	cpi	r25, 0x27	; 39
- 438:	10 f4       	brcc	.+4      	; 0x43e <main+0x118>
+ 430:	93 ec       	ldi	r25, 0xC3	; 195
+ 432:	98 0f       	add	r25, r24
+ 434:	97 32       	cpi	r25, 0x27	; 39
+ 436:	10 f4       	brcc	.+4      	; 0x43c <main+0x118>
 {
 	AdcKey=2;
- 43a:	60 92 64 00 	sts	0x0064, r6
+ 438:	60 92 64 00 	sts	0x0064, r6
 }
 if (150>adc6 && adc6>100)
- 43e:	9b e9       	ldi	r25, 0x9B	; 155
- 440:	98 0f       	add	r25, r24
- 442:	91 33       	cpi	r25, 0x31	; 49
- 444:	10 f4       	brcc	.+4      	; 0x44a <main+0x124>
+ 43c:	9b e9       	ldi	r25, 0x9B	; 155
+ 43e:	98 0f       	add	r25, r24
+ 440:	91 33       	cpi	r25, 0x31	; 49
+ 442:	10 f4       	brcc	.+4      	; 0x448 <main+0x124>
 {
 	AdcKey=3;
- 446:	70 92 64 00 	sts	0x0064, r7
+ 444:	70 92 64 00 	sts	0x0064, r7
 }
 if (150<adc6)
- 44a:	87 39       	cpi	r24, 0x97	; 151
- 44c:	18 f0       	brcs	.+6      	; 0x454 <main+0x12e>
+ 448:	87 39       	cpi	r24, 0x97	; 151
+ 44a:	18 f0       	brcs	.+6      	; 0x452 <main+0x12e>
 {
 	AdcKey=0;
- 44e:	10 92 64 00 	sts	0x0064, r1
- 452:	1f c0       	rjmp	.+62     	; 0x492 <__stack+0x33>
+ 44c:	10 92 64 00 	sts	0x0064, r1
+ 450:	1f c0       	rjmp	.+62     	; 0x490 <__stack+0x31>
 }
 
 #endif
 #ifdef HeadLight_Single_Beam
 {
 	switch (AdcKey)
- 454:	80 91 64 00 	lds	r24, 0x0064
- 458:	82 30       	cpi	r24, 0x02	; 2
- 45a:	61 f0       	breq	.+24     	; 0x474 <__stack+0x15>
- 45c:	83 30       	cpi	r24, 0x03	; 3
- 45e:	91 f0       	breq	.+36     	; 0x484 <__stack+0x25>
- 460:	81 30       	cpi	r24, 0x01	; 1
- 462:	b9 f4       	brne	.+46     	; 0x492 <__stack+0x33>
+ 452:	80 91 64 00 	lds	r24, 0x0064
+ 456:	82 30       	cpi	r24, 0x02	; 2
+ 458:	61 f0       	breq	.+24     	; 0x472 <__stack+0x13>
+ 45a:	83 30       	cpi	r24, 0x03	; 3
+ 45c:	91 f0       	breq	.+36     	; 0x482 <__stack+0x23>
+ 45e:	81 30       	cpi	r24, 0x01	; 1
+ 460:	b9 f4       	brne	.+46     	; 0x490 <__stack+0x31>
 	{
 		case 1:
 		{
 
-			OutPort |=0b00011000;
-			OutPort &=0b11111011;			
- 464:	f0 90 79 00 	lds	r15, 0x0079
- 468:	8f 2d       	mov	r24, r15
- 46a:	8b 7f       	andi	r24, 0xFB	; 251
- 46c:	88 61       	ori	r24, 0x18	; 24
- 46e:	80 93 79 00 	sts	0x0079, r24
+			OutPort |=0b00001000;//lo
+			OutPort &=0b11101011;			
+ 462:	f0 90 79 00 	lds	r15, 0x0079
+ 466:	8f 2d       	mov	r24, r15
+ 468:	8b 7e       	andi	r24, 0xEB	; 235
+ 46a:	88 60       	ori	r24, 0x08	; 8
+ 46c:	80 93 79 00 	sts	0x0079, r24
 			break;
- 472:	0f c0       	rjmp	.+30     	; 0x492 <__stack+0x33>
+ 470:	0f c0       	rjmp	.+30     	; 0x490 <__stack+0x31>
 		}
 		case 2:
 		{
-			OutPort |=0b00001000;
-			OutPort &=0b11101011;
- 474:	f0 90 79 00 	lds	r15, 0x0079
- 478:	9f 2d       	mov	r25, r15
- 47a:	9b 7e       	andi	r25, 0xEB	; 235
- 47c:	98 60       	ori	r25, 0x08	; 8
- 47e:	90 93 79 00 	sts	0x0079, r25
+			OutPort |=0b00011000;//lo+hi
+			OutPort &=0b11111011;
+ 472:	f0 90 79 00 	lds	r15, 0x0079
+ 476:	9f 2d       	mov	r25, r15
+ 478:	9b 7f       	andi	r25, 0xFB	; 251
+ 47a:	98 61       	ori	r25, 0x18	; 24
+ 47c:	90 93 79 00 	sts	0x0079, r25
 
 			break;
- 482:	07 c0       	rjmp	.+14     	; 0x492 <__stack+0x33>
+ 480:	07 c0       	rjmp	.+14     	; 0x490 <__stack+0x31>
 		}
 		case 3:
 		{
-			OutPort |=0b00000100;
+			OutPort |=0b00000100;//day
 			OutPort &=0b11100111;
- 484:	f0 90 79 00 	lds	r15, 0x0079
- 488:	ef 2d       	mov	r30, r15
- 48a:	e7 7e       	andi	r30, 0xE7	; 231
- 48c:	e4 60       	ori	r30, 0x04	; 4
- 48e:	e0 93 79 00 	sts	0x0079, r30
+ 482:	f0 90 79 00 	lds	r15, 0x0079
+ 486:	ef 2d       	mov	r30, r15
+ 488:	e7 7e       	andi	r30, 0xE7	; 231
+ 48a:	e4 60       	ori	r30, 0x04	; 4
+ 48c:	e0 93 79 00 	sts	0x0079, r30
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 492:	8f e5       	ldi	r24, 0x5F	; 95
- 494:	9a ee       	ldi	r25, 0xEA	; 234
- 496:	01 97       	sbiw	r24, 0x01	; 1
- 498:	f1 f7       	brne	.-4      	; 0x496 <__stack+0x37>
- 49a:	00 c0       	rjmp	.+0      	; 0x49c <__stack+0x3d>
- 49c:	00 00       	nop
+ 490:	8f e5       	ldi	r24, 0x5F	; 95
+ 492:	9a ee       	ldi	r25, 0xEA	; 234
+ 494:	01 97       	sbiw	r24, 0x01	; 1
+ 496:	f1 f7       	brne	.-4      	; 0x494 <__stack+0x35>
+ 498:	00 c0       	rjmp	.+0      	; 0x49a <__stack+0x3b>
+ 49a:	00 00       	nop
 #ifdef debounce_delay
 _delay_ms(debounce_time);
 #endif	
 #ifdef UART_comm
 
 if (!(UART_Temp == OutPort))
- 49e:	f0 90 79 00 	lds	r15, 0x0079
- 4a2:	50 90 66 00 	lds	r5, 0x0066
- 4a6:	5f 14       	cp	r5, r15
- 4a8:	c1 f0       	breq	.+48     	; 0x4da <__stack+0x7b>
+ 49c:	f0 90 79 00 	lds	r15, 0x0079
+ 4a0:	50 90 66 00 	lds	r5, 0x0066
+ 4a4:	5f 14       	cp	r5, r15
+ 4a6:	c1 f0       	breq	.+48     	; 0x4d8 <__stack+0x79>
 {
 TXBUFF[0] = UART_Addr;
- 4aa:	f8 01       	movw	r30, r16
- 4ac:	d0 82       	st	Z, r13
+ 4a8:	f8 01       	movw	r30, r16
+ 4aa:	d0 82       	st	Z, r13
 TXBUFF[1] = ~UART_Addr;
- 4ae:	fb 01       	movw	r30, r22
- 4b0:	80 82       	st	Z, r8
+ 4ac:	fb 01       	movw	r30, r22
+ 4ae:	80 82       	st	Z, r8
 UART_Temp = OutPort;
- 4b2:	f0 92 66 00 	sts	0x0066, r15
+ 4b0:	f0 92 66 00 	sts	0x0066, r15
 TXBUFF[2] = UART_Temp;
- 4b6:	fa 01       	movw	r30, r20
- 4b8:	f0 82       	st	Z, r15
+ 4b4:	fa 01       	movw	r30, r20
+ 4b6:	f0 82       	st	Z, r15
 UART_Temp1 = ~UART_Temp;
- 4ba:	f0 94       	com	r15
- 4bc:	f0 92 67 00 	sts	0x0067, r15
+ 4b8:	f0 94       	com	r15
+ 4ba:	f0 92 67 00 	sts	0x0067, r15
 TXBUFF[3] = UART_Temp1;
- 4c0:	f9 01       	movw	r30, r18
- 4c2:	f0 82       	st	Z, r15
+ 4be:	f9 01       	movw	r30, r18
+ 4c0:	f0 82       	st	Z, r15
 TXBUFF[4] = 0xb7;
- 4c4:	f1 01       	movw	r30, r2
- 4c6:	90 82       	st	Z, r9
+ 4c2:	f1 01       	movw	r30, r2
+ 4c4:	90 82       	st	Z, r9
 TXBUFF[5] = 0x48;
- 4c8:	a8 82       	st	Y, r10
+ 4c6:	a8 82       	st	Y, r10
 TXBUFF[6] = 0xff;
- 4ca:	ec 92       	st	X, r14
+ 4c8:	ec 92       	st	X, r14
 TXBUFF[7] = 0xff;
- 4cc:	e0 e7       	ldi	r30, 0x70	; 112
- 4ce:	f0 e0       	ldi	r31, 0x00	; 0
- 4d0:	e0 82       	st	Z, r14
+ 4ca:	e0 e7       	ldi	r30, 0x70	; 112
+ 4cc:	f0 e0       	ldi	r31, 0x00	; 0
+ 4ce:	e0 82       	st	Z, r14
 //TXUART_index = 0;
 TXCount = 7;
- 4d2:	b0 92 60 00 	sts	0x0060, r11
+ 4d0:	b0 92 60 00 	sts	0x0060, r11
 //while ( !( UCSRA & (1<<UDRE)) )
 UDR = TXBUFF[0];
- 4d6:	dc b8       	out	0x0c, r13	; 12
+ 4d4:	dc b8       	out	0x0c, r13	; 12
 UCSRB|=(1<<UDRIE);	// Разрешаем прерывание UDRE
- 4d8:	55 9a       	sbi	0x0a, 5	; 10
+ 4d6:	55 9a       	sbi	0x0a, 5	; 10
 }
 #endif	
 	
 	PORTD = OutPort;	
- 4da:	f0 90 79 00 	lds	r15, 0x0079
- 4de:	f2 ba       	out	0x12, r15	; 18
+ 4d8:	f0 90 79 00 	lds	r15, 0x0079
+ 4dc:	f2 ba       	out	0x12, r15	; 18
 	//PORTB = turnOn;	
 		
         //TODO:: Please write your application code 
     }
- 4e0:	77 cf       	rjmp	.-274    	; 0x3d0 <main+0xaa>
+ 4de:	77 cf       	rjmp	.-274    	; 0x3ce <main+0xaa>
 
-000004e2 <_exit>:
- 4e2:	f8 94       	cli
+000004e0 <_exit>:
+ 4e0:	f8 94       	cli
 
-000004e4 <__stop_program>:
- 4e4:	ff cf       	rjmp	.-2      	; 0x4e4 <__stop_program>
+000004e2 <__stop_program>:
+ 4e2:	ff cf       	rjmp	.-2      	; 0x4e2 <__stop_program>
