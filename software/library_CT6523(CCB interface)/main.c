@@ -216,7 +216,7 @@ TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 // DB6 - PORTB Bit 6
 // DB7 - PORTB Bit 7
 //
-/*
+//*
 // Specify the current font for displaying text
 glcd_init_data.font=font5x7;
 // No function is used for reading
@@ -232,22 +232,21 @@ if (lcd_buf[0])
 glcd_outtextxy(0,0,"START!");
 //           */ 
         ct6523_init(); 
-        send_lcd_bufer();           
+         send_lcd_bufer();          
 
 while (1)
       {              
-
-        delay_ms(1000);
-        
 /*lc75853n_key_scan();
 delay_ms(30);
 sprintf(str,"%X -%X -%X -%X",lcd_key[0],lcd_key[1],lcd_key[2],lcd_key[3]);
 glcd_outtextxy(0,0,str);
-*/
+// */
 for(t=0;t<156;t++){ ct6523_set_bit(t);
-delay_ms(100);     }
-for(t=0;t<156;t++) {ct6523_clr_bit(t);
-delay_ms(100);}
-//*/
+sprintf(str,"%3u",t);
+glcd_outtextxy(0,0,str);
+delay_ms(500);
+ct6523_clr_bit(t);
+}
+// */
       }
 }

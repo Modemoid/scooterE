@@ -9,7 +9,7 @@
 #include <avr/delay.h>
 #endif
 
-unsigned char lcd_buf[20];
+unsigned char lcd_buf[20];//={0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0b11110001};
 
 void portsInit (void)
 {
@@ -148,7 +148,7 @@ lcd_buf[i]|=(1<<d);
 _bit-=152;
 i=_bit/8;
 d=_bit%8;
-lcd_buf[19]|=(1<<(d+4))|0b0001;
+lcd_buf[19]|=(1<<(d+4))|0b1001;
 
     
 }
@@ -166,7 +166,7 @@ lcd_buf[i]&=~(1<<d);
 _bit-=152;
 i=_bit/8;
 d=_bit%8;
-lcd_buf[19]&=(~(1<<(d+4)))|0b0001;
+lcd_buf[19]&=(~(1<<(d+4)))|0b1001;
 
     
 }

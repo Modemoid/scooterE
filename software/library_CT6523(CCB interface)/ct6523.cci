@@ -1,4 +1,4 @@
-VERSION:3 SOURCE_TIMESTAMP:466D6F61
+VERSION:3 SOURCE_TIMESTAMP:466E7148
 NODE:I LEVEL:0 LINE:1 "C:\Users\skota\git\avr\scooterE\software\library_CT6523(CCB interface)\ct6523.h"
 NODE:I LEVEL:0 LINE:4 "C:\cvavr\inc\delay.h"
 NODE:M LEVEL:0 LINE:5 "_delay_ms"

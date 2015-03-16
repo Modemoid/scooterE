@@ -33,7 +33,7 @@
 ;#include <avr/delay.h>
 ;#endif
 ;
-;unsigned char lcd_buf[20];
+;unsigned char lcd_buf[20];//={0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff, ...
 ;
 ;void portsInit (void)
 ; 0001 000F {
@@ -332,7 +332,7 @@
 ;PCODE: $000000A0 VOL: 0
 ;PCODE: $000000A1 VOL: 0
 ;PCODE: $000000A2 VOL: 0
-; 0001 0097 lcd_buf[19]|=(1<<(d+4))|0b1001;
+; 0001 0097 lcd_buf[19]|=(1<<(d+4))|0b1101;
 ;PCODE: $000000A3 VOL: 0
 ;PCODE: $000000A4 VOL: 0
 ;PCODE: $000000A5 VOL: 0
@@ -412,7 +412,7 @@
 ;PCODE: $000000DA VOL: 0
 ;PCODE: $000000DB VOL: 0
 ;PCODE: $000000DC VOL: 0
-; 0001 00A9 lcd_buf[19]&=(~(1<<(d+4)))|0b1001;
+; 0001 00A9 lcd_buf[19]&=(~(1<<(d+4)))|0b1101;
 ;PCODE: $000000DD VOL: 0
 ;PCODE: $000000DE VOL: 0
 ;PCODE: $000000DF VOL: 0

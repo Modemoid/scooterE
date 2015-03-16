@@ -361,61 +361,56 @@
 ; 0000 00D8 // DB6 - PORTB Bit 6
 ; 0000 00D9 // DB7 - PORTB Bit 7
 ; 0000 00DA //
-; 0000 00DB /*
+; 0000 00DB //*
 ; 0000 00DC // Specify the current font for displaying text
 ; 0000 00DD glcd_init_data.font=font5x7;
+;PCODE: $00000081 VOL: 0
+;PCODE: $00000082 VOL: 0
 ; 0000 00DE // No function is used for reading
 ; 0000 00DF // image data from external memory
 ; 0000 00E0 glcd_init_data.readxmem=NULL;
+;PCODE: $00000083 VOL: 0
+;PCODE: $00000084 VOL: 0
 ; 0000 00E1 // No function is used for writing
 ; 0000 00E2 // image data to external memory
 ; 0000 00E3 glcd_init_data.writexmem=NULL;
+;PCODE: $00000085 VOL: 0
+;PCODE: $00000086 VOL: 0
 ; 0000 00E4 
 ; 0000 00E5 glcd_init(&glcd_init_data);
-; 0000 00E6 
-; 0000 00E7 if (lcd_buf[0])
-; 0000 00E8 glcd_outtextxy(0,0,"START!");
-; 0000 00E9 //           */
-; 0000 00EA         ct6523_init();
-;PCODE: $00000081 VOL: 0
-; 0000 00EB         send_lcd_bufer();
-;PCODE: $00000082 VOL: 0
-; 0000 00EC 
-; 0000 00ED while (1)
-;PCODE: $00000083 VOL: 0
-; 0000 00EE       {
-; 0000 00EF 
-; 0000 00F0         delay_ms(1000);
-;PCODE: $00000084 VOL: 0
-;PCODE: $00000085 VOL: 0
-; 0000 00F1 
-; 0000 00F2 /*lc75853n_key_scan();
-; 0000 00F3 delay_ms(30);
-; 0000 00F4 sprintf(str,"%X -%X -%X -%X",lcd_key[0],lcd_key[1],lcd_key[2],lcd_key[3]);
-; 0000 00F5 glcd_outtextxy(0,0,str);
-; 0000 00F6 */
-; 0000 00F7 for(t=0;t<156;t++){ ct6523_set_bit(t);
-;PCODE: $00000086 VOL: 0
 ;PCODE: $00000087 VOL: 0
 ;PCODE: $00000088 VOL: 0
+; 0000 00E6 
+; 0000 00E7 if (lcd_buf[0])
 ;PCODE: $00000089 VOL: 0
 ;PCODE: $0000008A VOL: 0
 ;PCODE: $0000008B VOL: 0
+; 0000 00E8 glcd_outtextxy(0,0,"START!");
 ;PCODE: $0000008C VOL: 0
 ;PCODE: $0000008D VOL: 0
 ;PCODE: $0000008E VOL: 0
 ;PCODE: $0000008F VOL: 0
 ;PCODE: $00000090 VOL: 0
-; 0000 00F8 delay_ms(100);     }
 ;PCODE: $00000091 VOL: 0
 ;PCODE: $00000092 VOL: 0
+; 0000 00E9 //           */
+; 0000 00EA         ct6523_init();
 ;PCODE: $00000093 VOL: 0
 ;PCODE: $00000094 VOL: 0
+; 0000 00EB          send_lcd_bufer();
 ;PCODE: $00000095 VOL: 0
+; 0000 00EC 
+; 0000 00ED while (1)
 ;PCODE: $00000096 VOL: 0
+; 0000 00EE       {
+; 0000 00EF /*lc75853n_key_scan();
+; 0000 00F0 delay_ms(30);
+; 0000 00F1 sprintf(str,"%X -%X -%X -%X",lcd_key[0],lcd_key[1],lcd_key[2],lcd_key[3]);
+; 0000 00F2 glcd_outtextxy(0,0,str);
+; 0000 00F3 // */
+; 0000 00F4 for(t=0;t<156;t++){ ct6523_set_bit(t);
 ;PCODE: $00000097 VOL: 0
 ;PCODE: $00000098 VOL: 0
-; 0000 00F9 for(t=0;t<156;t++) {ct6523_clr_bit(t);
 ;PCODE: $00000099 VOL: 0
 ;PCODE: $0000009A VOL: 0
 ;PCODE: $0000009B VOL: 0
@@ -425,9 +420,9 @@
 ;PCODE: $0000009F VOL: 0
 ;PCODE: $000000A0 VOL: 0
 ;PCODE: $000000A1 VOL: 0
+; 0000 00F5 sprintf(str,"%3u",t);
 ;PCODE: $000000A2 VOL: 0
 ;PCODE: $000000A3 VOL: 0
-; 0000 00FA delay_ms(100);}
 ;PCODE: $000000A4 VOL: 0
 ;PCODE: $000000A5 VOL: 0
 ;PCODE: $000000A6 VOL: 0
@@ -436,12 +431,37 @@
 ;PCODE: $000000A9 VOL: 0
 ;PCODE: $000000AA VOL: 0
 ;PCODE: $000000AB VOL: 0
-; 0000 00FB //*/
-; 0000 00FC       }
 ;PCODE: $000000AC VOL: 0
 ;PCODE: $000000AD VOL: 0
-; 0000 00FD }
+; 0000 00F6 glcd_outtextxy(0,0,str);
 ;PCODE: $000000AE VOL: 0
 ;PCODE: $000000AF VOL: 0
 ;PCODE: $000000B0 VOL: 0
 ;PCODE: $000000B1 VOL: 0
+;PCODE: $000000B2 VOL: 0
+;PCODE: $000000B3 VOL: 0
+; 0000 00F7 delay_ms(500);
+;PCODE: $000000B4 VOL: 0
+;PCODE: $000000B5 VOL: 0
+; 0000 00F8 ct6523_clr_bit(t);
+;PCODE: $000000B6 VOL: 0
+;PCODE: $000000B7 VOL: 0
+; 0000 00F9 }
+;PCODE: $000000B8 VOL: 0
+;PCODE: $000000B9 VOL: 0
+;PCODE: $000000BA VOL: 0
+;PCODE: $000000BB VOL: 0
+;PCODE: $000000BC VOL: 0
+; 0000 00FA // */
+; 0000 00FB       }
+;PCODE: $000000BD VOL: 0
+;PCODE: $000000BE VOL: 0
+; 0000 00FC }
+;PCODE: $000000BF VOL: 0
+;PCODE: $000000C0 VOL: 0
+;PCODE: $000000C1 VOL: 0
+;PCODE: $000000C2 VOL: 0
+
+	.DSEG
+_0x4:
+	.BYTE 0x7
