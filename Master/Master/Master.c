@@ -12,10 +12,10 @@
 #define LED4 3
 #define LED_PORT PORTC
 #define LED_DDR DDRC
-#define SetLed1 LED_PORT|= 1<<LED1; //set на чтение
-#define SetLed2 LED_PORT|= 1<<LED2; //set на чтение
-#define SetLed3 LED_PORT|= 1<<LED3; //set на чтение
-#define SetLed4 LED_PORT|= 1<<LED4; //set на чтение
+#define SetLed1 LED_PORT|= 1<<LED1; //set 
+#define SetLed2 LED_PORT|= 1<<LED2; //set 
+#define SetLed3 LED_PORT|= 1<<LED3; //set 
+#define SetLed4 LED_PORT|= 1<<LED4; //set 
 #define ClearLed1 LED_PORT&= ~(1<<LED1);//clear
 #define ClearLed2 LED_PORT&= ~(1<<LED2);//clear
 #define ClearLed3 LED_PORT&= ~(1<<LED3);//clear
@@ -28,13 +28,17 @@
 #define UART_RX_BUFFER_SIZE 10
 #define UART_TX_BUFFER_SIZE 10
 
-
+//#define ADC_use //for board power measuring
+#define LightLineNum 1
+#define LightPos 2
+#define LastSym 15
+#define DEBUG_DELAYS
 
 #define F_CPU 8000000UL
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <avr/delay.h>
+#include <util/delay.h>
 #include "lcd.h"
 
 /*
@@ -90,7 +94,7 @@ uint8_t BufferTX_index = 0;
 uint8_t BufferRX_index = 0;
 char RXOvfflag = 0;
 char i;
-//char temp1 = 'd';
+char adc6;
 
 ISR(USART_TXC_vect)
 {
@@ -109,24 +113,13 @@ ISR(USART_RXC_vect)
 		
 	}
 }
-
-// void UartTX(char count,char *arr)
-// {
-// 	for(int counter = 0; counter < count; counter ++)
-// 	{
-// 		
-// 		uart_putc(RXBUFF[counter]);
-// 		
-// 	}
-// 
-// }
-// void UartRX(void)
-// {
-// 	RXBUFF[BufferRX_index] = uart_getc();
-// 	BufferRX_index++;
-// 
-// }
-
+#ifdef ADC_use
+ISR(ADC_vect) //ADC
+{
+	adc6 = ADCL;
+	adc6 = ADCH;
+}
+#endif
 void InitUSART()
 {
 	//SetLed1
@@ -203,27 +196,82 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
 char LightShow(char decoded[4])
 {
 	lcd_gotoxy(0,0);
-	if (decoded[0]==0xCC)//if into decoded array data from ight controller 
-	{
-	//	lcd_puts("ok data");
-	if decoded[1] 
+	if (decoded[0]==0xCC){//if into decoded array data from light controller 
+		lcd_puts("ok data ");
+		itoa(decoded[1],LCD_Line1,16);
+		lcd_puts(LCD_Line1);
+		/* decodeed[1]
 		
-	switch (decoded[1])
+		*/		
+		lcd_gotoxy(0,1);//left side, line 2
+	switch (decoded[1]&0b00011100)//show what type of light now work
+	//see position defines
 	{
-		case 0: 
+		case 0b00000100: //day
 		{
-			turnOn |= 0b00000001;break;
+			lcd_gotoxy(LightPos,LightLineNum);
+			lcd_puts("DAY");
+			break;
+		}
+		case 0b00010000://hi for single beam
+		case 0b00011000://hi(dualbeam)
+		{
+			lcd_gotoxy(LightPos,LightLineNum);
+			lcd_puts("Hi ");
+			break;
+		}
+		
+		case 0b00001000://Lo(dualbeam)
+		{
+			lcd_gotoxy(LightPos,LightLineNum);
+			lcd_puts("Lo ");
+			break;
 		}
 		default: ;
 	}
 	
-	}
-	else
+	switch (decoded[1]&0b11000000)//show what type of light now work
+	//see position defines
 	{
-	//	lcd_puts("wrong data");
+		case 0b10000000: //R turn
+		{
+			lcd_gotoxy(LastSym,LightLineNum);
+			lcd_puts("R");
+			break;
+		}
+		case 0b01000000://L turn
+		{
+			lcd_gotoxy(0,LightLineNum);
+			lcd_puts("L");
+			break;
+		}
+		
+		case 0b11000000://Lo(dualbeam)
+		{
+			lcd_gotoxy(LastSym,LightLineNum);
+			lcd_puts("R");
+			lcd_gotoxy(0,LightLineNum);
+			lcd_puts("L");
+			
+			break;
+		}
+		case 0:
+		{
+			lcd_gotoxy(LastSym,LightLineNum);
+			lcd_puts(" ");
+			lcd_gotoxy(0,LightLineNum);
+			lcd_puts(" ");
+			
+		}
+		default: ;
 	}
 	
-	
+	}else{
+		lcd_puts("wrong data");
+		}
+#ifdef DEBUG_DELAYS
+_delay_ms(100);
+#endif	
 /*
 	lcd_puts("!:");
 	lcd_puts(decoded[0]);
@@ -233,7 +281,7 @@ char LightShow(char decoded[4])
 	*/
 	//itoa(*decoded[0],LCD_Line1,16);
 	//lcd_puts(LCD_Line1);
-	_delay_ms(100);
+	//_delay_ms(100);
 	
 } 
 void DebugOut(void)
@@ -272,11 +320,54 @@ void DebugOut(void)
 			//_delay_ms(500);
 			//SwitchLed1
 }
+
+/*
+void UartTX(char count,char *arr)
+{
+	for(int counter = 0; counter < count; counter ++)
+	{
+
+		uart_putc(RXBUFF[counter]);
+
+	}
+
+}
+void UartRX(void)
+{
+	RXBUFF[BufferRX_index] = uart_getc();
+	BufferRX_index++;
+
+}
+*/
 int main(void)
 {
 
+
+//настройка портов
+//PINx регистр чтения
+//PORTx 1=pullup(in)
+//DDRx 0=in 1=out
+//DDRC = 0b00000000;  //kb port
+//PORTC = 0b00000000; //kb port
+
+#ifdef ADC_use
+//adc setup
+ADMUX = (0<<REFS0|0<<REFS1|1<<ADLAR|0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3);
+//1<<REFS0|1<<REFS1 = от внутренних 2.5в,
+//0<<REFS0|0<<REFS1 = AREF
+//adlar = 1 младший байт (ADCL) не нужен - там мусор, брать только ADCH
+//mux0-mux3 выбирать какой ацп 0-0<<MUX0|0<<MUX1|0<<MUX2|0<<MUX3 1-1<<MUX0|0<<MUX1|0<<MUX2|0<<MUX3
+//0<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC6
+//1<<MUX0|1<<MUX1|1<<MUX2|0<<MUX3 = ADC7
+ADCSRA = (1<<ADEN|1<<ADFR|1<<ADIE|1<<ADPS0|1<<ADPS1|1<<ADPS2);
+ADCSRA|= 1<<ADSC;
+
+#endif
+
 	LED_DDR|= (1<<LED1)|(1<<LED2)|(1<<LED3);     //Led port
 	LED_PORT&= ~(1<<LED1)|(1<<LED2)|(1<<LED3); //Led port
+	
+
 	
 	lcd_init(LCD_DISP_ON);  //инициализация дисплея
 	// другие опции см в lcd_init(), view lcd.h file
@@ -291,17 +382,12 @@ for(i=0; i<32; i++)
 }
 
 
-		//lcd_clrscr();             // очистить lcd
-
-		
-	while(1)
+while(1)
 	{
 		DataEndSearch();
 		DataCheck();
 		lcd_clrscr();
 		LightShow(DataRXBuff);
 		
-		//DebugOut();
-
 	}
 }

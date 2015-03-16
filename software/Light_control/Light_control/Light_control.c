@@ -193,7 +193,7 @@ if (adcstate = 1){
 	ADCSRA = (1<<ADSC);
 	}
 #endif	
-sei();
+
 }
 ISR(TIMER1_OVF_vect)
 {
@@ -249,7 +249,6 @@ ISR(TIMER1_OVF_vect)
 		}
 		T1temp = 0;
 	}
-sei();	
 }
 ISR(TIMER1_COMPA_vect)//turn signal blink 
 {

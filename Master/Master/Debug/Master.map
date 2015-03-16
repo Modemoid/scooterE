@@ -19,6 +19,7 @@ Allocating common symbols
 Common symbol       size              file
 
 LCD_Line1           0x10              Master.o
+adc6                0x1               Master.o
 i                   0x1               Master.o
 TXBUFF              0xa               Master.o
 RXBUFF              0xa               Master.o
@@ -99,23 +100,15 @@ Discarded input sections
  .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa.o)
  .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa.o)
  .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa.o)
- .text.avr-libc
-                0x00000000       0x14 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa.o)
  .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa_ncheck.o)
  .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa_ncheck.o)
  .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa_ncheck.o)
- .text.avr-libc
-                0x00000000       0x14 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa_ncheck.o)
  .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(utoa_ncheck.o)
  .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(utoa_ncheck.o)
  .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(utoa_ncheck.o)
- .text.avr-libc
-                0x00000000       0x32 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(utoa_ncheck.o)
  .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(strrev.o)
  .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(strrev.o)
  .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(strrev.o)
- .text.avr-libc
-                0x00000000       0x20 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(strrev.o)
 
 Memory Configuration
 
@@ -233,7 +226,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x3bc
+.text           0x00000000      0x4fc
  *(.vectors)
  .vectors       0x00000000       0x26 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4/crtm8.o
                 0x00000000                __vector_default
@@ -356,15 +349,29 @@ END GROUP
                 0x000002a8       0x96 Master.o
                 0x000002a8                DataCheck
  .text.LightShow
-                0x0000033e       0x38 Master.o
+                0x0000033e       0xfe Master.o
                 0x0000033e                LightShow
- .text.main     0x00000376       0x42 Master.o
-                0x00000376                main
-                0x000003b8                . = ALIGN (0x2)
+ .text.main     0x0000043c       0x42 Master.o
+                0x0000043c                main
+ .text.avr-libc
+                0x0000047e       0x14 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa.o)
+                0x0000047e                __itoa
+                0x0000047e                itoa
+ .text.avr-libc
+                0x00000492       0x14 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(itoa_ncheck.o)
+                0x00000492                __itoa_ncheck
+ .text.avr-libc
+                0x000004a6       0x32 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(utoa_ncheck.o)
+                0x000004a6                __utoa_ncheck
+                0x000004a8                __utoa_common
+ .text.avr-libc
+                0x000004d8       0x20 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(strrev.o)
+                0x000004d8                strrev
+                0x000004f8                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000003b8        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
-                0x000003b8                _exit
-                0x000003b8                exit
+ .fini9         0x000004f8        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
+                0x000004f8                _exit
+                0x000004f8                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -383,49 +390,52 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000003b8        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
+ .fini0         0x000004f8        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x000003bc                _etext = .
+                0x000004fc                _etext = .
 
-.data           0x00800060       0x16 load address 0x000003bc
+.data           0x00800060       0x28 load address 0x000004fc
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800060       0x16 Master.o
+                0x00800060       0x27 Master.o
+                                 0x29 (size before relaxing)
  *(.gnu.linkonce.d*)
-                0x00800076                . = ALIGN (0x2)
-                0x00800076                _edata = .
-                0x00800076                PROVIDE (__data_end, .)
+                0x00800088                . = ALIGN (0x2)
+ *fill*         0x00800087        0x1 
+                0x00800088                _edata = .
+                0x00800088                PROVIDE (__data_end, .)
 
-.bss            0x00800076       0x2c
-                0x00800076                PROVIDE (__bss_start, .)
+.bss            0x00800088       0x2d
+                0x00800088                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.BufferRX_index
-                0x00800076        0x1 Master.o
-                0x00800076                BufferRX_index
+                0x00800088        0x1 Master.o
+                0x00800088                BufferRX_index
  *(COMMON)
- COMMON         0x00800077       0x2b Master.o
-                0x00800077                LCD_Line1
-                0x00800087                i
-                0x00800088                TXBUFF
-                0x00800092                RXBUFF
-                0x0080009c                DataRXBuff
-                0x008000a0                dataOK
-                0x008000a1                dataEnd
-                0x008000a2                PROVIDE (__bss_end, .)
-                0x000003bc                __data_load_start = LOADADDR (.data)
-                0x000003d2                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800089       0x2c Master.o
+                0x00800089                LCD_Line1
+                0x00800099                adc6
+                0x0080009a                i
+                0x0080009b                TXBUFF
+                0x008000a5                RXBUFF
+                0x008000af                DataRXBuff
+                0x008000b3                dataOK
+                0x008000b4                dataEnd
+                0x008000b5                PROVIDE (__bss_end, .)
+                0x000004fc                __data_load_start = LOADADDR (.data)
+                0x00000524                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008000a2        0x0
-                0x008000a2                PROVIDE (__noinit_start, .)
+.noinit         0x008000b5        0x0
+                0x008000b5                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x008000a2                PROVIDE (__noinit_end, .)
-                0x008000a2                _end = .
-                0x008000a2                PROVIDE (__heap_start, .)
+                0x008000b5                PROVIDE (__noinit_end, .)
+                0x008000b5                _end = .
+                0x008000b5                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -495,32 +505,32 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xca9
+.debug_info     0x00000000      0xf08
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5c7 lcd.o
- .debug_info    0x000005c7      0x6e2 Master.o
+ .debug_info    0x000005c7      0x941 Master.o
 
-.debug_abbrev   0x00000000      0x499
+.debug_abbrev   0x00000000      0x4a2
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x236 lcd.o
- .debug_abbrev  0x00000236      0x263 Master.o
+ .debug_abbrev  0x00000236      0x26c Master.o
 
-.debug_line     0x00000000      0x483
+.debug_line     0x00000000      0x4a0
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x288 lcd.o
- .debug_line    0x00000288      0x1fb Master.o
+ .debug_line    0x00000288      0x218 Master.o
 
 .debug_frame    0x00000000      0x200
  *(.debug_frame)
  .debug_frame   0x00000000      0x134 lcd.o
  .debug_frame   0x00000134       0xcc Master.o
 
-.debug_str      0x00000000      0x331
+.debug_str      0x00000000      0x336
  *(.debug_str)
  .debug_str     0x00000000      0x208 lcd.o
                                 0x246 (size before relaxing)
- .debug_str     0x00000208      0x129 Master.o
-                                0x2c8 (size before relaxing)
+ .debug_str     0x00000208      0x12e Master.o
+                                0x2cd (size before relaxing)
 
 .debug_loc      0x00000000      0x663
  *(.debug_loc)

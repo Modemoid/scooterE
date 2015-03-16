@@ -3,29 +3,29 @@ Master.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000003bc  00000000  00000000  00000094  2**1
+  0 .text         000004fc  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000016  00800060  000003bc  00000450  2**0
+  1 .data         00000028  00800060  000004fc  00000590  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000002c  00800076  00800076  00000466  2**0
+  2 .bss          0000002d  00800088  00800088  000005b8  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000466  2**0
+  3 .comment      00000030  00000000  00000000  000005b8  2**0
                   CONTENTS, READONLY
-  4 .debug_aranges 000000e0  00000000  00000000  00000496  2**0
+  4 .debug_aranges 000000e0  00000000  00000000  000005e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000ca9  00000000  00000000  00000576  2**0
+  5 .debug_info   00000f08  00000000  00000000  000006c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000499  00000000  00000000  0000121f  2**0
+  6 .debug_abbrev 000004a2  00000000  00000000  000015d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000483  00000000  00000000  000016b8  2**0
+  7 .debug_line   000004a0  00000000  00000000  00001a72  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000200  00000000  00000000  00001b3c  2**2
+  8 .debug_frame  00000200  00000000  00000000  00001f14  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000331  00000000  00000000  00001d3c  2**0
+  9 .debug_str    00000336  00000000  00000000  00002114  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000663  00000000  00000000  0000206d  2**0
+ 10 .debug_loc    00000663  00000000  00000000  0000244a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 000000d8  00000000  00000000  000026d0  2**0
+ 11 .debug_ranges 000000d8  00000000  00000000  00002aad  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -81,18 +81,18 @@ Disassembly of section .text:
   52:	10 e0       	ldi	r17, 0x00	; 0
   54:	a0 e6       	ldi	r26, 0x60	; 96
   56:	b0 e0       	ldi	r27, 0x00	; 0
-  58:	ec eb       	ldi	r30, 0xBC	; 188
-  5a:	f3 e0       	ldi	r31, 0x03	; 3
+  58:	ec ef       	ldi	r30, 0xFC	; 252
+  5a:	f4 e0       	ldi	r31, 0x04	; 4
   5c:	02 c0       	rjmp	.+4      	; 0x62 <__do_copy_data+0x10>
   5e:	05 90       	lpm	r0, Z+
   60:	0d 92       	st	X+, r0
-  62:	a6 37       	cpi	r26, 0x76	; 118
+  62:	a8 38       	cpi	r26, 0x88	; 136
   64:	b1 07       	cpc	r27, r17
   66:	d9 f7       	brne	.-10     	; 0x5e <__do_copy_data+0xc>
 
 00000068 <__do_clear_bss>:
   68:	20 e0       	ldi	r18, 0x00	; 0
-  6a:	a6 e7       	ldi	r26, 0x76	; 118
+  6a:	a8 e8       	ldi	r26, 0x88	; 136
   6c:	b0 e0       	ldi	r27, 0x00	; 0
   6e:	01 c0       	rjmp	.+2      	; 0x72 <.do_clear_bss_start>
 
@@ -100,11 +100,11 @@ Disassembly of section .text:
   70:	1d 92       	st	X+, r1
 
 00000072 <.do_clear_bss_start>:
-  72:	a2 3a       	cpi	r26, 0xA2	; 162
+  72:	a5 3b       	cpi	r26, 0xB5	; 181
   74:	b2 07       	cpc	r27, r18
   76:	e1 f7       	brne	.-8      	; 0x70 <.do_clear_bss_loop>
-  78:	7e d1       	rcall	.+764    	; 0x376 <main>
-  7a:	9e c1       	rjmp	.+828    	; 0x3b8 <_exit>
+  78:	e1 d1       	rcall	.+962    	; 0x43c <main>
+  7a:	3e c2       	rjmp	.+1148   	; 0x4f8 <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	c1 cf       	rjmp	.-126    	; 0x0 <__vectors>
@@ -646,7 +646,7 @@ static inline void _delayFourCycles(unsigned int __count)
 00000216 <__vector_13>:
 char RXOvfflag = 0;
 char i;
-//char temp1 = 'd';
+char adc6;
 
 ISR(USART_TXC_vect)
 {
@@ -677,11 +677,11 @@ ISR(USART_RXC_vect)
  238:	ef 93       	push	r30
  23a:	ff 93       	push	r31
 	RXBUFF[BufferRX_index] = UDR;
- 23c:	80 91 76 00 	lds	r24, 0x0076
+ 23c:	80 91 88 00 	lds	r24, 0x0088
  240:	9c b1       	in	r25, 0x0c	; 12
  242:	e8 2f       	mov	r30, r24
  244:	f0 e0       	ldi	r31, 0x00	; 0
- 246:	ee 56       	subi	r30, 0x6E	; 110
+ 246:	eb 55       	subi	r30, 0x5B	; 91
  248:	ff 4f       	sbci	r31, 0xFF	; 255
  24a:	90 83       	st	Z, r25
 	BufferRX_index++;
@@ -696,14 +696,14 @@ ISR(USART_RXC_vect)
 {
 	RXBUFF[BufferRX_index] = UDR;
 	BufferRX_index++;
- 252:	80 93 76 00 	sts	0x0076, r24
+ 252:	80 93 88 00 	sts	0x0088, r24
  256:	02 c0       	rjmp	.+4      	; 0x25c <__vector_11+0x32>
 	
 	if (BufferRX_index == 8)
 	{
 		//RXOvfflag = 1;
 		BufferRX_index = 0;
- 258:	10 92 76 00 	sts	0x0076, r1
+ 258:	10 92 88 00 	sts	0x0088, r1
 		
 	}
 }
@@ -744,7 +744,7 @@ ISR(USART_RXC_vect)
 }
 void DataEndSearch(void) 
 {
- 280:	ed e9       	ldi	r30, 0x9D	; 157
+ 280:	e0 eb       	ldi	r30, 0xB0	; 176
  282:	f0 e0       	ldi	r31, 0x00	; 0
  284:	8a e0       	ldi	r24, 0x0A	; 10
  286:	20 e0       	ldi	r18, 0x00	; 0
@@ -775,7 +775,7 @@ void DataEndSearch(void)
 
 	for (lt = UART_RX_BUFFER_SIZE;lt > 0;lt--)
  2a0:	99 f7       	brne	.-26     	; 0x288 <DataEndSearch+0x8>
- 2a2:	20 93 a1 00 	sts	0x00A1, r18
+ 2a2:	20 93 b4 00 	sts	0x00B4, r18
  2a6:	08 95       	ret
 
 000002a8 <DataCheck>:
@@ -785,9 +785,9 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
 	DataRXBuff[3] = 0;
 	
 	if ((RXBUFF[dataEnd-7] ^ RXBUFF[dataEnd-6]) == 0xff)
- 2a8:	80 91 a1 00 	lds	r24, 0x00A1
+ 2a8:	80 91 b4 00 	lds	r24, 0x00B4
  2ac:	90 e0       	ldi	r25, 0x00	; 0
- 2ae:	8e 56       	subi	r24, 0x6E	; 110
+ 2ae:	8b 55       	subi	r24, 0x5B	; 91
  2b0:	9f 4f       	sbci	r25, 0xFF	; 255
  2b2:	fc 01       	movw	r30, r24
  2b4:	37 97       	sbiw	r30, 0x07	; 7
@@ -799,23 +799,23 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
  2c0:	31 f4       	brne	.+12     	; 0x2ce <DataCheck+0x26>
 	{
 		DataRXBuff[0] = RXBUFF[dataEnd-7];
- 2c2:	20 93 9c 00 	sts	0x009C, r18
+ 2c2:	20 93 af 00 	sts	0x00AF, r18
 		DataRXBuff[3] |= 0b00000001;
  2c6:	81 e0       	ldi	r24, 0x01	; 1
- 2c8:	80 93 9f 00 	sts	0x009F, r24
+ 2c8:	80 93 b2 00 	sts	0x00B2, r24
  2cc:	03 c0       	rjmp	.+6      	; 0x2d4 <DataCheck+0x2c>
 	}
 	else
 	{
 		DataRXBuff[3]|= 0b00010000;
  2ce:	80 e1       	ldi	r24, 0x10	; 16
- 2d0:	80 93 9f 00 	sts	0x009F, r24
+ 2d0:	80 93 b2 00 	sts	0x00B2, r24
 	}
 	
 	if ((RXBUFF[dataEnd-5] ^ RXBUFF[dataEnd-4]) == 0xff)
- 2d4:	80 91 a1 00 	lds	r24, 0x00A1
+ 2d4:	80 91 b4 00 	lds	r24, 0x00B4
  2d8:	90 e0       	ldi	r25, 0x00	; 0
- 2da:	8e 56       	subi	r24, 0x6E	; 110
+ 2da:	8b 55       	subi	r24, 0x5B	; 91
  2dc:	9f 4f       	sbci	r25, 0xFF	; 255
  2de:	fc 01       	movw	r30, r24
  2e0:	35 97       	sbiw	r30, 0x05	; 5
@@ -827,9 +827,9 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
  2ec:	41 f4       	brne	.+16     	; 0x2fe <DataCheck+0x56>
 	{
 		DataRXBuff[1] = RXBUFF[dataEnd-5];
- 2ee:	20 93 9d 00 	sts	0x009D, r18
+ 2ee:	20 93 b0 00 	sts	0x00B0, r18
 		DataRXBuff[3] |= 0b00000010;
- 2f2:	ef e9       	ldi	r30, 0x9F	; 159
+ 2f2:	e2 eb       	ldi	r30, 0xB2	; 178
  2f4:	f0 e0       	ldi	r31, 0x00	; 0
  2f6:	80 81       	ld	r24, Z
  2f8:	82 60       	ori	r24, 0x02	; 2
@@ -839,16 +839,16 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
 	else
 	{
 		DataRXBuff[3] |= 0b00100000;
- 2fe:	ef e9       	ldi	r30, 0x9F	; 159
+ 2fe:	e2 eb       	ldi	r30, 0xB2	; 178
  300:	f0 e0       	ldi	r31, 0x00	; 0
  302:	80 81       	ld	r24, Z
  304:	80 62       	ori	r24, 0x20	; 32
  306:	80 83       	st	Z, r24
 	}
 	if ((RXBUFF[dataEnd-3] ^ RXBUFF[dataEnd-2]) == 0xff)
- 308:	80 91 a1 00 	lds	r24, 0x00A1
+ 308:	80 91 b4 00 	lds	r24, 0x00B4
  30c:	90 e0       	ldi	r25, 0x00	; 0
- 30e:	8e 56       	subi	r24, 0x6E	; 110
+ 30e:	8b 55       	subi	r24, 0x5B	; 91
  310:	9f 4f       	sbci	r25, 0xFF	; 255
  312:	fc 01       	movw	r30, r24
  314:	33 97       	sbiw	r30, 0x03	; 3
@@ -860,9 +860,9 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
  320:	41 f4       	brne	.+16     	; 0x332 <DataCheck+0x8a>
 	{
 		DataRXBuff[2] = RXBUFF[dataEnd-3];
- 322:	20 93 9e 00 	sts	0x009E, r18
+ 322:	20 93 b1 00 	sts	0x00B1, r18
 		DataRXBuff[3] |= 0b00000100;
- 326:	ef e9       	ldi	r30, 0x9F	; 159
+ 326:	e2 eb       	ldi	r30, 0xB2	; 178
  328:	f0 e0       	ldi	r31, 0x00	; 0
  32a:	80 81       	ld	r24, Z
  32c:	84 60       	ori	r24, 0x04	; 4
@@ -872,7 +872,7 @@ void DataCheck(void) //if (DataRXBuff[3] = 7) all 3 data byte received correct.
 	else
 	{
 		DataRXBuff[3]|= 0b01000000;
- 332:	ef e9       	ldi	r30, 0x9F	; 159
+ 332:	e2 eb       	ldi	r30, 0xB2	; 178
  334:	f0 e0       	ldi	r31, 0x00	; 0
  336:	80 81       	ld	r24, Z
  338:	80 64       	ori	r24, 0x40	; 64
@@ -893,115 +893,351 @@ char LightShow(char decoded[4])
  344:	60 e0       	ldi	r22, 0x00	; 0
  346:	80 e0       	ldi	r24, 0x00	; 0
  348:	0b df       	rcall	.-490    	; 0x160 <lcd_gotoxy>
-	if (decoded[0]==0xCC)//if into decoded array data from ight controller 
+	if (decoded[0]==0xCC){//if into decoded array data from light controller 
  34a:	88 81       	ld	r24, Y
  34c:	8c 3c       	cpi	r24, 0xCC	; 204
- 34e:	21 f4       	brne	.+8      	; 0x358 <LightShow+0x1a>
+ 34e:	09 f0       	breq	.+2      	; 0x352 <LightShow+0x14>
+ 350:	66 c0       	rjmp	.+204    	; 0x41e <LightShow+0xe0>
+		lcd_puts("ok data ");
+ 352:	80 e6       	ldi	r24, 0x60	; 96
+ 354:	90 e0       	ldi	r25, 0x00	; 0
+ 356:	21 df       	rcall	.-446    	; 0x19a <lcd_puts>
+		itoa(decoded[1],LCD_Line1,16);
+ 358:	89 81       	ldd	r24, Y+1	; 0x01
+ 35a:	40 e1       	ldi	r20, 0x10	; 16
+ 35c:	50 e0       	ldi	r21, 0x00	; 0
+ 35e:	69 e8       	ldi	r22, 0x89	; 137
+ 360:	70 e0       	ldi	r23, 0x00	; 0
+ 362:	90 e0       	ldi	r25, 0x00	; 0
+ 364:	8c d0       	rcall	.+280    	; 0x47e <itoa>
+		lcd_puts(LCD_Line1);
+ 366:	89 e8       	ldi	r24, 0x89	; 137
+ 368:	90 e0       	ldi	r25, 0x00	; 0
+ 36a:	17 df       	rcall	.-466    	; 0x19a <lcd_puts>
+		/* decodeed[1]
+		
+		*/		
+		lcd_gotoxy(0,1);//left side, line 2
+ 36c:	61 e0       	ldi	r22, 0x01	; 1
+ 36e:	80 e0       	ldi	r24, 0x00	; 0
+ 370:	f7 de       	rcall	.-530    	; 0x160 <lcd_gotoxy>
+	switch (decoded[1]&0b00011100)//show what type of light now work
+ 372:	89 81       	ldd	r24, Y+1	; 0x01
+ 374:	8c 71       	andi	r24, 0x1C	; 28
+ 376:	88 30       	cpi	r24, 0x08	; 8
+ 378:	b9 f0       	breq	.+46     	; 0x3a8 <LightShow+0x6a>
+ 37a:	18 f4       	brcc	.+6      	; 0x382 <LightShow+0x44>
+ 37c:	84 30       	cpi	r24, 0x04	; 4
+ 37e:	31 f0       	breq	.+12     	; 0x38c <LightShow+0x4e>
+ 380:	19 c0       	rjmp	.+50     	; 0x3b4 <LightShow+0x76>
+ 382:	80 31       	cpi	r24, 0x10	; 16
+ 384:	51 f0       	breq	.+20     	; 0x39a <LightShow+0x5c>
+ 386:	88 31       	cpi	r24, 0x18	; 24
+ 388:	41 f0       	breq	.+16     	; 0x39a <LightShow+0x5c>
+ 38a:	14 c0       	rjmp	.+40     	; 0x3b4 <LightShow+0x76>
+	//see position defines
 	{
-		lcd_puts("ok data");
- 350:	80 e6       	ldi	r24, 0x60	; 96
- 352:	90 e0       	ldi	r25, 0x00	; 0
- 354:	22 df       	rcall	.-444    	; 0x19a <lcd_puts>
- 356:	03 c0       	rjmp	.+6      	; 0x35e <LightShow+0x20>
+		case 0b00000100: //day
+		{
+			lcd_gotoxy(LightPos,LightLineNum);
+ 38c:	61 e0       	ldi	r22, 0x01	; 1
+ 38e:	82 e0       	ldi	r24, 0x02	; 2
+ 390:	e7 de       	rcall	.-562    	; 0x160 <lcd_gotoxy>
+			lcd_puts("DAY");
+ 392:	89 e6       	ldi	r24, 0x69	; 105
+ 394:	90 e0       	ldi	r25, 0x00	; 0
+ 396:	01 df       	rcall	.-510    	; 0x19a <lcd_puts>
+			break;
+ 398:	0d c0       	rjmp	.+26     	; 0x3b4 <LightShow+0x76>
+		}
+		case 0b00010000://hi for single beam
+		case 0b00011000://hi(dualbeam)
+		{
+			lcd_gotoxy(LightPos,LightLineNum);
+ 39a:	61 e0       	ldi	r22, 0x01	; 1
+ 39c:	82 e0       	ldi	r24, 0x02	; 2
+ 39e:	e0 de       	rcall	.-576    	; 0x160 <lcd_gotoxy>
+			lcd_puts("Hi ");
+ 3a0:	8d e6       	ldi	r24, 0x6D	; 109
+ 3a2:	90 e0       	ldi	r25, 0x00	; 0
+ 3a4:	fa de       	rcall	.-524    	; 0x19a <lcd_puts>
+			break;
+ 3a6:	06 c0       	rjmp	.+12     	; 0x3b4 <LightShow+0x76>
+		}
+		
+		case 0b00001000://Lo(dualbeam)
+		{
+			lcd_gotoxy(LightPos,LightLineNum);
+ 3a8:	61 e0       	ldi	r22, 0x01	; 1
+ 3aa:	82 e0       	ldi	r24, 0x02	; 2
+ 3ac:	d9 de       	rcall	.-590    	; 0x160 <lcd_gotoxy>
+			lcd_puts("Lo ");
+ 3ae:	81 e7       	ldi	r24, 0x71	; 113
+ 3b0:	90 e0       	ldi	r25, 0x00	; 0
+ 3b2:	f3 de       	rcall	.-538    	; 0x19a <lcd_puts>
+			break;
+		}
+		default: ;
 	}
-	else
+	
+	switch (decoded[1]&0b11000000)//show what type of light now work
+ 3b4:	89 81       	ldd	r24, Y+1	; 0x01
+ 3b6:	80 7c       	andi	r24, 0xC0	; 192
+ 3b8:	80 34       	cpi	r24, 0x40	; 64
+ 3ba:	81 f0       	breq	.+32     	; 0x3dc <LightShow+0x9e>
+ 3bc:	18 f4       	brcc	.+6      	; 0x3c4 <LightShow+0x86>
+ 3be:	88 23       	and	r24, r24
+ 3c0:	09 f1       	breq	.+66     	; 0x404 <LightShow+0xc6>
+ 3c2:	30 c0       	rjmp	.+96     	; 0x424 <LightShow+0xe6>
+ 3c4:	80 38       	cpi	r24, 0x80	; 128
+ 3c6:	19 f0       	breq	.+6      	; 0x3ce <LightShow+0x90>
+ 3c8:	80 3c       	cpi	r24, 0xC0	; 192
+ 3ca:	79 f0       	breq	.+30     	; 0x3ea <LightShow+0xac>
+ 3cc:	2b c0       	rjmp	.+86     	; 0x424 <LightShow+0xe6>
+	//see position defines
 	{
+		case 0b10000000: //R turn
+		{
+			lcd_gotoxy(LastSym,LightLineNum);
+ 3ce:	61 e0       	ldi	r22, 0x01	; 1
+ 3d0:	8f e0       	ldi	r24, 0x0F	; 15
+ 3d2:	c6 de       	rcall	.-628    	; 0x160 <lcd_gotoxy>
+			lcd_puts("R");
+ 3d4:	85 e7       	ldi	r24, 0x75	; 117
+ 3d6:	90 e0       	ldi	r25, 0x00	; 0
+ 3d8:	e0 de       	rcall	.-576    	; 0x19a <lcd_puts>
+			break;
+ 3da:	24 c0       	rjmp	.+72     	; 0x424 <LightShow+0xe6>
+		}
+		case 0b01000000://L turn
+		{
+			lcd_gotoxy(0,LightLineNum);
+ 3dc:	61 e0       	ldi	r22, 0x01	; 1
+ 3de:	80 e0       	ldi	r24, 0x00	; 0
+ 3e0:	bf de       	rcall	.-642    	; 0x160 <lcd_gotoxy>
+			lcd_puts("L");
+ 3e2:	87 e7       	ldi	r24, 0x77	; 119
+ 3e4:	90 e0       	ldi	r25, 0x00	; 0
+ 3e6:	d9 de       	rcall	.-590    	; 0x19a <lcd_puts>
+			break;
+ 3e8:	1d c0       	rjmp	.+58     	; 0x424 <LightShow+0xe6>
+		}
+		
+		case 0b11000000://Lo(dualbeam)
+		{
+			lcd_gotoxy(LastSym,LightLineNum);
+ 3ea:	61 e0       	ldi	r22, 0x01	; 1
+ 3ec:	8f e0       	ldi	r24, 0x0F	; 15
+ 3ee:	b8 de       	rcall	.-656    	; 0x160 <lcd_gotoxy>
+			lcd_puts("R");
+ 3f0:	85 e7       	ldi	r24, 0x75	; 117
+ 3f2:	90 e0       	ldi	r25, 0x00	; 0
+ 3f4:	d2 de       	rcall	.-604    	; 0x19a <lcd_puts>
+			lcd_gotoxy(0,LightLineNum);
+ 3f6:	61 e0       	ldi	r22, 0x01	; 1
+ 3f8:	80 e0       	ldi	r24, 0x00	; 0
+ 3fa:	b2 de       	rcall	.-668    	; 0x160 <lcd_gotoxy>
+			lcd_puts("L");
+ 3fc:	87 e7       	ldi	r24, 0x77	; 119
+ 3fe:	90 e0       	ldi	r25, 0x00	; 0
+ 400:	cc de       	rcall	.-616    	; 0x19a <lcd_puts>
+			
+			break;
+ 402:	10 c0       	rjmp	.+32     	; 0x424 <LightShow+0xe6>
+		}
+		case 0:
+		{
+			lcd_gotoxy(LastSym,LightLineNum);
+ 404:	61 e0       	ldi	r22, 0x01	; 1
+ 406:	8f e0       	ldi	r24, 0x0F	; 15
+ 408:	ab de       	rcall	.-682    	; 0x160 <lcd_gotoxy>
+			lcd_puts(" ");
+ 40a:	87 e6       	ldi	r24, 0x67	; 103
+ 40c:	90 e0       	ldi	r25, 0x00	; 0
+ 40e:	c5 de       	rcall	.-630    	; 0x19a <lcd_puts>
+			lcd_gotoxy(0,LightLineNum);
+ 410:	61 e0       	ldi	r22, 0x01	; 1
+ 412:	80 e0       	ldi	r24, 0x00	; 0
+ 414:	a5 de       	rcall	.-694    	; 0x160 <lcd_gotoxy>
+			lcd_puts(" ");
+ 416:	87 e6       	ldi	r24, 0x67	; 103
+ 418:	90 e0       	ldi	r25, 0x00	; 0
+ 41a:	bf de       	rcall	.-642    	; 0x19a <lcd_puts>
+ 41c:	03 c0       	rjmp	.+6      	; 0x424 <LightShow+0xe6>
+		}
+		default: ;
+	}
+	
+	}else{
 		lcd_puts("wrong data");
- 358:	88 e6       	ldi	r24, 0x68	; 104
- 35a:	90 e0       	ldi	r25, 0x00	; 0
- 35c:	1e df       	rcall	.-452    	; 0x19a <lcd_puts>
+ 41e:	89 e7       	ldi	r24, 0x79	; 121
+ 420:	90 e0       	ldi	r25, 0x00	; 0
+ 422:	bb de       	rcall	.-650    	; 0x19a <lcd_puts>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 35e:	2f ef       	ldi	r18, 0xFF	; 255
- 360:	80 e7       	ldi	r24, 0x70	; 112
- 362:	92 e0       	ldi	r25, 0x02	; 2
- 364:	21 50       	subi	r18, 0x01	; 1
- 366:	80 40       	sbci	r24, 0x00	; 0
- 368:	90 40       	sbci	r25, 0x00	; 0
- 36a:	e1 f7       	brne	.-8      	; 0x364 <LightShow+0x26>
- 36c:	00 c0       	rjmp	.+0      	; 0x36e <LightShow+0x30>
- 36e:	00 00       	nop
+ 424:	2f ef       	ldi	r18, 0xFF	; 255
+ 426:	80 e7       	ldi	r24, 0x70	; 112
+ 428:	92 e0       	ldi	r25, 0x02	; 2
+ 42a:	21 50       	subi	r18, 0x01	; 1
+ 42c:	80 40       	sbci	r24, 0x00	; 0
+ 42e:	90 40       	sbci	r25, 0x00	; 0
+ 430:	e1 f7       	brne	.-8      	; 0x42a <LightShow+0xec>
+ 432:	00 c0       	rjmp	.+0      	; 0x434 <LightShow+0xf6>
+ 434:	00 00       	nop
 	*/
 	//itoa(*decoded[0],LCD_Line1,16);
 	//lcd_puts(LCD_Line1);
-	_delay_ms(100);
+	//_delay_ms(100);
 	
 } 
- 370:	df 91       	pop	r29
- 372:	cf 91       	pop	r28
- 374:	08 95       	ret
+ 436:	df 91       	pop	r29
+ 438:	cf 91       	pop	r28
+ 43a:	08 95       	ret
 
-00000376 <main>:
-			//SwitchLed1
-}
-int main(void)
-{
+0000043c <main>:
+ADCSRA = (1<<ADEN|1<<ADFR|1<<ADIE|1<<ADPS0|1<<ADPS1|1<<ADPS2);
+ADCSRA|= 1<<ADSC;
+
+#endif
 
 	LED_DDR|= (1<<LED1)|(1<<LED2)|(1<<LED3);     //Led port
- 376:	84 b3       	in	r24, 0x14	; 20
- 378:	87 60       	ori	r24, 0x07	; 7
- 37a:	84 bb       	out	0x14, r24	; 20
+ 43c:	84 b3       	in	r24, 0x14	; 20
+ 43e:	87 60       	ori	r24, 0x07	; 7
+ 440:	84 bb       	out	0x14, r24	; 20
 	LED_PORT&= ~(1<<LED1)|(1<<LED2)|(1<<LED3); //Led port
- 37c:	a8 98       	cbi	0x15, 0	; 21
+ 442:	a8 98       	cbi	0x15, 0	; 21
+	
+
 	
 	lcd_init(LCD_DISP_ON);  //инициализация дисплея
- 37e:	8c e0       	ldi	r24, 0x0C	; 12
- 380:	1b df       	rcall	.-458    	; 0x1b8 <lcd_init>
+ 444:	8c e0       	ldi	r24, 0x0C	; 12
+ 446:	b8 de       	rcall	.-656    	; 0x1b8 <lcd_init>
 	// другие опции см в lcd_init(), view lcd.h file
 	
 	InitUSART();
- 382:	75 df       	rcall	.-278    	; 0x26e <InitUSART>
+ 448:	12 df       	rcall	.-476    	; 0x26e <InitUSART>
 sei();
- 384:	78 94       	sei
+ 44a:	78 94       	sei
 
 lcd_command(_BV(LCD_CGRAM));  /* set CG RAM start address 0 */
- 386:	80 e4       	ldi	r24, 0x40	; 64
- 388:	db de       	rcall	.-586    	; 0x140 <lcd_command>
+ 44c:	80 e4       	ldi	r24, 0x40	; 64
+ 44e:	78 de       	rcall	.-784    	; 0x140 <lcd_command>
 for(i=0; i<32; i++)
- 38a:	10 92 87 00 	sts	0x0087, r1
- 38e:	80 e0       	ldi	r24, 0x00	; 0
+ 450:	10 92 9a 00 	sts	0x009A, r1
+ 454:	80 e0       	ldi	r24, 0x00	; 0
 {
 	lcd_data(pgm_read_byte_near(&copyRightChar[i]));
- 390:	e8 2f       	mov	r30, r24
- 392:	f0 e0       	ldi	r31, 0x00	; 0
- 394:	ea 5d       	subi	r30, 0xDA	; 218
- 396:	ff 4f       	sbci	r31, 0xFF	; 255
- 398:	84 91       	lpm	r24, Z
- 39a:	da de       	rcall	.-588    	; 0x150 <lcd_data>
+ 456:	e8 2f       	mov	r30, r24
+ 458:	f0 e0       	ldi	r31, 0x00	; 0
+ 45a:	ea 5d       	subi	r30, 0xDA	; 218
+ 45c:	ff 4f       	sbci	r31, 0xFF	; 255
+ 45e:	84 91       	lpm	r24, Z
+ 460:	77 de       	rcall	.-786    	; 0x150 <lcd_data>
 	
 	InitUSART();
 sei();
 
 lcd_command(_BV(LCD_CGRAM));  /* set CG RAM start address 0 */
 for(i=0; i<32; i++)
- 39c:	80 91 87 00 	lds	r24, 0x0087
- 3a0:	8f 5f       	subi	r24, 0xFF	; 255
- 3a2:	80 93 87 00 	sts	0x0087, r24
- 3a6:	80 32       	cpi	r24, 0x20	; 32
- 3a8:	98 f3       	brcs	.-26     	; 0x390 <main+0x1a>
-		//lcd_clrscr();             // очистить lcd
+ 462:	80 91 9a 00 	lds	r24, 0x009A
+ 466:	8f 5f       	subi	r24, 0xFF	; 255
+ 468:	80 93 9a 00 	sts	0x009A, r24
+ 46c:	80 32       	cpi	r24, 0x20	; 32
+ 46e:	98 f3       	brcs	.-26     	; 0x456 <main+0x1a>
+}
 
-		
-	while(1)
+
+while(1)
 	{
 		DataEndSearch();
- 3aa:	6a df       	rcall	.-300    	; 0x280 <DataEndSearch>
+ 470:	07 df       	rcall	.-498    	; 0x280 <DataEndSearch>
 		DataCheck();
- 3ac:	7d df       	rcall	.-262    	; 0x2a8 <DataCheck>
+ 472:	1a df       	rcall	.-460    	; 0x2a8 <DataCheck>
 		lcd_clrscr();
- 3ae:	e0 de       	rcall	.-576    	; 0x170 <lcd_clrscr>
+ 474:	7d de       	rcall	.-774    	; 0x170 <lcd_clrscr>
 		LightShow(DataRXBuff);
- 3b0:	8c e9       	ldi	r24, 0x9C	; 156
- 3b2:	90 e0       	ldi	r25, 0x00	; 0
- 3b4:	c4 df       	rcall	.-120    	; 0x33e <LightShow>
- 3b6:	f9 cf       	rjmp	.-14     	; 0x3aa <main+0x34>
+ 476:	8f ea       	ldi	r24, 0xAF	; 175
+ 478:	90 e0       	ldi	r25, 0x00	; 0
+ 47a:	61 df       	rcall	.-318    	; 0x33e <LightShow>
+ 47c:	f9 cf       	rjmp	.-14     	; 0x470 <__stack+0x11>
 
-000003b8 <_exit>:
- 3b8:	f8 94       	cli
+0000047e <itoa>:
+ 47e:	45 32       	cpi	r20, 0x25	; 37
+ 480:	51 05       	cpc	r21, r1
+ 482:	18 f4       	brcc	.+6      	; 0x48a <itoa+0xc>
+ 484:	42 30       	cpi	r20, 0x02	; 2
+ 486:	08 f0       	brcs	.+2      	; 0x48a <itoa+0xc>
+ 488:	04 c0       	rjmp	.+8      	; 0x492 <__itoa_ncheck>
+ 48a:	fb 01       	movw	r30, r22
+ 48c:	10 82       	st	Z, r1
+ 48e:	cb 01       	movw	r24, r22
+ 490:	08 95       	ret
 
-000003ba <__stop_program>:
- 3ba:	ff cf       	rjmp	.-2      	; 0x3ba <__stop_program>
+00000492 <__itoa_ncheck>:
+ 492:	bb 27       	eor	r27, r27
+ 494:	4a 30       	cpi	r20, 0x0A	; 10
+ 496:	31 f4       	brne	.+12     	; 0x4a4 <__itoa_ncheck+0x12>
+ 498:	99 23       	and	r25, r25
+ 49a:	22 f4       	brpl	.+8      	; 0x4a4 <__itoa_ncheck+0x12>
+ 49c:	bd e2       	ldi	r27, 0x2D	; 45
+ 49e:	90 95       	com	r25
+ 4a0:	81 95       	neg	r24
+ 4a2:	9f 4f       	sbci	r25, 0xFF	; 255
+ 4a4:	01 c0       	rjmp	.+2      	; 0x4a8 <__utoa_common>
+
+000004a6 <__utoa_ncheck>:
+ 4a6:	bb 27       	eor	r27, r27
+
+000004a8 <__utoa_common>:
+ 4a8:	fb 01       	movw	r30, r22
+ 4aa:	55 27       	eor	r21, r21
+ 4ac:	aa 27       	eor	r26, r26
+ 4ae:	88 0f       	add	r24, r24
+ 4b0:	99 1f       	adc	r25, r25
+ 4b2:	aa 1f       	adc	r26, r26
+ 4b4:	a4 17       	cp	r26, r20
+ 4b6:	10 f0       	brcs	.+4      	; 0x4bc <__utoa_common+0x14>
+ 4b8:	a4 1b       	sub	r26, r20
+ 4ba:	83 95       	inc	r24
+ 4bc:	50 51       	subi	r21, 0x10	; 16
+ 4be:	b9 f7       	brne	.-18     	; 0x4ae <__utoa_common+0x6>
+ 4c0:	a0 5d       	subi	r26, 0xD0	; 208
+ 4c2:	aa 33       	cpi	r26, 0x3A	; 58
+ 4c4:	08 f0       	brcs	.+2      	; 0x4c8 <__utoa_common+0x20>
+ 4c6:	a9 5d       	subi	r26, 0xD9	; 217
+ 4c8:	a1 93       	st	Z+, r26
+ 4ca:	00 97       	sbiw	r24, 0x00	; 0
+ 4cc:	79 f7       	brne	.-34     	; 0x4ac <__utoa_common+0x4>
+ 4ce:	b1 11       	cpse	r27, r1
+ 4d0:	b1 93       	st	Z+, r27
+ 4d2:	11 92       	st	Z+, r1
+ 4d4:	cb 01       	movw	r24, r22
+ 4d6:	00 c0       	rjmp	.+0      	; 0x4d8 <strrev>
+
+000004d8 <strrev>:
+ 4d8:	dc 01       	movw	r26, r24
+ 4da:	fc 01       	movw	r30, r24
+ 4dc:	67 2f       	mov	r22, r23
+ 4de:	71 91       	ld	r23, Z+
+ 4e0:	77 23       	and	r23, r23
+ 4e2:	e1 f7       	brne	.-8      	; 0x4dc <strrev+0x4>
+ 4e4:	32 97       	sbiw	r30, 0x02	; 2
+ 4e6:	04 c0       	rjmp	.+8      	; 0x4f0 <strrev+0x18>
+ 4e8:	7c 91       	ld	r23, X
+ 4ea:	6d 93       	st	X+, r22
+ 4ec:	70 83       	st	Z, r23
+ 4ee:	62 91       	ld	r22, -Z
+ 4f0:	ae 17       	cp	r26, r30
+ 4f2:	bf 07       	cpc	r27, r31
+ 4f4:	c8 f3       	brcs	.-14     	; 0x4e8 <strrev+0x10>
+ 4f6:	08 95       	ret
+
+000004f8 <_exit>:
+ 4f8:	f8 94       	cli
+
+000004fa <__stop_program>:
+ 4fa:	ff cf       	rjmp	.-2      	; 0x4fa <__stop_program>
