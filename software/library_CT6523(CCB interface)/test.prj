@@ -496,29 +496,29 @@ L13=Enhanced function parameters passing: Yes
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 266
-L18=3344 line(s) compiled
+L17=Build: 267
+L18=0 line(s) compiled
 L19=No errors
-L20=2 warning(s)
+L20=No warnings
 L21=
 L22=Bit variables size: 0 byte(s)
 L23=
 L24=Data Stack area: 0x100 to 0x4FF
 L25=Data Stack size: 1024 byte(s)
-L26=Estimated Data Stack usage: 148 byte(s)
+L26=Estimated Data Stack usage: 0 byte(s)
 L27=
-L28=RAM Global variables area: 0x500 to 0x53F
-L29=RAM Global variables size: 64 byte(s)
-L30=
-L31=Hardware Stack area: 0x540 to 0x10FF
-L32=Hardware Stack size: 3008 byte(s)
-L33=
-L34=Heap size: 0 byte(s)
-L35=
-L36=EEPROM usage: 0 byte(s), 0,0% of EEPROM
+L28=RAM Global variables size: 0 byte(s)
+L29=
+L30=Hardware Stack area: 0x500 to 0x10FF
+L31=Hardware Stack size: 3072 byte(s)
+L32=
+L33=Heap size: 0 byte(s)
+L34=
+L35=EEPROM usage: 0 byte(s), 0,0% of EEPROM
+L36=Program size: 4402 words (8804 bytes), 6,7% of FLASH
 L37=Program size: 4402 words (8804 bytes), 6,7% of FLASH
 L38=344 words (688 bytes), 7,2% reduced by Code Compression
-Lines=38
+Lines=36
 [BuildInfoAssembler]
 L1=AVRASM: AVR macro assembler 2.1.30 (build 592 Nov  7 2008 12:38:17)
 L2=Copyright (C) 1995-2008 ATMEL Corporation
@@ -538,7 +538,7 @@ Row=0
 Column=0
 ScrollPosX=0
 ScrollPosY=0
-TimeStamp=1181662228
+TimeStamp=1182382158
 [BookmarksFoldedCode]
 Files=5
 F1=main.c
@@ -548,8 +548,8 @@ F4=ct6523.c
 F5=ct6523.h
 [Bookmarks1]
 TimeStamp=1181643399
-Row=244
-Column=15
+Row=31
+Column=10
 ScrollPosX=0
 ScrollPosY=213
 BK0=-1
@@ -647,10 +647,6 @@ F12=C:\cvavr\inc\glcd_st7920.h
 F13=C:\cvavr\inc\glcd_types.h
 F14=C:\cvavr\inc\graphics.h
 F15=C:\cvavr\inc\font5x7.h
-[FoldedCode1]
-Blocks=0
-[FoldedCode4]
-Blocks=0
 [Bookmarks5]
 TimeStamp=1181576843
 Row=37
@@ -667,5 +663,9 @@ BK6=-1
 BK7=-1
 BK8=-1
 BK9=-1
+[FoldedCode1]
+Blocks=0
+[FoldedCode4]
+Blocks=0
 [FoldedCode5]
 Blocks=0

@@ -327,7 +327,7 @@ Hysterezis=0
 DIDR1=0
 CompOutput=0
 [ADC]
-ADCEnabled=0
+ADCEnabled=1
 ADC8Bits=0
 ADCHighSpeedMode=0
 ADCBipolarInputMode=0
@@ -335,7 +335,7 @@ ADCReverseInputPolarity=0
 ADCInterrupt=0
 ADCNoiseCancel=0
 ADCVref=0
-ADCVrefType=0
+ADCVrefType=1
 ADCClock=3
 ADCAutoScan=0
 FirstInput=0
