@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "CheapHead", "CheapHead.cproj", "{ED9161A9-D16B-4C29-B286-F1B076B16DE2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED9161A9-D16B-4C29-B286-F1B076B16DE2}.Debug|AVR.ActiveCfg = Debug|AVR
+		{ED9161A9-D16B-4C29-B286-F1B076B16DE2}.Debug|AVR.Build.0 = Debug|AVR
+		{ED9161A9-D16B-4C29-B286-F1B076B16DE2}.Release|AVR.ActiveCfg = Release|AVR
+		{ED9161A9-D16B-4C29-B286-F1B076B16DE2}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

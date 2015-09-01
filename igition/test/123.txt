@@ -1,0 +1,3 @@
+
+C:\Users\skota>avrdude -p m8 -c avr910 -P COM6 -b 115200 -U flash:w:C:\Users\sko
+ta\Documents\avr\test\Exe\test.hex:i

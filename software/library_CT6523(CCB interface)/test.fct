@@ -1,0 +1,6 @@
+main DSTACK_USAGE:16 DSTACK_LEVEL:16 FILE:"main.c" LINE:38
+sprintf DSTACK_USAGE:14 DSTACK_LEVEL:30 FILE:"C:\cvavr\lib\stdio.lib" LINE:1462
+_print DSTACK_USAGE:94 DSTACK_LEVEL:124 FILE:"C:\cvavr\lib\stdio.lib" LINE:1209
+_ftoe DSTACK_USAGE:16 DSTACK_LEVEL:140 FILE:"C:\cvavr\lib\stdio.lib" LINE:1128
+floor DSTACK_USAGE:4 DSTACK_LEVEL:144 FILE:"C:\cvavr\lib\math.lib" LINE:659
+ftrunc DSTACK_USAGE:4 DSTACK_LEVEL:148 FILE:"C:\cvavr\lib\math.lib" LINE:544

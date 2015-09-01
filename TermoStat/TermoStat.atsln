@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "TermoStat", "TermoStat\TermoStat.cproj", "{A2061CF8-B401-41A4-A08D-E396A3390DE2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2061CF8-B401-41A4-A08D-E396A3390DE2}.Debug|AVR.ActiveCfg = Debug|AVR
+		{A2061CF8-B401-41A4-A08D-E396A3390DE2}.Debug|AVR.Build.0 = Debug|AVR
+		{A2061CF8-B401-41A4-A08D-E396A3390DE2}.Release|AVR.ActiveCfg = Release|AVR
+		{A2061CF8-B401-41A4-A08D-E396A3390DE2}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

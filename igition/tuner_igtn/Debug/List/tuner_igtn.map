@@ -1,0 +1,57 @@
+RAM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+downState                                                                         0x019A       2
+Vol_int                                                                           0x019C       2
+_base_y                                                                           0x019E       4
+_lcd_y                                                                            0x01A2       1
+_lcd_maxx                                                                         0x01A3       1
+_seed                                                                             0x01A4       4
+
+EEPROM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                                          Register  Size
+------------------------------------------------------------------------------------------------
+adc_data                                                                          R4,R5        2
+Vol                                                                               R7           1
+NewState                                                                          R8,R9        2
+OldState                                                                          R10,R11      2
+upState                                                                           R12,R13      2
+_lcd_x                                                                            R6           1
+
+FLASH Allocation [words]
+Function                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+adc_isr                                                                           0x001BE     17
+timer1_compa_isr                                                                  0x001CF     10
+timer1_compb_isr                                                                  0x001D9      2
+encoder                                                                           0x001DB     59
+encoder_int                                                                       0x00216     70
+MSCS_com_veryfy                                                                   0x0025C     25
+main                                                                              0x00275    577
+MSCS_delay                                                                        0x004B6      3
+mosi                                                                              0x004B9      8
+clk                                                                               0x004C1      8
+miso                                                                              0x004C9      9
+MSCS_com                                                                          0x004D2     75
+MSCS_init                                                                         0x0051D      7
+put_buff_G100                                                                     0x00524     45
+_ftoe_G100                                                                        0x00551    142
+_print_G100                                                                       0x005DF    462
+sprintf                                                                           0x007AD     41
+_lcd_write_nibble_G101                                                            0x007D6     31
+_lcd_write_data                                                                   0x007F5     13
+lcd_gotoxy                                                                        0x00802     15
+lcd_clear                                                                         0x00811     15
+lcd_putchar                                                                       0x00820     26
+lcd_puts                                                                          0x0083A     16
+lcd_init                                                                          0x0084A     43
+strcpyf                                                                           0x00875     12
+strlen                                                                            0x00881     11
+strlenf                                                                           0x0088C     12
+ftrunc                                                                            0x00898     48
+floor                                                                             0x008C8     16
+ftoa                                                                              0x008D8    131

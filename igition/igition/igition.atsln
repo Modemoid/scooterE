@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "igition", "igition\igition.cproj", "{8173A37C-C3D8-489B-AF7F-6DA294F4CDD1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8173A37C-C3D8-489B-AF7F-6DA294F4CDD1}.Debug|AVR.ActiveCfg = Debug|AVR
+		{8173A37C-C3D8-489B-AF7F-6DA294F4CDD1}.Debug|AVR.Build.0 = Debug|AVR
+		{8173A37C-C3D8-489B-AF7F-6DA294F4CDD1}.Release|AVR.ActiveCfg = Release|AVR
+		{8173A37C-C3D8-489B-AF7F-6DA294F4CDD1}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
