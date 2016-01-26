@@ -1,0 +1,152 @@
+
+ingectorIntEEprom.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000094  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          000000fa  00800060  00800060  00000108  2**0
+                  ALLOC
+  2 .comment      00000030  00000000  00000000  00000108  2**0
+                  CONTENTS, READONLY
+  3 .debug_aranges 00000028  00000000  00000000  00000138  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   00000137  00000000  00000000  00000160  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 00000107  00000000  00000000  00000297  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   0000013a  00000000  00000000  0000039e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  00000054  00000000  00000000  000004d8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    00000176  00000000  00000000  0000052c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_loc    0000008a  00000000  00000000  000006a2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000018  00000000  00000000  0000072c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	21 e0       	ldi	r18, 0x01	; 1
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	aa 35       	cpi	r26, 0x5A	; 90
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	1c d0       	rcall	.+56     	; 0x7c <main>
+  44:	25 c0       	rjmp	.+74     	; 0x90 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <eeprom_to_mem>:
+        //TODO:: Please write your application code 
+    }
+}
+
+void eeprom_to_mem(void)
+{
+  48:	ef 92       	push	r14
+  4a:	ff 92       	push	r15
+  4c:	0f 93       	push	r16
+  4e:	1f 93       	push	r17
+  50:	cf 93       	push	r28
+  52:	df 93       	push	r29
+  54:	c0 e6       	ldi	r28, 0x60	; 96
+  56:	d0 e0       	ldi	r29, 0x00	; 0
+  58:	7e 01       	movw	r14, r28
+  5a:	0a e5       	ldi	r16, 0x5A	; 90
+  5c:	11 e0       	ldi	r17, 0x01	; 1
+	uint8_t LocalCounter = 0;
+	for (LocalCounter = 0;LocalCounter<def_ArrSize;LocalCounter++)
+	{
+		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
+		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
+  5e:	ce 01       	movw	r24, r28
+  60:	8e 19       	sub	r24, r14
+  62:	9f 09       	sbc	r25, r15
+  64:	0d d0       	rcall	.+26     	; 0x80 <__eerd_byte_m8>
+  66:	89 93       	st	Y+, r24
+}
+
+void eeprom_to_mem(void)
+{
+	uint8_t LocalCounter = 0;
+	for (LocalCounter = 0;LocalCounter<def_ArrSize;LocalCounter++)
+  68:	c0 17       	cp	r28, r16
+  6a:	d1 07       	cpc	r29, r17
+  6c:	c1 f7       	brne	.-16     	; 0x5e <eeprom_to_mem+0x16>
+	{
+		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
+		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
+	}
+  6e:	df 91       	pop	r29
+  70:	cf 91       	pop	r28
+  72:	1f 91       	pop	r17
+  74:	0f 91       	pop	r16
+  76:	ff 90       	pop	r15
+  78:	ef 90       	pop	r14
+  7a:	08 95       	ret
+
+0000007c <main>:
+*/
+
+
+int main(void)
+{
+eeprom_to_mem();
+  7c:	e5 df       	rcall	.-54     	; 0x48 <eeprom_to_mem>
+  7e:	ff cf       	rjmp	.-2      	; 0x7e <main+0x2>
+
+00000080 <__eerd_byte_m8>:
+  80:	e1 99       	sbic	0x1c, 1	; 28
+  82:	fe cf       	rjmp	.-4      	; 0x80 <__eerd_byte_m8>
+  84:	9f bb       	out	0x1f, r25	; 31
+  86:	8e bb       	out	0x1e, r24	; 30
+  88:	e0 9a       	sbi	0x1c, 0	; 28
+  8a:	99 27       	eor	r25, r25
+  8c:	8d b3       	in	r24, 0x1d	; 29
+  8e:	08 95       	ret
+
+00000090 <_exit>:
+  90:	f8 94       	cli
+
+00000092 <__stop_program>:
+  92:	ff cf       	rjmp	.-2      	; 0x92 <__stop_program>
