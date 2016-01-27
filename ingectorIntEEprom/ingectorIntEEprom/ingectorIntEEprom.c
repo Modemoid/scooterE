@@ -16,6 +16,10 @@
 #define Timer2IntON TIMSK|= (1<<OCIE2|1<<TOIE2);//set bits
 #define Timer2IntOFF TIMSK&= ~(1<<OCIE2|1<<TOIE2);//clear bits
 
+
+TODO:написать зажигание диода
+#define SoftBugON TIMSK|= (1<<OCIE2|1<<TOIE2);//set bits 
+
 #define def_ArrSize 250
 uint8_t TimeArray[def_ArrSize];
 unsigned int CurrentTimer, OldTimer;
@@ -32,6 +36,15 @@ void eeprom_to_mem(void)
 	{
 		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
 		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
+	}
+}
+void mem_to_eeprom(void)
+{
+	uint16_t LocalCounter = 0;
+	for (LocalCounter = 0;LocalCounter<def_ArrSize;LocalCounter++)
+	{
+		eeprom_write_byte ((uint8_t*)LocalCounter, TimeArray[LocalCounter]);
+		//TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
 	}
 }
 void Timer2Setup(void)
@@ -66,7 +79,9 @@ void Timer2Setup(void)
 ISR( INT0_vect )
 {	
 	
-	TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с АЦП
+	TODO: проверить пустое ли у нас оставшееся время. 
+	TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с АЦП(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие) 
+	
 	/*
 	//если стоит мало оборотов дернуть процедуру "стартовая порция", сбросить "мало оборотов" 
 	//записать значение кюррент в ОЛД
@@ -81,7 +96,8 @@ ISR( INT0_vect )
 
 ISR( TIMER2_OVF_vect )
 {
-	TODO: обработать эксепшен сюды я попасть не должен! 
+	SoftBugON
+	//готово TODO: обработать эксепшен сюды я попасть не должен! 
 	
 }
 
