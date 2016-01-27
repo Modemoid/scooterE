@@ -3,27 +3,27 @@ ingectorIntEEprom.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000094  00000000  00000000  00000074  2**1
+  0 .text         000000a6  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          000000fa  00800060  00800060  00000108  2**0
+  1 .bss          00000103  00800060  00800060  0000011a  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  00000108  2**0
+  2 .comment      00000030  00000000  00000000  0000011a  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 00000028  00000000  00000000  00000138  2**0
+  3 .debug_aranges 00000030  00000000  00000000  0000014a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00000137  00000000  00000000  00000160  2**0
+  4 .debug_info   00000191  00000000  00000000  0000017a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 00000107  00000000  00000000  00000297  2**0
+  5 .debug_abbrev 00000107  00000000  00000000  0000030b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   0000013a  00000000  00000000  0000039e  2**0
+  6 .debug_line   0000015e  00000000  00000000  00000412  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000054  00000000  00000000  000004d8  2**2
+  7 .debug_frame  00000058  00000000  00000000  00000570  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    00000176  00000000  00000000  0000052c  2**0
+  8 .debug_str    000001b1  00000000  00000000  000005c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    0000008a  00000000  00000000  000006a2  2**0
+  9 .debug_loc    0000006d  00000000  00000000  00000779  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000018  00000000  00000000  0000072c  2**0
+ 10 .debug_ranges 00000020  00000000  00000000  000007e6  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -67,86 +67,114 @@ Disassembly of section .text:
   3a:	1d 92       	st	X+, r1
 
 0000003c <.do_clear_bss_start>:
-  3c:	aa 35       	cpi	r26, 0x5A	; 90
+  3c:	a3 36       	cpi	r26, 0x63	; 99
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
-  42:	1c d0       	rcall	.+56     	; 0x7c <main>
-  44:	25 c0       	rjmp	.+74     	; 0x90 <_exit>
+  42:	24 d0       	rcall	.+72     	; 0x8c <main>
+  44:	2e c0       	rjmp	.+92     	; 0xa2 <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
 
 00000048 <eeprom_to_mem>:
-        //TODO:: Please write your application code 
-    }
-}
+
+
+
 
 void eeprom_to_mem(void)
 {
-  48:	ef 92       	push	r14
-  4a:	ff 92       	push	r15
-  4c:	0f 93       	push	r16
-  4e:	1f 93       	push	r17
-  50:	cf 93       	push	r28
-  52:	df 93       	push	r29
-  54:	c0 e6       	ldi	r28, 0x60	; 96
-  56:	d0 e0       	ldi	r29, 0x00	; 0
-  58:	7e 01       	movw	r14, r28
-  5a:	0a e5       	ldi	r16, 0x5A	; 90
-  5c:	11 e0       	ldi	r17, 0x01	; 1
-	uint8_t LocalCounter = 0;
+  48:	0f 93       	push	r16
+  4a:	1f 93       	push	r17
+  4c:	cf 93       	push	r28
+  4e:	df 93       	push	r29
+  50:	02 e6       	ldi	r16, 0x62	; 98
+  52:	10 e0       	ldi	r17, 0x00	; 0
+	uint16_t LocalCounter = 0;
 	for (LocalCounter = 0;LocalCounter<def_ArrSize;LocalCounter++)
+  54:	c0 e0       	ldi	r28, 0x00	; 0
+  56:	d0 e0       	ldi	r29, 0x00	; 0
 	{
 		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
 		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
-  5e:	ce 01       	movw	r24, r28
-  60:	8e 19       	sub	r24, r14
-  62:	9f 09       	sbc	r25, r15
-  64:	0d d0       	rcall	.+26     	; 0x80 <__eerd_byte_m8>
-  66:	89 93       	st	Y+, r24
-}
+  58:	ce 01       	movw	r24, r28
+  5a:	1b d0       	rcall	.+54     	; 0x92 <__eerd_byte_m8>
+  5c:	f8 01       	movw	r30, r16
+  5e:	81 93       	st	Z+, r24
+  60:	8f 01       	movw	r16, r30
+
 
 void eeprom_to_mem(void)
 {
-	uint8_t LocalCounter = 0;
+	uint16_t LocalCounter = 0;
 	for (LocalCounter = 0;LocalCounter<def_ArrSize;LocalCounter++)
-  68:	c0 17       	cp	r28, r16
-  6a:	d1 07       	cpc	r29, r17
-  6c:	c1 f7       	brne	.-16     	; 0x5e <eeprom_to_mem+0x16>
+  62:	21 96       	adiw	r28, 0x01	; 1
+  64:	ca 3f       	cpi	r28, 0xFA	; 250
+  66:	d1 05       	cpc	r29, r1
+  68:	b9 f7       	brne	.-18     	; 0x58 <eeprom_to_mem+0x10>
 	{
 		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
 		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
 	}
-  6e:	df 91       	pop	r29
-  70:	cf 91       	pop	r28
-  72:	1f 91       	pop	r17
-  74:	0f 91       	pop	r16
-  76:	ff 90       	pop	r15
-  78:	ef 90       	pop	r14
-  7a:	08 95       	ret
+}
+  6a:	df 91       	pop	r29
+  6c:	cf 91       	pop	r28
+  6e:	1f 91       	pop	r17
+  70:	0f 91       	pop	r16
+  72:	08 95       	ret
 
-0000007c <main>:
+00000074 <Timer2Setup>:
+
+	// LED_PORT|= 1<<LED4; //set
+	// LED_PORT&= ~(1<<LED1);//clear
+	// LED_PORT = LED_PORT ^ (1<<LED1); //switch
+	
+	OCR2 = 199; //нужно 200 тиков, счет с 0
+  74:	87 ec       	ldi	r24, 0xC7	; 199
+  76:	83 bd       	out	0x23, r24	; 35
+
+	TCCR2|= (0<<FOC2|0<<WGM20|0<<COM21|0<<COM20|1<<WGM21|0<<CS22|0<<CS21|1<<CS20);
+  78:	85 b5       	in	r24, 0x25	; 37
+  7a:	89 60       	ori	r24, 0x09	; 9
+  7c:	85 bd       	out	0x25, r24	; 37
+	//CS22 =0
+	//CS21 =0
+	//CS20=1 //CPU clock
 */
+	//теперь разрешим от него прерывания
+	Timer2IntON
+  7e:	89 b7       	in	r24, 0x39	; 57
+  80:	80 6c       	ori	r24, 0xC0	; 192
+  82:	89 bf       	out	0x39, r24	; 57
+	Timer2IntOFF
+  84:	89 b7       	in	r24, 0x39	; 57
+  86:	8f 73       	andi	r24, 0x3F	; 63
+  88:	89 bf       	out	0x39, r24	; 57
+  8a:	08 95       	ret
 
+0000008c <main>:
+
+*/
 
 int main(void)
 {
-eeprom_to_mem();
-  7c:	e5 df       	rcall	.-54     	; 0x48 <eeprom_to_mem>
-  7e:	ff cf       	rjmp	.-2      	; 0x7e <main+0x2>
+eeprom_to_mem();//load data arrays into memory
+  8c:	dd df       	rcall	.-70     	; 0x48 <eeprom_to_mem>
+Timer2Setup(); //setup timer2 //считает отрезки по 25 микросекунд
+  8e:	f2 df       	rcall	.-28     	; 0x74 <Timer2Setup>
+  90:	ff cf       	rjmp	.-2      	; 0x90 <main+0x4>
 
-00000080 <__eerd_byte_m8>:
-  80:	e1 99       	sbic	0x1c, 1	; 28
-  82:	fe cf       	rjmp	.-4      	; 0x80 <__eerd_byte_m8>
-  84:	9f bb       	out	0x1f, r25	; 31
-  86:	8e bb       	out	0x1e, r24	; 30
-  88:	e0 9a       	sbi	0x1c, 0	; 28
-  8a:	99 27       	eor	r25, r25
-  8c:	8d b3       	in	r24, 0x1d	; 29
-  8e:	08 95       	ret
+00000092 <__eerd_byte_m8>:
+  92:	e1 99       	sbic	0x1c, 1	; 28
+  94:	fe cf       	rjmp	.-4      	; 0x92 <__eerd_byte_m8>
+  96:	9f bb       	out	0x1f, r25	; 31
+  98:	8e bb       	out	0x1e, r24	; 30
+  9a:	e0 9a       	sbi	0x1c, 0	; 28
+  9c:	99 27       	eor	r25, r25
+  9e:	8d b3       	in	r24, 0x1d	; 29
+  a0:	08 95       	ret
 
-00000090 <_exit>:
-  90:	f8 94       	cli
+000000a2 <_exit>:
+  a2:	f8 94       	cli
 
-00000092 <__stop_program>:
-  92:	ff cf       	rjmp	.-2      	; 0x92 <__stop_program>
+000000a4 <__stop_program>:
+  a4:	ff cf       	rjmp	.-2      	; 0xa4 <__stop_program>
