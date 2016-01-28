@@ -3,37 +3,37 @@ ingectorIntEEprom.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000a6  00000000  00000000  00000074  2**1
+  0 .text         00000240  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          00000103  00800060  00800060  0000011a  2**0
+  1 .bss          000000fd  00800060  00800060  000002b4  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  0000011a  2**0
+  2 .comment      00000030  00000000  00000000  000002b4  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 00000030  00000000  00000000  0000014a  2**0
+  3 .debug_aranges 00000060  00000000  00000000  000002e4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00000191  00000000  00000000  0000017a  2**0
+  4 .debug_info   000002af  00000000  00000000  00000344  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 00000107  00000000  00000000  0000030b  2**0
+  5 .debug_abbrev 00000132  00000000  00000000  000005f3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   0000015e  00000000  00000000  00000412  2**0
+  6 .debug_line   000001f3  00000000  00000000  00000725  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000058  00000000  00000000  00000570  2**2
+  7 .debug_frame  00000134  00000000  00000000  00000918  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000001b1  00000000  00000000  000005c8  2**0
+  8 .debug_str    0000022e  00000000  00000000  00000a4c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    0000006d  00000000  00000000  00000779  2**0
+  9 .debug_loc    00000225  00000000  00000000  00000c7a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000020  00000000  00000000  000007e6  2**0
+ 10 .debug_ranges 00000050  00000000  00000000  00000e9f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
 
 00000000 <__vectors>:
    0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
-   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   2:	48 c0       	rjmp	.+144    	; 0x94 <__vector_1>
    4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
-   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
-   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   6:	8a c0       	rjmp	.+276    	; 0x11c <__vector_3>
+   8:	7e c0       	rjmp	.+252    	; 0x106 <__vector_4>
    a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
    c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
    e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
@@ -43,7 +43,7 @@ Disassembly of section .text:
   16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
   18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
   1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
-  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1c:	9c c0       	rjmp	.+312    	; 0x156 <__vector_14>
   1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
   20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
   22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
@@ -67,11 +67,11 @@ Disassembly of section .text:
   3a:	1d 92       	st	X+, r1
 
 0000003c <.do_clear_bss_start>:
-  3c:	a3 36       	cpi	r26, 0x63	; 99
+  3c:	ad 35       	cpi	r26, 0x5D	; 93
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
-  42:	24 d0       	rcall	.+72     	; 0x8c <main>
-  44:	2e c0       	rjmp	.+92     	; 0xa2 <_exit>
+  42:	9b d0       	rcall	.+310    	; 0x17a <main>
+  44:	fb c0       	rjmp	.+502    	; 0x23c <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
@@ -87,7 +87,7 @@ void eeprom_to_mem(void)
   4a:	1f 93       	push	r17
   4c:	cf 93       	push	r28
   4e:	df 93       	push	r29
-  50:	02 e6       	ldi	r16, 0x62	; 98
+  50:	0a ed       	ldi	r16, 0xDA	; 218
   52:	10 e0       	ldi	r17, 0x00	; 0
 	uint16_t LocalCounter = 0;
 	for (LocalCounter = 0;LocalCounter<def_ArrSize;LocalCounter++)
@@ -97,7 +97,7 @@ void eeprom_to_mem(void)
 		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
 		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
   58:	ce 01       	movw	r24, r28
-  5a:	1b d0       	rcall	.+54     	; 0x92 <__eerd_byte_m8>
+  5a:	e8 d0       	rcall	.+464    	; 0x22c <__eerd_byte_m8>
   5c:	f8 01       	movw	r30, r16
   5e:	81 93       	st	Z+, r24
   60:	8f 01       	movw	r16, r30
@@ -108,73 +108,361 @@ void eeprom_to_mem(void)
 	uint16_t LocalCounter = 0;
 	for (LocalCounter = 0;LocalCounter<def_ArrSize;LocalCounter++)
   62:	21 96       	adiw	r28, 0x01	; 1
-  64:	ca 3f       	cpi	r28, 0xFA	; 250
+  64:	c8 37       	cpi	r28, 0x78	; 120
   66:	d1 05       	cpc	r29, r1
   68:	b9 f7       	brne	.-18     	; 0x58 <eeprom_to_mem+0x10>
 	{
 		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
 		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
 	}
+	TimeArray[def_ArrSize] = 0;
+  6a:	10 92 52 01 	sts	0x0152, r1
 }
-  6a:	df 91       	pop	r29
-  6c:	cf 91       	pop	r28
-  6e:	1f 91       	pop	r17
-  70:	0f 91       	pop	r16
-  72:	08 95       	ret
+  6e:	df 91       	pop	r29
+  70:	cf 91       	pop	r28
+  72:	1f 91       	pop	r17
+  74:	0f 91       	pop	r16
+  76:	08 95       	ret
 
-00000074 <Timer2Setup>:
+00000078 <Timer2Setup>:
 
 	// LED_PORT|= 1<<LED4; //set
 	// LED_PORT&= ~(1<<LED1);//clear
 	// LED_PORT = LED_PORT ^ (1<<LED1); //switch
 	
 	OCR2 = 199; //нужно 200 тиков, счет с 0
-  74:	87 ec       	ldi	r24, 0xC7	; 199
-  76:	83 bd       	out	0x23, r24	; 35
+  78:	87 ec       	ldi	r24, 0xC7	; 199
+  7a:	83 bd       	out	0x23, r24	; 35
 
 	TCCR2|= (0<<FOC2|0<<WGM20|0<<COM21|0<<COM20|1<<WGM21|0<<CS22|0<<CS21|1<<CS20);
-  78:	85 b5       	in	r24, 0x25	; 37
-  7a:	89 60       	ori	r24, 0x09	; 9
-  7c:	85 bd       	out	0x25, r24	; 37
+  7c:	85 b5       	in	r24, 0x25	; 37
+  7e:	89 60       	ori	r24, 0x09	; 9
+  80:	85 bd       	out	0x25, r24	; 37
 	//CS22 =0
 	//CS21 =0
 	//CS20=1 //CPU clock
 */
 	//теперь разрешим от него прерывания
 	Timer2IntON
-  7e:	89 b7       	in	r24, 0x39	; 57
-  80:	80 6c       	ori	r24, 0xC0	; 192
-  82:	89 bf       	out	0x39, r24	; 57
-	Timer2IntOFF
-  84:	89 b7       	in	r24, 0x39	; 57
-  86:	8f 73       	andi	r24, 0x3F	; 63
-  88:	89 bf       	out	0x39, r24	; 57
-  8a:	08 95       	ret
+  82:	89 b7       	in	r24, 0x39	; 57
+  84:	80 6c       	ori	r24, 0xC0	; 192
+  86:	89 bf       	out	0x39, r24	; 57
+  88:	08 95       	ret
 
-0000008c <main>:
-
+0000008a <ADCSetup>:
+	// LED_PORT|= 1<<LED4; //set
+	// LED_PORT&= ~(1<<LED1);//clear
+	// LED_PORT = LED_PORT ^ (1<<LED1); //switch
+	
+	
+	ADMUX|= (0<<REFS1|0<<REFS0|1<<ADLAR|0<<MUX3|0<<MUX2|0<<MUX1|0<<MUX0); //ADC0 chanel (see MUX)
+  8a:	3d 9a       	sbi	0x07, 5	; 7
+	MUX2 
+	MUX1 
+	MUX0
 */
+	
+	ADCSRA|= (1<<ADEN|1<<ADFR|1<<ADIE|1<<ADPS2|1<<ADPS1|0<<ADPS0);
+  8c:	86 b1       	in	r24, 0x06	; 6
+  8e:	8e 6a       	ori	r24, 0xAE	; 174
+  90:	86 b9       	out	0x06, r24	; 6
+  92:	08 95       	ret
+
+00000094 <__vector_1>:
+	
+}
+
+
+ISR( INT0_vect )
+{	
+  94:	1f 92       	push	r1
+  96:	0f 92       	push	r0
+  98:	0f b6       	in	r0, 0x3f	; 63
+  9a:	0f 92       	push	r0
+  9c:	11 24       	eor	r1, r1
+  9e:	2f 93       	push	r18
+  a0:	8f 93       	push	r24
+  a2:	9f 93       	push	r25
+  a4:	af 93       	push	r26
+  a6:	bf 93       	push	r27
+  a8:	ef 93       	push	r30
+  aa:	ff 93       	push	r31
+	
+	//тахометр
+	OldTimer = CurrentTimer;
+  ac:	80 91 d8 00 	lds	r24, 0x00D8
+  b0:	90 91 d9 00 	lds	r25, 0x00D9
+  b4:	90 93 5b 01 	sts	0x015B, r25
+  b8:	80 93 5a 01 	sts	0x015A, r24
+	CurrentTimer = 0;
+  bc:	10 92 d9 00 	sts	0x00D9, r1
+  c0:	10 92 d8 00 	sts	0x00D8, r1
+	//конец тахометр
+	
+	
+	{//set drebezg protection flag
+	Coffs[4] = 1;
+  c4:	81 e0       	ldi	r24, 0x01	; 1
+  c6:	80 93 56 01 	sts	0x0156, r24
+	if (TimeArray[def_ArrSize]==0)//TODO: проверить пустое ли у нас оставшееся время. 
+  ca:	80 91 52 01 	lds	r24, 0x0152
+  ce:	81 11       	cpse	r24, r1
+  d0:	0e c0       	rjmp	.+28     	; 0xee <__vector_1+0x5a>
+	{
+		TimeArray[def_ArrSize]=TimeArray[DrocelPosition]+CorrectionArray[DrocelPosition];//TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с АЦП(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие) 
+  d2:	80 91 5c 01 	lds	r24, 0x015C
+  d6:	90 e0       	ldi	r25, 0x00	; 0
+  d8:	fc 01       	movw	r30, r24
+  da:	e0 5a       	subi	r30, 0xA0	; 160
+  dc:	ff 4f       	sbci	r31, 0xFF	; 255
+  de:	dc 01       	movw	r26, r24
+  e0:	a6 52       	subi	r26, 0x26	; 38
+  e2:	bf 4f       	sbci	r27, 0xFF	; 255
+  e4:	20 81       	ld	r18, Z
+  e6:	8c 91       	ld	r24, X
+  e8:	82 0f       	add	r24, r18
+  ea:	80 93 52 01 	sts	0x0152, r24
+	
+	//посчитать через сколько начать брызгать
+	//проверить корректность "брызга"
+	//запустить таймер 1 на "брызг" (комперА и комперБ)
+	*/
+}
+  ee:	ff 91       	pop	r31
+  f0:	ef 91       	pop	r30
+  f2:	bf 91       	pop	r27
+  f4:	af 91       	pop	r26
+  f6:	9f 91       	pop	r25
+  f8:	8f 91       	pop	r24
+  fa:	2f 91       	pop	r18
+  fc:	0f 90       	pop	r0
+  fe:	0f be       	out	0x3f, r0	; 63
+ 100:	0f 90       	pop	r0
+ 102:	1f 90       	pop	r1
+ 104:	18 95       	reti
+
+00000106 <__vector_4>:
+
+
+ISR( TIMER2_OVF_vect )
+{
+ 106:	1f 92       	push	r1
+ 108:	0f 92       	push	r0
+ 10a:	0f b6       	in	r0, 0x3f	; 63
+ 10c:	0f 92       	push	r0
+ 10e:	11 24       	eor	r1, r1
+	SoftBugON
+ 110:	c5 9a       	sbi	0x18, 5	; 24
+	//готово TODO: обработать эксепшен сюды я попасть не должен! 
+	
+}
+ 112:	0f 90       	pop	r0
+ 114:	0f be       	out	0x3f, r0	; 63
+ 116:	0f 90       	pop	r0
+ 118:	1f 90       	pop	r1
+ 11a:	18 95       	reti
+
+0000011c <__vector_3>:
+
+ISR(TIMER2_COMP_vect)
+{
+ 11c:	1f 92       	push	r1
+ 11e:	0f 92       	push	r0
+ 120:	0f b6       	in	r0, 0x3f	; 63
+ 122:	0f 92       	push	r0
+ 124:	11 24       	eor	r1, r1
+ 126:	2f 93       	push	r18
+ 128:	8f 93       	push	r24
+ 12a:	9f 93       	push	r25
+	if (CurrentTimer<MinOperationRPM) //TODO: инкремент переменной тахометра
+ 12c:	80 91 d8 00 	lds	r24, 0x00D8
+ 130:	90 91 d9 00 	lds	r25, 0x00D9
+ 134:	80 32       	cpi	r24, 0x20	; 32
+ 136:	2e e4       	ldi	r18, 0x4E	; 78
+ 138:	92 07       	cpc	r25, r18
+ 13a:	28 f4       	brcc	.+10     	; 0x146 <__vector_3+0x2a>
+	{
+		CurrentTimer++;
+ 13c:	01 96       	adiw	r24, 0x01	; 1
+ 13e:	90 93 d9 00 	sts	0x00D9, r25
+ 142:	80 93 d8 00 	sts	0x00D8, r24
+	
+	//TODO: декримент значения "оставшиеся времея потока"
+	
+	//тут мы должны вертеть "время впрыска" 
+	//обрабатывать нужно в основном цикле. ?
+}
+ 146:	9f 91       	pop	r25
+ 148:	8f 91       	pop	r24
+ 14a:	2f 91       	pop	r18
+ 14c:	0f 90       	pop	r0
+ 14e:	0f be       	out	0x3f, r0	; 63
+ 150:	0f 90       	pop	r0
+ 152:	1f 90       	pop	r1
+ 154:	18 95       	reti
+
+00000156 <__vector_14>:
+ISR(ADC_vect)
+{
+ 156:	1f 92       	push	r1
+ 158:	0f 92       	push	r0
+ 15a:	0f b6       	in	r0, 0x3f	; 63
+ 15c:	0f 92       	push	r0
+ 15e:	11 24       	eor	r1, r1
+ 160:	8f 93       	push	r24
+	if (ADCH<def_ArrSize){
+ 162:	85 b1       	in	r24, 0x05	; 5
+ 164:	88 37       	cpi	r24, 0x78	; 120
+ 166:	18 f4       	brcc	.+6      	; 0x16e <__vector_14+0x18>
+	DrocelPosition = ADCH;
+ 168:	85 b1       	in	r24, 0x05	; 5
+ 16a:	80 93 5c 01 	sts	0x015C, r24
+	}else
+	{
+		//TODO:Exeption - too big drocel travel
+	}
+}
+ 16e:	8f 91       	pop	r24
+ 170:	0f 90       	pop	r0
+ 172:	0f be       	out	0x3f, r0	; 63
+ 174:	0f 90       	pop	r0
+ 176:	1f 90       	pop	r1
+ 178:	18 95       	reti
+
+0000017a <main>:
+
+
 
 int main(void)
-{
-eeprom_to_mem();//load data arrays into memory
-  8c:	dd df       	rcall	.-70     	; 0x48 <eeprom_to_mem>
+{eeprom_to_mem();//load data arrays into memory
+ 17a:	66 df       	rcall	.-308    	; 0x48 <eeprom_to_mem>
 Timer2Setup(); //setup timer2 //считает отрезки по 25 микросекунд
-  8e:	f2 df       	rcall	.-28     	; 0x74 <Timer2Setup>
-  90:	ff cf       	rjmp	.-2      	; 0x90 <main+0x4>
+ 17c:	7d df       	rcall	.-262    	; 0x78 <Timer2Setup>
+ADCSetup();	
+ 17e:	85 df       	rcall	.-246    	; 0x8a <ADCSetup>
+    {
+		
+		//TODO пересчет мс в обороты оборотов = (1000/мс)*60
+		//currentRPM= 60000/CurrentTimer керренттаймер должен быть в мс
+		ADCSetup();	
+		currentRPM = 2400000/OldTimer;
+ 180:	0f 2e       	mov	r0, r31
+ 182:	c1 2c       	mov	r12, r1
+ 184:	ff e9       	ldi	r31, 0x9F	; 159
+ 186:	df 2e       	mov	r13, r31
+ 188:	f4 e2       	ldi	r31, 0x24	; 36
+ 18a:	ef 2e       	mov	r14, r31
+ 18c:	f1 2c       	mov	r15, r1
+ 18e:	f0 2d       	mov	r31, r0
+	while(1)
+    {
+		
+		//TODO пересчет мс в обороты оборотов = (1000/мс)*60
+		//currentRPM= 60000/CurrentTimer керренттаймер должен быть в мс
+		ADCSetup();	
+ 190:	7c df       	rcall	.-264    	; 0x8a <ADCSetup>
+		currentRPM = 2400000/OldTimer;
+ 192:	20 91 5a 01 	lds	r18, 0x015A
+ 196:	30 91 5b 01 	lds	r19, 0x015B
+ 19a:	40 e0       	ldi	r20, 0x00	; 0
+ 19c:	50 e0       	ldi	r21, 0x00	; 0
+ 19e:	c7 01       	movw	r24, r14
+ 1a0:	b6 01       	movw	r22, r12
+ 1a2:	06 d0       	rcall	.+12     	; 0x1b0 <__divmodsi4>
+ 1a4:	30 93 59 01 	sts	0x0159, r19
+ 1a8:	20 93 58 01 	sts	0x0158, r18
+		ADCSetup();	
+ 1ac:	6e df       	rcall	.-292    	; 0x8a <ADCSetup>
+ 1ae:	f0 cf       	rjmp	.-32     	; 0x190 <main+0x16>
 
-00000092 <__eerd_byte_m8>:
-  92:	e1 99       	sbic	0x1c, 1	; 28
-  94:	fe cf       	rjmp	.-4      	; 0x92 <__eerd_byte_m8>
-  96:	9f bb       	out	0x1f, r25	; 31
-  98:	8e bb       	out	0x1e, r24	; 30
-  9a:	e0 9a       	sbi	0x1c, 0	; 28
-  9c:	99 27       	eor	r25, r25
-  9e:	8d b3       	in	r24, 0x1d	; 29
-  a0:	08 95       	ret
+000001b0 <__divmodsi4>:
+ 1b0:	05 2e       	mov	r0, r21
+ 1b2:	97 fb       	bst	r25, 7
+ 1b4:	16 f4       	brtc	.+4      	; 0x1ba <__divmodsi4+0xa>
+ 1b6:	00 94       	com	r0
+ 1b8:	0f d0       	rcall	.+30     	; 0x1d8 <__negsi2>
+ 1ba:	57 fd       	sbrc	r21, 7
+ 1bc:	05 d0       	rcall	.+10     	; 0x1c8 <__divmodsi4_neg2>
+ 1be:	14 d0       	rcall	.+40     	; 0x1e8 <__udivmodsi4>
+ 1c0:	07 fc       	sbrc	r0, 7
+ 1c2:	02 d0       	rcall	.+4      	; 0x1c8 <__divmodsi4_neg2>
+ 1c4:	46 f4       	brtc	.+16     	; 0x1d6 <__divmodsi4_exit>
+ 1c6:	08 c0       	rjmp	.+16     	; 0x1d8 <__negsi2>
 
-000000a2 <_exit>:
-  a2:	f8 94       	cli
+000001c8 <__divmodsi4_neg2>:
+ 1c8:	50 95       	com	r21
+ 1ca:	40 95       	com	r20
+ 1cc:	30 95       	com	r19
+ 1ce:	21 95       	neg	r18
+ 1d0:	3f 4f       	sbci	r19, 0xFF	; 255
+ 1d2:	4f 4f       	sbci	r20, 0xFF	; 255
+ 1d4:	5f 4f       	sbci	r21, 0xFF	; 255
 
-000000a4 <__stop_program>:
-  a4:	ff cf       	rjmp	.-2      	; 0xa4 <__stop_program>
+000001d6 <__divmodsi4_exit>:
+ 1d6:	08 95       	ret
+
+000001d8 <__negsi2>:
+ 1d8:	90 95       	com	r25
+ 1da:	80 95       	com	r24
+ 1dc:	70 95       	com	r23
+ 1de:	61 95       	neg	r22
+ 1e0:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1e2:	8f 4f       	sbci	r24, 0xFF	; 255
+ 1e4:	9f 4f       	sbci	r25, 0xFF	; 255
+ 1e6:	08 95       	ret
+
+000001e8 <__udivmodsi4>:
+ 1e8:	a1 e2       	ldi	r26, 0x21	; 33
+ 1ea:	1a 2e       	mov	r1, r26
+ 1ec:	aa 1b       	sub	r26, r26
+ 1ee:	bb 1b       	sub	r27, r27
+ 1f0:	fd 01       	movw	r30, r26
+ 1f2:	0d c0       	rjmp	.+26     	; 0x20e <__udivmodsi4_ep>
+
+000001f4 <__udivmodsi4_loop>:
+ 1f4:	aa 1f       	adc	r26, r26
+ 1f6:	bb 1f       	adc	r27, r27
+ 1f8:	ee 1f       	adc	r30, r30
+ 1fa:	ff 1f       	adc	r31, r31
+ 1fc:	a2 17       	cp	r26, r18
+ 1fe:	b3 07       	cpc	r27, r19
+ 200:	e4 07       	cpc	r30, r20
+ 202:	f5 07       	cpc	r31, r21
+ 204:	20 f0       	brcs	.+8      	; 0x20e <__udivmodsi4_ep>
+ 206:	a2 1b       	sub	r26, r18
+ 208:	b3 0b       	sbc	r27, r19
+ 20a:	e4 0b       	sbc	r30, r20
+ 20c:	f5 0b       	sbc	r31, r21
+
+0000020e <__udivmodsi4_ep>:
+ 20e:	66 1f       	adc	r22, r22
+ 210:	77 1f       	adc	r23, r23
+ 212:	88 1f       	adc	r24, r24
+ 214:	99 1f       	adc	r25, r25
+ 216:	1a 94       	dec	r1
+ 218:	69 f7       	brne	.-38     	; 0x1f4 <__udivmodsi4_loop>
+ 21a:	60 95       	com	r22
+ 21c:	70 95       	com	r23
+ 21e:	80 95       	com	r24
+ 220:	90 95       	com	r25
+ 222:	9b 01       	movw	r18, r22
+ 224:	ac 01       	movw	r20, r24
+ 226:	bd 01       	movw	r22, r26
+ 228:	cf 01       	movw	r24, r30
+ 22a:	08 95       	ret
+
+0000022c <__eerd_byte_m8>:
+ 22c:	e1 99       	sbic	0x1c, 1	; 28
+ 22e:	fe cf       	rjmp	.-4      	; 0x22c <__eerd_byte_m8>
+ 230:	9f bb       	out	0x1f, r25	; 31
+ 232:	8e bb       	out	0x1e, r24	; 30
+ 234:	e0 9a       	sbi	0x1c, 0	; 28
+ 236:	99 27       	eor	r25, r25
+ 238:	8d b3       	in	r24, 0x1d	; 29
+ 23a:	08 95       	ret
+
+0000023c <_exit>:
+ 23c:	f8 94       	cli
+
+0000023e <__stop_program>:
+ 23e:	ff cf       	rjmp	.-2      	; 0x23e <__stop_program>

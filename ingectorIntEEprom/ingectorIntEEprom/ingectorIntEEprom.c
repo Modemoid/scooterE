@@ -10,21 +10,36 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
-//#include <util/delay.h>
+#include <util/delay.h>
+
+#define MinOperationRPM 20000 // RPM = 2400000/this define (20000 = 125RPM 15000 = 160RPM  10000 = 240RPM)
+
+
+#define LED1 5 //pb5 -arduino d13 we use as "software bug"
+#define LED2 5 //TODO: повернуть на сигнальный диод, пока pb5 -arduino d13 we use as "не хватает времени потока топлива"
+#define LED_PORT PORTB
+#define LED_DDR DDRB
+
+#define SetLed1 LED_PORT|= 1<<LED1; //set
+#define ClearLed1 LED_PORT&= ~(1<<LED1);//clear
+#define SwitchLed1 LED_PORT = LED_PORT ^ (1<<LED1); //switch
+
 
 
 #define Timer2IntON TIMSK|= (1<<OCIE2|1<<TOIE2);//set bits
 #define Timer2IntOFF TIMSK&= ~(1<<OCIE2|1<<TOIE2);//clear bits
 
 
-TODO:написать зажигание диода
-#define SoftBugON TIMSK|= (1<<OCIE2|1<<TOIE2);//set bits 
+#define SoftBugON SetLed1//set bits 
 
-#define def_ArrSize 250
-uint8_t TimeArray[def_ArrSize];
+#define def_ArrSize 120
+uint8_t TimeArray[def_ArrSize]; //last position - current flow
+uint8_t CorrectionArray[def_ArrSize]={0,}; //
 unsigned int CurrentTimer, OldTimer;
+unsigned int currentRPM;
 
-unsigned char Coffs[5]; //0 - open time, 1 - close time, 2 - min drocel position, 3 - max drocel position 
+unsigned char DrocelPosition;
+unsigned char Coffs[6]; //0 - open time, 1 - close time, 2 - min drocel position, 3 - max drocel, position 4-drebezg
 
 
 
@@ -37,6 +52,7 @@ void eeprom_to_mem(void)
 		//eeprom_write_byte ((uint8_t*) LocalCounter, LocalCounter);
 		TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
 	}
+	TimeArray[def_ArrSize] = 0;
 }
 void mem_to_eeprom(void)
 {
@@ -71,21 +87,69 @@ void Timer2Setup(void)
 */
 	//теперь разрешим от него прерывания
 	Timer2IntON
-	Timer2IntOFF
+	
+}
 
+void ADCSetup(void)
+{
+	// LED_PORT|= 1<<LED4; //set
+	// LED_PORT&= ~(1<<LED1);//clear
+	// LED_PORT = LED_PORT ^ (1<<LED1); //switch
+	
+	
+	ADMUX|= (0<<REFS1|0<<REFS0|1<<ADLAR|0<<MUX3|0<<MUX2|0<<MUX1|0<<MUX0); //ADC0 chanel (see MUX)
+	/*
+	REFS1 \
+	REFS0  | external power
+	ADLAR  1 - we can read only ADCH and use 8 bit 
+	– 
+	MUX3 
+	MUX2 
+	MUX1 
+	MUX0
+*/
+	
+	ADCSRA|= (1<<ADEN|1<<ADFR|1<<ADIE|1<<ADPS2|1<<ADPS1|0<<ADPS0);
+	
+	/*
+	ADEN ADC Enable
+	ADSC ADC Start Conversion
+	ADFR Free Running Select
+	ADIF ADC Interrupt Flag
+	ADIE ADC Interrupt Enable
+	ADPS2 1\
+	ADPS1 1 | 125 kHz@8Mhz
+	ADPS0 0/
+	*/
+	//теперь разрешим от него прерывания
+	
 }
 
 
 ISR( INT0_vect )
 {	
 	
-	TODO: проверить пустое ли у нас оставшееся время. 
-	TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с АЦП(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие) 
+	//тахометр
+	OldTimer = CurrentTimer;
+	CurrentTimer = 0;
+	//конец тахометр
 	
+	
+	{//set drebezg protection flag
+	Coffs[4] = 1;
+	if (TimeArray[def_ArrSize]==0)//TODO: проверить пустое ли у нас оставшееся время. 
+	{
+		TimeArray[def_ArrSize]=TimeArray[DrocelPosition]+CorrectionArray[DrocelPosition];//TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с АЦП(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие) 
+	}else
+		{
+		
+		}
+	
+	
+	}
 	/*
 	//если стоит мало оборотов дернуть процедуру "стартовая порция", сбросить "мало оборотов" 
-	//записать значение кюррент в ОЛД
-	//записать текущее значение таймера2 в кюррент
+	
 	
 	//посчитать через сколько начать брызгать
 	//проверить корректность "брызга"
@@ -103,24 +167,54 @@ ISR( TIMER2_OVF_vect )
 
 ISR(TIMER2_COMP_vect)
 {
-	TODO: декримент значения "оставшиеся времея потока"
+	if (CurrentTimer<MinOperationRPM) //TODO: инкремент переменной тахометра
+	{
+		CurrentTimer++;
+	}else 
+		{
+		//todo: exeption низкие обороты работы двигателя	
+		}
+	
+	//TODO: декримент значения "оставшиеся времея потока"
+	
 	//тут мы должны вертеть "время впрыска" 
 	//обрабатывать нужно в основном цикле. ?
+}
+ISR(ADC_vect)
+{
+	if (ADCH<def_ArrSize){
+	DrocelPosition = ADCH;
+	}else
+	{
+		//TODO:Exeption - too big drocel travel
+	}
 }
 
 
 
 int main(void)
-{
-eeprom_to_mem();//load data arrays into memory
+{eeprom_to_mem();//load data arrays into memory
 Timer2Setup(); //setup timer2 //считает отрезки по 25 микросекунд
-	
+ADCSetup();	
+
+
+
 	//eeprom_write_byte ((uint8_t*) 23, 64); //  write the byte 64 to location 23 of the EEPROM
 	//uint8_t byteRead = eeprom_read_byte((uint8_t*)23); // read the byte in location 23
     
 	while(1)
     {
-		TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
+		
+		//TODO пересчет мс в обороты оборотов = (1000/мс)*60
+		//currentRPM= 60000/CurrentTimer керренттаймер должен быть в мс
+		ADCSetup();	
+		currentRPM = 2400000/OldTimer;
+		ADCSetup();	
+		
+		
+		
+
+		//TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
         //TODO:: Please write your application code 
     }
 }
