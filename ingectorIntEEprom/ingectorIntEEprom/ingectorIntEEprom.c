@@ -24,6 +24,9 @@
 #define ClearLed1 LED_PORT&= ~(1<<LED1);//clear
 #define SwitchLed1 LED_PORT = LED_PORT ^ (1<<LED1); //switch
 
+#define SetLed2 LED_PORT|= 1<<LED2; //set
+#define ClearLed2 LED_PORT&= ~(1<<LED2);//clear
+#define SwitchLed2 LED_PORT = LED_PORT ^ (1<<LED2); //switch
 
 
 #define Timer2IntON TIMSK|= (1<<OCIE2|1<<TOIE2);//set bits
@@ -34,14 +37,15 @@
 uint8_t TimeArray[def_ArrSize]; //last position - current flow
 uint8_t CorrectionArray[def_ArrSize] = {101,}; //
 unsigned int CurrentTimer, OldTimer;
-unsigned int currentRPM;
+unsigned long currentRPM;
 
 unsigned char DrocelPosition;
 unsigned char Coffs[6]; //0 - open time (use as "+ingector open time -ingector close time", 
-						//1 - NU, 
+						//1 - soft bug timer OWF, 
 						//2 - min drocel position, 
 						//3 - max drocel position, 
 						//4-drebezg flag
+unsigned int RawADC = 0;
 
 
 
@@ -110,7 +114,7 @@ void ADCSetup(void)
   MUX0
   */
 
-  ADCSRA |= (1 << ADEN | 1 << ADFR | 1 << ADIE | 1 << ADPS2 | 1 << ADPS1 | 0 << ADPS0);
+  ADCSRA |= (1 << ADEN |1<<ADSC| 1 << ADFR | 1 << ADIE | 1 << ADPS2 | 1 << ADPS1 | 0 << ADPS0);
 
   /*
   ADEN ADC Enable
@@ -136,12 +140,15 @@ void IntExtSetup(void)
 void PortSetup(void)
 {
 		//настройка портов для кнопок
-		DDRC = 0b00110000;  //kb port
-		PORTC = 0b00001111; //kb port
+		DDRC = 0b00000000;  //kb port
+		PORTC = 0b00000000; //kb port
 
 		//настройка портов
-		DDRD = 0b11111100;  //kb port
-		PORTD = 0b00000000; //kb port
+		DDRB = 0b00100110;  //kb port
+		PORTB = 0b00000000; //kb port
+		
+		DDRD = 0b00000000;
+		PORTC = 0b00000000;
 		//PINx регистр чтения
 		//PORTx 1=pullup(in)
 		//DDRx 0=in 1=out
@@ -195,9 +202,10 @@ void SoftBugON(void) {
   ISR( TIMER2_OVF_vect )
   {
     SoftBugON();
+	Coffs[1]++;
     //готово TODO: обработать эксепшен сюды я попасть не должен!
   }
-  ISR(TIMER2_COMP_vect)
+  ISR( TIMER2_COMP_vect )
   {
     if (Coffs[4] == 1)
     {
@@ -218,11 +226,13 @@ void SoftBugON(void) {
   }
   ISR(ADC_vect)
   {
+ RawADC =  ADCH;	  
     if (ADCH < def_ArrSize) {
       DrocelPosition = ADCH;
     } else
     {
-      //TODO:Exeption - too big drocel travel
+      //TODO:Exeption - too big drocel travel 
+	  //todo:activate remaping
     }
   }
 
@@ -242,11 +252,13 @@ void SoftBugON(void) {
     ADCSetup();
     IntExtSetup();
 PortSetup();
+sei();
     while (1)
     {
 
       //TODO пересчет мс в обороты оборотов = (1000/мс)*60
       //currentRPM= 60000/CurrentTimer керренттаймер должен быть в мс
+	  SwitchLed2
       currentRPM = 2400000 / OldTimer;
 
       //TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
