@@ -15,8 +15,10 @@
 #define MinOperationRPM 20000 // RPM = 2400000/this define (20000 = 125RPM 15000 = 160RPM  10000 = 240RPM)
 
 
-#define LED1 5 //pb5 -arduino d13 we use as "software bug"
-#define LED2 5 //TODO: повернуть на сигнальный диод, пока pb5 -arduino d13 we use as "не хватает времени потока топлива"
+#define LED4 4 //TODO: впрыск идет pb4
+#define LED1 5 //pb5 -arduino d13 we use as "software bug" 
+#define LED2 6 //TODO "не хватает времени потока топлива" pb6 
+#define LED3 7 //TODO: "двигатель работает. Впрыск разрешен" pb7
 #define LED_PORT PORTB
 #define LED_DDR DDRB
 
@@ -28,9 +30,34 @@
 #define ClearLed2 LED_PORT&= ~(1<<LED2);//clear
 #define SwitchLed2 LED_PORT = LED_PORT ^ (1<<LED2); //switch
 
+#define SetLed3 LED_PORT|= 1<<LED3; //set
+#define ClearLed3 LED_PORT&= ~(1<<LED3);//clear
+#define SwitchLed3 LED_PORT = LED_PORT ^ (1<<LED3); //switch
 
-#define Timer2IntON TIMSK|= (1<<OCIE2|1<<TOIE2);//set bits
-#define Timer2IntOFF TIMSK&= ~(1<<OCIE2|1<<TOIE2);//clear bits
+#define SetLed4 LED_PORT|= 1<<LED4; //set
+#define ClearLed4 LED_PORT&= ~(1<<LED4);//clear
+#define SwitchLed4 LED_PORT = LED_PORT ^ (1<<LED4); //switch
+
+
+#define Out1 1 //TODO: ch1
+#define Out2 2 //TODO: ch1
+#define Out3 3 //TODO: ch1
+#define Out_PORT PORTB
+#define Out_DDR DDRB
+
+#define SetOut1 Out_PORT|= 1<<Out1; //set
+#define ClearOut1 Out_PORT&= ~(1<<Out1);//clear
+#define SwitchOut1 Out_PORT = Out_PORT ^ (1<<Out1); //switch
+
+
+
+
+
+
+
+
+#define Timer2IntON TIMSK|= (1<<OCIE2);//|1<<TOIE2);//set bits
+#define Timer2IntOFF TIMSK&= ~(1<<OCIE2);//|1<<TOIE2);//clear bits
 
 
 #define def_ArrSize 120
@@ -38,13 +65,18 @@ uint8_t TimeArray[def_ArrSize]; //last position - current flow
 uint8_t CorrectionArray[def_ArrSize] = {101,}; //
 unsigned int CurrentTimer, OldTimer;
 unsigned long currentRPM;
+unsigned int RemainingFlowTime=0;
 
 unsigned char DrocelPosition;
-unsigned char Coffs[6]; //0 - open time (use as "+ingector open time -ingector close time", 
-						//1 - soft bug timer OWF, 
+unsigned char Coffs[7]={0,0,0,0,0,0,0}; 
+						//0 - have BUG. anything though it
+						//1 - timer OWF  - now not need
 						//2 - min drocel position, 
 						//3 - max drocel position, 
-						//4-drebezg flag
+						//4 - drebezg flag
+						//5 - ctc counter - now not need
+						//6 - open time (use as "+ingector open time -ingector close time", 
+						
 unsigned int RawADC = 0;
 
 
@@ -77,10 +109,14 @@ void Timer2Setup(void)
   // LED_PORT|= 1<<LED4; //set
   // LED_PORT&= ~(1<<LED1);//clear
   // LED_PORT = LED_PORT ^ (1<<LED1); //switch
-
+Coffs[1] = 0;
+Coffs[5] = 0;
+TCCR2 = 0;
   OCR2 = 199; //нужно 200 тиков, счет с 0
 
-  TCCR2 |= (0 << FOC2 | 0 << WGM20 | 0 << COM21 | 0 << COM20 | 1 << WGM21 | 0 << CS22 | 0 << CS21 | 1 << CS20);
+  //TCCR2 |= (0 << FOC2 | 0 << WGM20 | 0 << COM21 | 0 << COM20 | 1 << WGM21 | 0 << CS22 | 0 << CS21 | 1 << CS20);
+  TCCR2 = 0;
+  TCCR2 |= ( 0 << WGM20 | 0 << COM21 | 0 << COM20 | 1 << WGM21 | 0 << CS22 | 0 << CS21 | 1 << CS20);
   /*
   //FOC2 = 0
   //WGM20 = 0 + WGM21 =1 |CTC mode
@@ -144,24 +180,27 @@ void PortSetup(void)
 		PORTC = 0b00000000; //kb port
 
 		//настройка портов
-		DDRB = 0b00100110;  //kb port
-		PORTB = 0b00000000; //kb port
+		//DDRB = 0b11100110;  //kb port
+		//PORTB = 0b00000000; //kb port
 		
 		DDRD = 0b00000000;
-		PORTC = 0b00000000;
+		PORTD = 0b00000000;
 		//PINx регистр чтения
 		//PORTx 1=pullup(in)
 		//DDRx 0=in 1=out
-		#ifdef DEBUG_LEDS
+		
+		Out_DDR|=(1<<Out1|1<<Out2|1<<Out3);
+		
+		//#ifdef DEBUG_LEDS
 		LED_DDR|= (1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4);     //Led port
 		LED_PORT&= ~(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4); //Led port
 		//конец настройки портов
-		#endif
+		//#endif
 }
 void LoadFuelTime(void)
 {
   //    Coffs[6]; //0 - open time (use as "+ingector open time -ingector close time", 1 - NU, 2 - min drocel position, 3 - max drocel position, 4-drebezg flag
-  TimeArray[def_ArrSize] = Coffs[0]+TimeArray[DrocelPosition] + CorrectionArray[DrocelPosition]; //TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с АЦП(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие)
+  RemainingFlowTime = Coffs[6]+TimeArray[DrocelPosition] + CorrectionArray[DrocelPosition]; //TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с АЦП(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие)
 
 }
 void Low_FuelFlow_Exeption (void)
@@ -169,7 +208,8 @@ void Low_FuelFlow_Exeption (void)
   //todo set LowFuelFlowExeption
 }
 void SoftBugON(void) {
-  SetLed1//set bits
+  asm ("nop");
+  //SetLed1//set bits
 }
   ISR( INT0_vect )
 {
@@ -201,12 +241,12 @@ void SoftBugON(void) {
   }
   ISR( TIMER2_OVF_vect )
   {
-    SoftBugON();
-	Coffs[1]++;
-    //готово TODO: обработать эксепшен сюды я попасть не должен!
+	  asm ("nop"); //прерывание вызывается вслед за timer_comp - в этом режиме работы таймера бессмысленно
   }
   ISR( TIMER2_COMP_vect )
   {
+	 
+	  //Coffs[5]++;
     if (Coffs[4] == 1)
     {
       Coffs[4] = 0;
@@ -219,6 +259,10 @@ void SoftBugON(void) {
     {
       //todo: exeption низкие обороты работы двигателя
     }
+	if (RemainingFlowTime)
+	{
+	RemainingFlowTime--; //уменьшаем оставшееся время потока
+	}
 
     //TODO: декримент значения "оставшиеся времея потока"
     //тут мы должны вертеть "время впрыска"
@@ -246,7 +290,7 @@ void SoftBugON(void) {
       CorrectionArray[LocalCounter] = 1; // clear correction array
     }
 
-
+Coffs[0] = 0;
     eeprom_to_mem();//load data arrays into memory
     Timer2Setup(); //setup timer2 //считает отрезки по 25 микросекунд
     ADCSetup();
@@ -259,6 +303,14 @@ sei();
       //TODO пересчет мс в обороты оборотов = (1000/мс)*60
       //currentRPM= 60000/CurrentTimer керренттаймер должен быть в мс
 	  SwitchLed2
+	  if (RemainingFlowTime)
+	  {
+		  SetOut1
+		  SetLed4
+	  }else {
+	  ClearOut1
+	  ClearLed4
+	  }
       currentRPM = 2400000 / OldTimer;
 
       //TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
