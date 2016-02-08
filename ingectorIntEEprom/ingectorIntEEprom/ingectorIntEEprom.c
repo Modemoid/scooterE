@@ -65,33 +65,36 @@
 #ifdef Atmega8
 #define Timer2IntON TIMSK|= (1<<OCIE2);//|1<<TOIE2);//set bits
 #define Timer2IntOFF TIMSK&= ~(1<<OCIE2);//|1<<TOIE2);//clear bits
-#endif
+#else
 #define Timer2IntON TIMSK2|= (1<<OCIE2A);//|1<<TOIE2);//set bits
 #define Timer2IntOFF TIMS2K&= ~(1<<OCIE2A);//|1<<TOIE2);//clear bits
+#endif
 
 #define def_ArrSize 120
 uint8_t TimeArray[def_ArrSize]; //last position - current flow
 int8_t CorrectionArray[def_ArrSize] = {0,}; //
 unsigned int CurrentTimer, OldTimer;
 unsigned long currentRPM;
-unsigned int RemainingFlowTime=0;
+unsigned int RemainingFlowTime = 0;
 
 unsigned char DrocelPosition;
 //Coffs define need only for start load for verbose look
 #define MinDrocel 0
 #define MaxDrocel 119
-#define IngectorActionTime 2
+#define IngectorActionTime 1
+#define StartDose 20 // time in 25us will added for fuelshot, when engine run on low RPM
 //
-unsigned char Coffs[8]={0,0,MinDrocel,MaxDrocel,0,0,IngectorActionTime}; 
-						//0 - have BUG. anything though it
-						//1 - timer OWF  - now not need
-						//Coffs[2] - min drocel position, 
-						//Coffs[3] - max drocel position, 
-						//4 - drebezg flag
-						//5 - ctc counter - now not need
-						//6 - Ingector action time (use as "+ingector open time -ingector close time"
-						
-unsigned char RawADC1 = 0, RawADCH =0, AdcCH =0, ADCCorrection=0;
+unsigned char Coffs[8] = {0, StartDose, MinDrocel, MaxDrocel, 0, 0, IngectorActionTime};
+//0 - have BUG. anything though it
+//Coffs[1] - StartDose TODO: написать процедуру старта. 
+//Coffs[2] - min drocel position (fact by ADC),
+//Coffs[3] - max drocel position (fact by ADC),
+//4 - drebezg flag
+//5 - ctc counter - now not need
+//6 - Ingector action time (use as "+ingector open time -ingector close time" (must be tested by fact)
+
+unsigned char RawADC2 = 0, RawADC1 = 0, RawADC0 = 0, AdcCH = 0, ADCCorrection = 0, Adc1 = 0;
+//RawADCH - channel 0, RawADC1 - channel 2, RawADC0 - channel 1
 
 
 
@@ -111,8 +114,8 @@ void mem_to_eeprom(void)
   uint16_t LocalCounter = 0;
   for (LocalCounter = 0; LocalCounter < def_ArrSize; LocalCounter++)
   {
-	  
-	  eeprom_write_byte ((uint8_t*)LocalCounter,LocalCounter*2+10 );
+
+    eeprom_write_byte ((uint8_t*)LocalCounter, LocalCounter * 2 + 10 );
 
     //eeprom_write_byte ((uint8_t*)LocalCounter, TimeArray[LocalCounter]);
     //TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
@@ -126,15 +129,14 @@ void Timer2Setup(void)
   // LED_PORT|= 1<<LED4; //set
   // LED_PORT&= ~(1<<LED1);//clear
   // LED_PORT = LED_PORT ^ (1<<LED1); //switch
-Coffs[1] = 0;
-Coffs[5] = 0;
 
-  #ifdef Atmega8
+#ifdef Atmega8
   OCR2 = 199; //нужно 200 тиков, счет с 0
+#else
+  OCR2A = 199;
 #endif
-OCR2A = 199;
   //TCCR2 |= (0 << FOC2 | 0 << WGM20 | 0 << COM21 | 0 << COM20 | 1 << WGM21 | 0 << CS22 | 0 << CS21 | 1 << CS20);
-  #ifdef Atmega8
+#ifdef Atmega8
   TCCR2 = 0;
   TCCR2 |= ( 0 << WGM20 | 0 << COM21 | 0 << COM20 | 1 << WGM21 | 0 << CS22 | 0 << CS21 | 1 << CS20);
   /*
@@ -147,12 +149,14 @@ OCR2A = 199;
   //CS21 =0
   //CS20=1 //CPU clock
   */
-  //теперь разрешим от него прерывани¤
-  #endif
+  //теперь разрешим от него прерывания
+#else
+
   TCCR2A = 0;
-  TCCR2A|=(1<<COM2A1|0<<COM2A1|1 << WGM21|0 << WGM20 );
-  TCCR2B=0;
-  TCCR2B|=( 0 << CS22 | 0 << CS21 | 1 << CS20);
+  TCCR2A |= (1 << COM2A1 | 0 << COM2A1 | 1 << WGM21 | 0 << WGM20 );
+  TCCR2B = 0;
+  TCCR2B |= ( 0 << CS22 | 0 << CS21 | 1 << CS20);
+#endif
   Timer2IntON
 
 }
@@ -170,13 +174,13 @@ void ADCSetup(void)
   ADLAR  1 - we can read only ADCH and use 8 bit
   Ц
   MUX3
-  MUX2 TODO: правильно выбрать канал дросел¤
+  MUX2 TODO: правильно выбрать канал дроселя
   MUX1
   MUX0
   */
 
-  #ifdef Atmega8
-  ADCSRA |= (1 << ADEN |1<<ADSC| 1 << ADFR | 1 << ADIE | 1 << ADPS2 | 1 << ADPS1 | 0 << ADPS0);
+#ifdef Atmega8
+  ADCSRA |= (1 << ADEN | 1 << ADSC | 1 << ADFR | 1 << ADIE | 1 << ADPS2 | 1 << ADPS1 | 0 << ADPS0);
   /*
   ADEN ADC Enable
   ADSC ADC Start Conversion
@@ -187,12 +191,13 @@ void ADCSetup(void)
   ADPS1 1 | 125 kHz@8Mhz
   ADPS0 0/
   */
-  #endif
-  ADCSRA |=(1<<ADEN|1<<ADSC| 1<<ADATE| 1 << ADIE | 1 << ADPS2 | 1 << ADPS1 | 0 << ADPS0);
+#else
+  ADCSRA |= (1 << ADEN | 1 << ADSC | 1 << ADATE | 1 << ADIE | 1 << ADPS2 | 1 << ADPS1 | 0 << ADPS0);
   //ADEN ADSC ADATE ADIF ADIE ADPS2 ADPS1 ADPS0
-  ADCSRB |=(0<<ACME|0<<ADTS2|1<<ADTS1|0<<ADTS0);
+  ADCSRB |= (0 << ACME | 0 << ADTS2 | 1 << ADTS1 | 0 << ADTS0);
   // ACME Ц Ц Ц ADTS2 ADTS1 ADTS0
-  //теперь разрешим от него прерывани¤
+#endif
+
 
 }
 void IntExtSetup(void)
@@ -200,50 +205,50 @@ void IntExtSetup(void)
   //сбрасываем все биты ISCxx
   //MCUCR &= ~( (1<<ISC11)|(1<<ISC10)|(1<<ISC01)|(1<<ISC00) )
   //настраиваем на срабатывание INT0 по переднему фронту
-  #ifdef Atmega8
+#ifdef Atmega8
   MCUCR |= (1 << ISC01) | (1 << ISC00); // по поднимающемуся фронту
   GICR |= (1 << INT0);
+#else
+
+  EICRA |= (1 << ISC11 | 1 << ISC10 | 1 << ISC01 | 1 << ISC00);
+  EIMSK |= (1 << INT0 | 1 << INT1);
 #endif
-
-EICRA |=(1<<ISC11|1<<ISC10|1<<ISC01|1<<ISC00);
-EIMSK |=(1<<INT0|1<<INT1);
-
-//GICR |= (1 << INT0);
+  //GICR |= (1 << INT0);
 
 }
 void PortSetup(void)
 {
-		//настройка портов дл¤ кнопок
-		DDRC = 0b00000000;  //kb port
-		PORTC = 0b00000000; //kb port
+  //настройка портов для кнопок
+  DDRC = 0b00000000;  //kb port
+  PORTC = 0b00000000; //kb port
 
-		//настройка портов
-		//DDRB = 0b11100110;  //kb port
-		//PORTB = 0b00000000; //kb port
-		
-		DDRD = 0b00000011; //rx tx as led
-		PORTD = 0b00000000;
-		//PINx регистр чтени¤
-		//PORTx 1=pullup(in)
-		//DDRx 0=in 1=out
-		
-		Out_DDR|=(1<<Out1|1<<Out2|1<<Out3);
-		
-		//#ifdef DEBUG_LEDS
-		LED_DDR|= (1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4);     //Led port
-		LED_PORT&= ~(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4); //Led port
-		//конец настройки портов
-		//#endif
+  //настройка портов
+  //DDRB = 0b11100110;  //kb port
+  //PORTB = 0b00000000; //kb port
+
+  DDRD = 0b00000011; //rx tx as led
+  PORTD = 0b00000000;
+  //PINx регистр чтения
+  //PORTx 1=pullup(in)
+  //DDRx 0=in 1=out
+
+  Out_DDR |= (1 << Out1 | 1 << Out2 | 1 << Out3);
+
+  //#ifdef DEBUG_LEDS
+  LED_DDR |= (1 << LED1) | (1 << LED2) | (1 << LED3) | (1 << LED4); //Led port
+  LED_PORT &= ~(1 << LED1) | (1 << LED2) | (1 << LED3) | (1 << LED4); //Led port
+  //конец настройки портов
+  //#endif
 }
 void LoadFuelTime(void)
 {
   //    Coffs[6]; //0 - open time (use as "+ingector open time -ingector close time", 1 - NU, 2 - min drocel position, 3 - max drocel position, 4-drebezg flag
-  RemainingFlowTime = Coffs[6]+TimeArray[DrocelPosition] + CorrectionArray[DrocelPosition]+ADCCorrection; //TODO: загрузить значение из таблички "оставшиес¤ време¤ потока" в зависимости от того что у нас с ј?ѕ(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие)
+  RemainingFlowTime = Coffs[6] + TimeArray[DrocelPosition] + CorrectionArray[DrocelPosition] + ADCCorrection; //TODO: загрузить значение из таблички "оставшиеся времея потока" в зависимости от того что у нас с ј?ѕ(не забыть поправки начала-конца) + коэффициенты (открытие-закрытие)
 
 }
 void Low_FuelFlow_Exeption (void)
 {
-	SetTX
+  SetTX
   //todo set LowFuelFlowExeption
 }
 void SoftBugON(void) {
@@ -254,12 +259,12 @@ char charmap(char x, char in_min, char in_max, char out_min, char out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-  ISR( INT1_vect)
-{	
-}
-  ISR( INT0_vect )
+ISR( INT1_vect)
 {
-//SwitchTX
+}
+ISR( INT0_vect )
+{
+  //SwitchTX
   //тахометр
   OldTimer = CurrentTimer;
   CurrentTimer = 0;
@@ -271,152 +276,139 @@ char charmap(char x, char in_min, char in_max, char out_min, char out_max)
     if (RemainingFlowTime == 0) //TODO: проверить пустое ли у нас оставшееся время.
     {
       LoadFuelTime();
-	  ClearTX
+      ClearTX
     } else
     {
       Low_FuelFlow_Exeption();
       LoadFuelTime();
     }
-	}//end drebezg protection
+  }//end drebezg protection
 
 
-    /*
-    //если стоит мало оборотов дернуть процедуру "стартова¤ порци¤", сбросить "мало оборотов"
-	//посчитать через сколько начать брызгать
-    //запустить таймер 1 на "брызг" (комперј и комперЅ)
-    */
-  }
-  ISR( TIMER2_OVF_vect )
+  /*
+  //если стоит мало оборотов дернуть процедуру "стартовая порция", сбросить "мало оборотов"
+  //посчитать через сколько начать брызгать
+  //запустить таймер 1 на "брызг" (комперј и комперЅ)
+  */
+}
+ISR( TIMER2_OVF_vect )
+{
+  asm ("nop"); //прерывание вызывается вслед за timer_comp - в этом режиме работы таймера бессмысленно
+}
+
+#ifdef Atmega8
+ISR( TIMER2_COMP_vect )
+#else
+ISR( TIMER2_COMPA_vect)
+#endif
+{
+  //SwitchRX
+  //SwitchOut1
+  //Coffs[5]++;
+  if (Coffs[4] == 1)
   {
-	  asm ("nop"); //прерывание вызываетс¤ вслед за timer_comp - в этом режиме работы таймера бессмысленно
+    Coffs[4] = 0;
   }
-  ISR( TIMER2_COMPA_vect)
-  {
-	  //SwitchRX	 
-	  //SwitchOut1
-	  //Coffs[5]++;
-    if (Coffs[4] == 1)
-    {
-      Coffs[4] = 0;
-    }
 
-    if (CurrentTimer < MinOperationRPM) //TODO: инкремент переменной тахометра
-    {
-      CurrentTimer++;
-    } else
-    {
-      //todo: exeption низкие обороты работы двигател¤
-    }
-	if (RemainingFlowTime)
-	{
-	RemainingFlowTime--; //уменьшаем оставшеес¤ врем¤ потока
+  if (CurrentTimer < MinOperationRPM) //TODO: инкремент переменной тахометра
+  {
+    CurrentTimer++;
+  } else
+  {
+    //todo: exeption низкие обороты работы двигателя
   }
-	}
-  #ifdef Atmega8
-  ISR( TIMER2_COMP_vect )
+  if (RemainingFlowTime)
   {
-	 
-	  //Coffs[5]++;
-    if (Coffs[4] == 1)
-    {
-      Coffs[4] = 0;
-    }
-
-    if (CurrentTimer < MinOperationRPM) //TODO: инкремент переменной тахометра
-    {
-      CurrentTimer++;
-    } else
-    {
-      //todo: exeption низкие обороты работы двигател¤
-    }
-	if (RemainingFlowTime)
-	{
-	RemainingFlowTime--; //уменьшаем оставшеес¤ врем¤ потока
-	}
-
-    //TODO: декримент значени¤ "оставшиес¤ време¤ потока"
-    //тут мы должны вертеть "врем¤ впрыска"
-    //обрабатывать нужно в основном цикле. ?
+    RemainingFlowTime--; //уменьшаем оставшееся время потока
   }
-  #endif
-  ISR(ADC_vect)
-  {
+}
 
-		switch (AdcCH)
-		{
-			case 0: 
-			{
-				RawADCH =  ADCH;
-				ADMUX |=1<<MUX1; //set
-				AdcCH = 1;
-	
-				DrocelPosition = charmap(RawADCH,1,255,Coffs[2],Coffs[3]);
-				break;
-			}
-			case 1:
-			{
-				RawADC1 =  ADCH;
-				ADMUX &=~(1<<MUX1);//clear
-				AdcCH = 0;
-				break;
-			}
-		default: ;
-		}
+ISR(ADC_vect)
+{
+
+  switch (AdcCH)
+  {
+    case 0:
+      {
+        RawADC0 =  ADCH;
+        ADMUX |= 1 << MUX1; //set (mux0 =0 mun1=1)
+        AdcCH = 1;
+
+        DrocelPosition = charmap(RawADC0, 1, 255, Coffs[2], Coffs[3]);
+        break;
+      }
+    case 1:
+      {
+        RawADC2 =  ADCH;
+        ADMUX |= 1 << MUX0; //set
+        ADMUX &= ~(1 << MUX1); //clear (mux0=1 mun1=0)
+        AdcCH = 2;
+        break;
+      }
+    case 2:
+      {
+        RawADC1 =  ADCH;
+        ADMUX &= ~(1 << MUX0); //clear(mux0=0 mun1=0)
+        AdcCH = 0;
+        break;
+      }
+    default: ;
+  }
 
 }
 
 
-  int main(void)
+int main(void)
+{
+  if (eeprom_read_byte((uint8_t*)10) != 30);
   {
-	  if (eeprom_read_byte((uint8_t*)10) != 30);
-	  {
-mem_to_eeprom();
-	  }
-    unsigned char LocalCounter = 0;
-    for (LocalCounter = 0; LocalCounter < def_ArrSize; LocalCounter++)
+    mem_to_eeprom();
+  }
+  unsigned char LocalCounter = 0;
+  for (LocalCounter = 0; LocalCounter < def_ArrSize; LocalCounter++)
+  {
+    CorrectionArray[LocalCounter] = 0; // clear correction array
+  }
+
+  eeprom_to_mem();//load data arrays into memory
+  Timer2Setup(); //setup timer2 //считает отрезки по 25 микросекунд
+  ADCSetup();
+  IntExtSetup();
+  PortSetup();
+  sei();
+  while (1)
+  {
+
+    //TODO пересчет мс в обороты оборотов = (1000/мс)*60
+    //currentRPM= 60000/CurrentTimer керрентТаймер должен быть в мс
+    if (RemainingFlowTime)
     {
-      CorrectionArray[LocalCounter] = 0; // clear correction array
+      SetOut1
+      SetLed4
+      SetRX
     }
+    else {
+      ClearRX
+      ClearOut1
+      ClearLed4
+    }
+    /*SetTX
 
-Coffs[0] = 0;
-    eeprom_to_mem();//load data arrays into memory
-    Timer2Setup(); //setup timer2 //считает отрезки по 25 микросекунд
-    ADCSetup();
-    IntExtSetup();
-PortSetup();
-sei();
-    while (1)
-    {
-
-      //TODO пересчет мс в обороты оборотов = (1000/мс)*60
-      //currentRPM= 60000/CurrentTimer керренттаймер должен быть в мс
-	  if (RemainingFlowTime)
-	  {
-		  SetOut1
-		  SetLed4
-		  SetRX
-	  }
-	  else {
-	  ClearRX
-	  ClearOut1
-	  ClearLed4
-	  }
-	  /*SetTX
-	  
-	  for (LocalCounter = 0; LocalCounter < DrocelPosition; LocalCounter++)
+    for (LocalCounter = 0; LocalCounter < DrocelPosition; LocalCounter++)
     {
       _delay_ms(1);
-    }	  
-	  
-	  ClearTX
-	  */
-      currentRPM = (2400000 / OldTimer)/8;
-	  ADCCorrection = charmap(RawADC1,0,255,0,30);
-	  
-
-      //TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимс¤ временем потока"
-      //TODO:: Please write your application code
-	  
     }
+
+    ClearTX
+    */
+    currentRPM = (2400000 / OldTimer) / 8;
+    ADCCorrection = charmap(RawADC2, 0, 255, 0, 30); //AdcCh2
+    Adc1 = charmap(RawADC1, 0, 255, 0, 255); //AdcCh0
+
+
+    //TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
+    //TODO:: Please write your application code
+
   }
+}
 
