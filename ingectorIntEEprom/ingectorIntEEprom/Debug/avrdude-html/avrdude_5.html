@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html401/loose.dtd">
+<html>
+<!-- Created on September 16, 2011 by texi2html 1.82
+texi2html was written by: 
+            Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people.
+Send bugs and suggestions to <texi2html-bug@nongnu.org>
+-->
+<head>
+<title>AVRDUDE: 2.2 Programmers accepting extended parameters</title>
+
+<meta name="description" content="AVRDUDE: 2.2 Programmers accepting extended parameters">
+<meta name="keywords" content="AVRDUDE: 2.2 Programmers accepting extended parameters">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2html 1.82">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.smallquotation {font-size: smaller}
+pre.display {font-family: serif}
+pre.format {font-family: serif}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: serif; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: serif; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.roman {font-family:serif; font-weight:normal;}
+span.sansserif {font-family:sans-serif; font-weight:normal;}
+ul.toc {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+<a name="Programmers-accepting-extended-parameters"></a>
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="avrdude_4.html#Option-Descriptions" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="avrdude_6.html#Example-Command-Line-Invocations" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="avrdude_3.html#Command-Line-Options" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="avrdude_3.html#Command-Line-Options" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="avrdude_7.html#Terminal-Mode-Operation" title="Next chapter"> &gt;&gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="avrdude.html#Top" title="Cover (top) of document">Top</a>]</td>
+<td valign="middle" align="left">[<a href="avrdude_toc.html#SEC_Contents" title="Table of contents">Contents</a>]</td>
+<td valign="middle" align="left">[Index]</td>
+<td valign="middle" align="left">[<a href="avrdude_abt.html#SEC_About" title="About (help)"> ? </a>]</td>
+</tr></table>
+<a name="Programmers-accepting-extended-parameters-1"></a>
+<h2 class="section">2.2 Programmers accepting extended parameters</h2>
+
+<dl compact="compact">
+<dt> <code>JTAG ICE mkII</code></dt>
+<dt> <code>AVR Dragon</code></dt>
+<dd>
+<p>When using the JTAG ICE mkII or AVR Dragon in JTAG mode, the
+following extended parameter is accepted:
+</p><dl compact="compact">
+<dt> <code>&lsquo;<samp>jtagchain=UB,UA,BB,BA</samp>&rsquo;</code></dt>
+<dd><p>Setup the JTAG scan chain for <var>UB</var> units before, <var>UA</var> units
+after, <var>BB</var> bits before, and <var>BA</var> bits after the target AVR,
+respectively.
+Each AVR unit within the chain shifts by 4 bits.
+Other JTAG units might require a different bit shift count.
+</p></dd>
+</dl>
+
+</dd>
+<dt> <code>AVR910</code></dt>
+<dd>
+<p>The AVR910 programmer type accepts the following extended parameter:
+</p><dl compact="compact">
+<dt> <code>&lsquo;<samp>devcode=VALUE</samp>&rsquo;</code></dt>
+<dd><p>Override the device code selection by using <var>VALUE</var>
+as the device code.
+The programmer is not queried for the list of supported
+device codes, and the specified <var>VALUE</var>
+is not verified but used directly within the
+<code>T</code> command sent to the programmer.
+<var>VALUE</var> can be specified using the conventional number notation of the
+C programming language.
+</p></dd>
+<dt> <code>&lsquo;<samp>no_blockmode</samp>&rsquo;</code></dt>
+<dd><p>Disables the default checking for block transfer capability.
+Use 
+&lsquo;<samp>no_blockmode</samp>&rsquo; only if your &lsquo;<samp>AVR910</samp>&rsquo; 
+programmer creates errors during initial sequence.
+</p></dd>
+</dl>
+
+</dd>
+<dt> <code>BusPirate</code></dt>
+<dd>
+<p>The BusPirate programmer type accepts the following extended parameters:
+</p><dl compact="compact">
+<dt> <code>&lsquo;<samp>reset=cs,aux,aux2</samp>&rsquo;</code></dt>
+<dd><p>The default setup assumes the BusPirate&rsquo;s CS output pin connected to
+the RESET pin on AVR side. It is however possible to have multiple AVRs
+connected to the same BP with MISO, MOSI and SCK lines common for all of them.
+In such a case one AVR should have its RESET connected to BusPirate&rsquo;s
+<em>CS</em>
+pin, second AVR&rsquo;s RESET connected to BusPirate&rsquo;s
+<em>AUX</em>
+pin and if your BusPirate has an
+<em>AUX2</em>
+pin (only available on BusPirate version v1a with firmware 3.0 or newer)
+use that to activate RESET on the third AVR.
+</p>
+<p>It may be a good idea to decouple the BusPirate and the AVR&rsquo;s SPI buses from
+each other using a 3-state bus buffer. For example 74HC125 or 74HC244 are some
+good candidates with the latches driven by the appropriate reset pin (cs,
+aux or aux2). Otherwise the SPI traffic in one active circuit may interfere
+with programming the AVR in the other design.
+</p>
+</dd>
+<dt> <code>&lsquo;<samp>speed=<var>0..7</var></samp>&rsquo;</code></dt>
+<dd><dl compact="compact">
+<dt> <code>0</code></dt>
+<dd><p>30 kHz (default)
+</p></dd>
+<dt> <code>1</code></dt>
+<dd><p>125 kHz
+</p></dd>
+<dt> <code>2</code></dt>
+<dd><p>250 kHz
+</p></dd>
+<dt> <code>3</code></dt>
+<dd><p>1 MHz
+</p></dd>
+<dt> <code>4</code></dt>
+<dd><p>2 MHz
+</p></dd>
+<dt> <code>5</code></dt>
+<dd><p>2.6 MHz
+</p></dd>
+<dt> <code>6</code></dt>
+<dd><p>4 MHz
+</p></dd>
+<dt> <code>7</code></dt>
+<dd><p>8 MHz
+</p></dd>
+</dl>
+
+</dd>
+<dt> <code>&lsquo;<samp>ascii</samp>&rsquo;</code></dt>
+<dd><p>Use ASCII mode even when the firmware supports BinMode (binary mode).
+BinMode is supported in firmware 2.7 and newer, older FW&rsquo;s either don&rsquo;t
+have BinMode or their BinMode is buggy. ASCII mode is slower and makes
+the above
+&lsquo;<samp>reset=</samp>&rsquo;
+and
+&lsquo;<samp>speed=</samp>&rsquo;
+parameters unavailable.
+</p></dd>
+</dl>
+
+</dd>
+<dt> <code>Wiring</code></dt>
+<dd>
+<p>When using the Wiring programmer type, the
+following optional extended parameter is accepted:
+</p><dl compact="compact">
+<dt> <code>&lsquo;<samp>snooze=<var>0..32767</var></samp>&rsquo;</code></dt>
+<dd><p>After performing the port open phase, AVRDUDE will wait/snooze for
+<var>snooze</var> milliseconds before continuing to the protocol sync phase.
+No toggling of DTR/RTS is performed if <var>snooze</var> &gt; 0.
+</p></dd>
+</dl>
+
+</dd>
+</dl>
+
+
+<hr size="6">
+<table cellpadding="1" cellspacing="1" border="0">
+<tr><td valign="middle" align="left">[<a href="avrdude_4.html#Option-Descriptions" title="Previous section in reading order"> &lt; </a>]</td>
+<td valign="middle" align="left">[<a href="avrdude_6.html#Example-Command-Line-Invocations" title="Next section in reading order"> &gt; </a>]</td>
+<td valign="middle" align="left"> &nbsp; </td>
+<td valign="middle" align="left">[<a href="avrdude_3.html#Command-Line-Options" title="Beginning of this chapter or previous chapter"> &lt;&lt; </a>]</td>
+<td valign="middle" align="left">[<a href="avrdude_3.html#Command-Line-Options" title="Up section"> Up </a>]</td>
+<td valign="middle" align="left">[<a href="avrdude_7.html#Terminal-Mode-Operation" title="Next chapter"> &gt;&gt; </a>]</td>
+</tr></table>
+<p>
+ <font size="-1">
+  This document was generated by <em>Joerg Wunsch</em> on <em>September 16, 2011</em> using <a href="http://www.nongnu.org/texi2html/"><em>texi2html 1.82</em></a>.
+ </font>
+ <br>
+
+</p>
+</body>
+</html>

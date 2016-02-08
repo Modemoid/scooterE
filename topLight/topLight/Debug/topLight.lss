@@ -1,0 +1,262 @@
+
+topLight.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000010c  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000004  00800060  0000010c  00000180  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000184  2**0
+                  CONTENTS, READONLY
+  3 .debug_aranges 00000038  00000000  00000000  000001b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   0000028d  00000000  00000000  000001ec  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 00000156  00000000  00000000  00000479  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   0000016d  00000000  00000000  000005cf  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  00000070  00000000  00000000  0000073c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    000001c6  00000000  00000000  000007ac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_loc    00000132  00000000  00000000  00000972  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000028  00000000  00000000  00000aa4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	19 c0       	rjmp	.+50     	; 0x36 <__bad_interrupt>
+   4:	18 c0       	rjmp	.+48     	; 0x36 <__bad_interrupt>
+   6:	17 c0       	rjmp	.+46     	; 0x36 <__bad_interrupt>
+   8:	16 c0       	rjmp	.+44     	; 0x36 <__bad_interrupt>
+   a:	15 c0       	rjmp	.+42     	; 0x36 <__bad_interrupt>
+   c:	14 c0       	rjmp	.+40     	; 0x36 <__bad_interrupt>
+   e:	13 c0       	rjmp	.+38     	; 0x36 <__bad_interrupt>
+  10:	12 c0       	rjmp	.+36     	; 0x36 <__bad_interrupt>
+  12:	11 c0       	rjmp	.+34     	; 0x36 <__bad_interrupt>
+
+00000014 <__ctors_end>:
+  14:	11 24       	eor	r1, r1
+  16:	1f be       	out	0x3f, r1	; 63
+  18:	cf e9       	ldi	r28, 0x9F	; 159
+  1a:	cd bf       	out	0x3d, r28	; 61
+
+0000001c <__do_copy_data>:
+  1c:	10 e0       	ldi	r17, 0x00	; 0
+  1e:	a0 e6       	ldi	r26, 0x60	; 96
+  20:	b0 e0       	ldi	r27, 0x00	; 0
+  22:	ec e0       	ldi	r30, 0x0C	; 12
+  24:	f1 e0       	ldi	r31, 0x01	; 1
+  26:	02 c0       	rjmp	.+4      	; 0x2c <__do_copy_data+0x10>
+  28:	05 90       	lpm	r0, Z+
+  2a:	0d 92       	st	X+, r0
+  2c:	a4 36       	cpi	r26, 0x64	; 100
+  2e:	b1 07       	cpc	r27, r17
+  30:	d9 f7       	brne	.-10     	; 0x28 <__do_copy_data+0xc>
+  32:	28 d0       	rcall	.+80     	; 0x84 <main>
+  34:	69 c0       	rjmp	.+210    	; 0x108 <_exit>
+
+00000036 <__bad_interrupt>:
+  36:	e4 cf       	rjmp	.-56     	; 0x0 <__vectors>
+
+00000038 <ClearEEprom>:
+		//Array[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
+	}
+	//TimeArray[def_ArrSize] = 0;
+}
+void ClearEEprom(void)
+{
+  38:	cf 93       	push	r28
+  3a:	df 93       	push	r29
+	uint16_t LocalCounter = 0;
+	for (LocalCounter = 0; LocalCounter < EepromSize; LocalCounter++)
+  3c:	c0 e0       	ldi	r28, 0x00	; 0
+  3e:	d0 e0       	ldi	r29, 0x00	; 0
+	{
+		eeprom_write_byte ((uint8_t*)LocalCounter, 0);
+  40:	60 e0       	ldi	r22, 0x00	; 0
+  42:	ce 01       	movw	r24, r28
+  44:	53 d0       	rcall	.+166    	; 0xec <__eewr_byte_tn13>
+	//TimeArray[def_ArrSize] = 0;
+}
+void ClearEEprom(void)
+{
+	uint16_t LocalCounter = 0;
+	for (LocalCounter = 0; LocalCounter < EepromSize; LocalCounter++)
+  46:	21 96       	adiw	r28, 0x01	; 1
+  48:	cf 33       	cpi	r28, 0x3F	; 63
+  4a:	d1 05       	cpc	r29, r1
+  4c:	c9 f7       	brne	.-14     	; 0x40 <__SREG__+0x1>
+	{
+		eeprom_write_byte ((uint8_t*)LocalCounter, 0);
+		//TimeArray[LocalCounter] = eeprom_read_byte((uint8_t*)LocalCounter); // read the byte in location 23
+	}
+}
+  4e:	df 91       	pop	r29
+  50:	cf 91       	pop	r28
+  52:	08 95       	ret
+
+00000054 <SearchState>:
+char WorkState = 111;
+char ShowSelector = 111;
+char Test = 111;
+
+char SearchState(void)
+{
+  54:	1f 93       	push	r17
+  56:	cf 93       	push	r28
+  58:	df 93       	push	r29
+	uint16_t LocalCounter;
+	char SearchStateTemp = 0;
+	char FirstNonFF = 70;
+  5a:	16 e4       	ldi	r17, 0x46	; 70
+	for(LocalCounter = EepromSize;LocalCounter>0;LocalCounter--)
+  5c:	cf e3       	ldi	r28, 0x3F	; 63
+  5e:	d0 e0       	ldi	r29, 0x00	; 0
+	{
+		SearchStateTemp = eeprom_read_byte((uint8_t*)LocalCounter);
+  60:	ce 01       	movw	r24, r28
+  62:	3c d0       	rcall	.+120    	; 0xdc <__eerd_byte_tn13>
+		
+		if (SearchStateTemp != 0xff)
+  64:	8f 3f       	cpi	r24, 0xFF	; 255
+  66:	09 f0       	breq	.+2      	; 0x6a <SearchState+0x16>
+		{
+			FirstNonFF = LocalCounter;
+  68:	1c 2f       	mov	r17, r28
+char SearchState(void)
+{
+	uint16_t LocalCounter;
+	char SearchStateTemp = 0;
+	char FirstNonFF = 70;
+	for(LocalCounter = EepromSize;LocalCounter>0;LocalCounter--)
+  6a:	21 97       	sbiw	r28, 0x01	; 1
+  6c:	20 97       	sbiw	r28, 0x00	; 0
+  6e:	c1 f7       	brne	.-16     	; 0x60 <SearchState+0xc>
+		if (SearchStateTemp != 0xff)
+		{
+			FirstNonFF = LocalCounter;
+		}
+	}
+	if (FirstNonFF == 70)
+  70:	16 34       	cpi	r17, 0x46	; 70
+  72:	19 f4       	brne	.+6      	; 0x7a <SearchState+0x26>
+	{
+			ClearEEprom();
+  74:	e1 df       	rcall	.-62     	; 0x38 <ClearEEprom>
+		return 0;
+  76:	80 e0       	ldi	r24, 0x00	; 0
+  78:	01 c0       	rjmp	.+2      	; 0x7c <SearchState+0x28>
+  7a:	81 2f       	mov	r24, r17
+		{
+		 return FirstNonFF;	
+		}
+		
+			
+}
+  7c:	df 91       	pop	r29
+  7e:	cf 91       	pop	r28
+  80:	1f 91       	pop	r17
+  82:	08 95       	ret
+
+00000084 <main>:
+	}
+}
+
+int main(void)
+{
+	GlobalState = SearchState();
+  84:	e7 df       	rcall	.-50     	; 0x54 <SearchState>
+  86:	80 93 62 00 	sts	0x0062, r24
+	WorkState = eeprom_read_byte((uint8_t*)GlobalState); // read the byte in location
+  8a:	c8 2f       	mov	r28, r24
+  8c:	d0 e0       	ldi	r29, 0x00	; 0
+  8e:	ce 01       	movw	r24, r28
+  90:	25 d0       	rcall	.+74     	; 0xdc <__eerd_byte_tn13>
+  92:	28 2f       	mov	r18, r24
+	ShowSelector = WorkState%3;
+  94:	63 e0       	ldi	r22, 0x03	; 3
+  96:	16 d0       	rcall	.+44     	; 0xc4 <__udivmodqi4>
+  98:	90 93 60 00 	sts	0x0060, r25
+	
+	WorkState++;
+  9c:	61 e0       	ldi	r22, 0x01	; 1
+  9e:	62 0f       	add	r22, r18
+  a0:	60 93 61 00 	sts	0x0061, r22
+	if (WorkState<255){
+  a4:	6f 3f       	cpi	r22, 0xFF	; 255
+  a6:	19 f0       	breq	.+6      	; 0xae <__stack+0xf>
+	eeprom_write_byte ((uint8_t*)GlobalState, WorkState);
+  a8:	ce 01       	movw	r24, r28
+  aa:	20 d0       	rcall	.+64     	; 0xec <__eewr_byte_tn13>
+  ac:	0a c0       	rjmp	.+20     	; 0xc2 <__stack+0x23>
+	}else {
+	eeprom_write_byte ((uint8_t*)GlobalState, 255)	;
+  ae:	6f ef       	ldi	r22, 0xFF	; 255
+  b0:	ce 01       	movw	r24, r28
+  b2:	1c d0       	rcall	.+56     	; 0xec <__eewr_byte_tn13>
+	eeprom_write_byte ((uint8_t*)GlobalState+1, 0);
+  b4:	80 91 62 00 	lds	r24, 0x0062
+  b8:	90 e0       	ldi	r25, 0x00	; 0
+  ba:	60 e0       	ldi	r22, 0x00	; 0
+  bc:	01 96       	adiw	r24, 0x01	; 1
+  be:	16 d0       	rcall	.+44     	; 0xec <__eewr_byte_tn13>
+  c0:	f5 cf       	rjmp	.-22     	; 0xac <__stack+0xd>
+  c2:	ff cf       	rjmp	.-2      	; 0xc2 <__stack+0x23>
+
+000000c4 <__udivmodqi4>:
+  c4:	99 1b       	sub	r25, r25
+  c6:	79 e0       	ldi	r23, 0x09	; 9
+  c8:	04 c0       	rjmp	.+8      	; 0xd2 <__udivmodqi4_ep>
+
+000000ca <__udivmodqi4_loop>:
+  ca:	99 1f       	adc	r25, r25
+  cc:	96 17       	cp	r25, r22
+  ce:	08 f0       	brcs	.+2      	; 0xd2 <__udivmodqi4_ep>
+  d0:	96 1b       	sub	r25, r22
+
+000000d2 <__udivmodqi4_ep>:
+  d2:	88 1f       	adc	r24, r24
+  d4:	7a 95       	dec	r23
+  d6:	c9 f7       	brne	.-14     	; 0xca <__udivmodqi4_loop>
+  d8:	80 95       	com	r24
+  da:	08 95       	ret
+
+000000dc <__eerd_byte_tn13>:
+  dc:	e1 99       	sbic	0x1c, 1	; 28
+  de:	fe cf       	rjmp	.-4      	; 0xdc <__eerd_byte_tn13>
+  e0:	1f ba       	out	0x1f, r1	; 31
+  e2:	8e bb       	out	0x1e, r24	; 30
+  e4:	e0 9a       	sbi	0x1c, 0	; 28
+  e6:	99 27       	eor	r25, r25
+  e8:	8d b3       	in	r24, 0x1d	; 29
+  ea:	08 95       	ret
+
+000000ec <__eewr_byte_tn13>:
+  ec:	26 2f       	mov	r18, r22
+
+000000ee <__eewr_r18_tn13>:
+  ee:	e1 99       	sbic	0x1c, 1	; 28
+  f0:	fe cf       	rjmp	.-4      	; 0xee <__eewr_r18_tn13>
+  f2:	1c ba       	out	0x1c, r1	; 28
+  f4:	1f ba       	out	0x1f, r1	; 31
+  f6:	8e bb       	out	0x1e, r24	; 30
+  f8:	2d bb       	out	0x1d, r18	; 29
+  fa:	0f b6       	in	r0, 0x3f	; 63
+  fc:	f8 94       	cli
+  fe:	e2 9a       	sbi	0x1c, 2	; 28
+ 100:	e1 9a       	sbi	0x1c, 1	; 28
+ 102:	0f be       	out	0x3f, r0	; 63
+ 104:	01 96       	adiw	r24, 0x01	; 1
+ 106:	08 95       	ret
+
+00000108 <_exit>:
+ 108:	f8 94       	cli
+
+0000010a <__stop_program>:
+ 10a:	ff cf       	rjmp	.-2      	; 0x10a <__stop_program>

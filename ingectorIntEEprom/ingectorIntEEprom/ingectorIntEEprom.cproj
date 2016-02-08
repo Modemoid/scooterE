@@ -5,7 +5,7 @@
     <ProjectVersion>6.2</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
     <ProjectGuid>{6b44edee-dfd7-458b-b38f-2c96b32164c6}</ProjectGuid>
-    <avrdevice>ATmega8</avrdevice>
+    <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -38,7 +38,8 @@
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
-    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
+    <avrtool>
+    </avrtool>
     <com_atmel_avrdbg_tool_simulator>
       <ToolOptions xmlns="">
         <InterfaceProperties>
