@@ -3,8 +3,9 @@
  *
  * Created: 26.01.2016 21:12:49
  *  Author: kartsev
+ *
  */
-
+    
 #define F_CPU 8000000 //8 לדצ
 
 #include <avr/io.h>
