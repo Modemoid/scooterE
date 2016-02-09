@@ -96,6 +96,10 @@ unsigned char Coffs[8] = {0, StartDose, MinDrocel, MaxDrocel, 0, 0, IngectorActi
 unsigned char RawADC2 = 0, RawADC1 = 0, RawADC0 = 0, AdcCH = 0, ADCCorrection = 0, Adc1 = 0;
 //RawADCH - channel 0, RawADC1 - channel 2, RawADC0 - channel 1
 
+#ifdef UART_TX
+char Bufer[16]={0,};
+
+#endif
 
 
 
