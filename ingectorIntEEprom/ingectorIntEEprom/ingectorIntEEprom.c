@@ -12,6 +12,9 @@
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <util/delay.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define MinOperationRPM 20000 // RPM = 2400000/this define (20000 = 125RPM 15000 = 160RPM  10000 = 240RPM)
 
@@ -77,6 +80,7 @@ int8_t CorrectionArray[def_ArrSize] = {0,}; //
 unsigned int CurrentTimer, OldTimer;
 unsigned long currentRPM;
 unsigned int RemainingFlowTime = 0;
+char tempcount=0;
 
 unsigned char DrocelPosition;
 //Coffs define need only for start load for verbose look
@@ -100,7 +104,7 @@ unsigned char RawADC2 = 0, RawADC1 = 0, RawADC0 = 0, AdcCH = 0, ADCCorrection = 
 #define UART_TX
 #ifdef UART_TX
 //char Bufer[16]={0x49,0x52,0x49,0x52,' ','s','t','a','r','t',0x0A,' ',' ',' ',' ',' '};;
-	unsigned char Bufer[16]={0x49,0x6E,0x69,0x74,' ','s','t','a','r','t',0x0D,'A','B',' ',' ',' '};//0x0D-перевод строки
+	char Bufer[32]={0x49,0x6E,0x69,0x74,' ','s','t','a','r','t',0x0D,'A','B',' ',' ',' '};//0x0D-перевод строки
 	unsigned char Uart_Bufer_index=11, Uart_pointer = 0;
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
@@ -362,7 +366,7 @@ ISR(USART_TX_vect)
 }
 ISR(USART_UDRE_vect)
 {
-	if (Uart_Bufer_index == Uart_pointer+1)
+	if (Uart_Bufer_index < Uart_pointer)
 		{
 		//Запретить перерывание
 			Uart_Bufer_index = 0;
@@ -493,13 +497,14 @@ int main(void)
 	
 	if (Uart_Bufer_index == 0)
 	{
-	Bufer[0]=Adc1/100;
-	Bufer[1]=Adc1/10-Bufer[0];
-	Bufer[2]=Adc1/100-Adc1/10;
-	Bufer[3]=0x0D;
-	Uart_Bufer_index = 5;
-	//UDR0 = Bufer[0];
-	}
+		 tempcount++;
+		Uart_Bufer_index = sprintf(Bufer, "0=%u 1=%u 2=%u RPM=%lu \n\r", RawADC0,RawADC1,RawADC2,currentRPM);
+		//printf(RawADC1, Bufer, 10);
+		Uart_pointer = 0;
+		//Uart_Bufer_index = 3;
+		
+    }
+	
 if (Uart_Bufer_index != 0)
 {	
 	if (Uart_pointer == 0)
@@ -509,6 +514,7 @@ if (Uart_Bufer_index != 0)
 	}
 	UCSR0B |= (1<<UDRIE0);
 }
+
     //TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
     //TODO:: Please write your application code
 
