@@ -96,9 +96,58 @@ unsigned char Coffs[8] = {0, StartDose, MinDrocel, MaxDrocel, 0, 0, IngectorActi
 unsigned char RawADC2 = 0, RawADC1 = 0, RawADC0 = 0, AdcCH = 0, ADCCorrection = 0, Adc1 = 0;
 //RawADCH - channel 0, RawADC1 - channel 2, RawADC0 - channel 1
 
+#define UART_TX
 #ifdef UART_TX
-char Bufer[16]={0,};
+char Bufer[16]={0x49,0x52,0x49,0x52,' ','s','t','a','r','t',0x0A,' ',' ',' ',' ',' '};
+	unsigned char Uart_Bufer_index=10, Uart_pointer = 0;
+#define BAUD 9600
+#define MYUBRR F_CPU/16/BAUD-1
 
+void USART0_Init(unsigned int ubrr)
+{
+	/*Set baud rate */
+	UBRR0H = (unsigned char)(ubrr>>8);
+	UBRR0L = (unsigned char)ubrr;
+
+	/* Set frame format: 8-1-n */
+   UCSR0C |= (0<<UCSR0B)|(0<<UCSZ02)|(1<<UCSZ01)|(1<<UCSZ00);
+   //Enable transmitter only
+   //UCSR0B |= (1<<TXEN0)|(1<<TXCIE0)|(1<<UDRIE0);
+   UCSR0B |= (1<<TXEN0);
+
+//Enable receiver and transmitter
+//	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+
+	}
+
+/*
+void USART0_Transmit( unsigned char data )
+{
+	// Wait for empty transmit buffer 
+	while ( !( UCSR0A & (1<<UDRE0)) )
+	;
+	// Put data into buffer, sends the data 
+	UDR0 = data;
+}
+*/
+
+/*
+//макросы вычисления скорости
+#define BAUD 9600
+#define UBRR_VAL F_CPU/16/BAUD-1
+unsigned int timer=824;
+void usart_init (unsigned int speed)
+{
+// устанавливаем скорость Baud Rate: 9600
+UBRRH=(unsigned char)(speed»8);
+UBRRL=(unsigned char) speed;
+UCSRA=0x00;
+// Разрешение работы передатчика
+UCSRB|=(1«TXEN);
+
+//UCSRB|=(1«RXEN);// Разрешение работы приемника
+UCSRB|=(1«RXCIE);// Разрешение прерыва
+*/
 #endif
 
 
@@ -252,7 +301,9 @@ void LoadFuelTime(void)
 }
 void Low_FuelFlow_Exeption (void)
 {
+  #ifndef UART_TX
   SetTX
+#endif
   //todo set LowFuelFlowExeption
 }
 void SoftBugON(void) {
@@ -280,7 +331,9 @@ ISR( INT0_vect )
     if (RemainingFlowTime == 0) //TODO: проверить пустое ли у нас оставшееся время.
     {
       LoadFuelTime();
-      ClearTX
+      #ifndef UART_TX
+	  ClearTX
+	  #endif
     } else
     {
       Low_FuelFlow_Exeption();
@@ -300,6 +353,29 @@ ISR( TIMER2_OVF_vect )
   asm ("nop"); //прерывание вызывается вслед за timer_comp - в этом режиме работы таймера бессмысленно
 }
 
+#ifdef UART_TX
+ISR(USART_TX_vect)
+{
+	
+}
+ISR(USART_UDRE_vect)
+{
+	if (Uart_Bufer_index == Uart_pointer+1)
+		{
+		//Запретить перерывание
+			Uart_Bufer_index = 0;
+			Uart_pointer = 0;
+		   UCSR0B &= ~(1<<UDRIE0);
+		}
+	else 
+		{
+		UDR0 = Bufer[Uart_pointer];
+		Uart_pointer++;
+		}
+}
+	
+
+#endif
 #ifdef Atmega8
 ISR( TIMER2_COMP_vect )
 #else
@@ -326,7 +402,8 @@ ISR( TIMER2_COMPA_vect)
     RemainingFlowTime--; //уменьшаем оставшееся время потока
   }
 }
-
+#define USRTTEST
+#ifndef USRTTEST
 ISR(ADC_vect)
 {
 
@@ -361,7 +438,7 @@ ISR(ADC_vect)
 
 }
 
-
+#endif
 int main(void)
 {
   if (eeprom_read_byte((uint8_t*)10) != 30);
@@ -376,9 +453,12 @@ int main(void)
 
   eeprom_to_mem();//load data arrays into memory
   Timer2Setup(); //setup timer2 //считает отрезки по 25 микросекунд
+  #ifndef USRTTEST
   ADCSetup();
+  #endif
   IntExtSetup();
   PortSetup();
+  USART0_Init(MYUBRR);
   sei();
   while (1)
   {
@@ -408,8 +488,10 @@ int main(void)
     currentRPM = (2400000 / OldTimer) / 8;
     ADCCorrection = charmap(RawADC2, 0, 255, 0, 30); //AdcCh2
     Adc1 = charmap(RawADC1, 0, 255, 0, 255); //AdcCh0
-
-
+if (Uart_Bufer_index !=0)
+{	
+UCSR0B |= (1<<UDRIE0);
+}
     //TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
     //TODO:: Please write your application code
 
