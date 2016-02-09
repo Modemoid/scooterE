@@ -98,8 +98,9 @@ unsigned char RawADC2 = 0, RawADC1 = 0, RawADC0 = 0, AdcCH = 0, ADCCorrection = 
 
 #define UART_TX
 #ifdef UART_TX
-char Bufer[16]={0x49,0x52,0x49,0x52,' ','s','t','a','r','t',0x0A,' ',' ',' ',' ',' '};
-	unsigned char Uart_Bufer_index=10, Uart_pointer = 0;
+//char Bufer[16]={0x49,0x52,0x49,0x52,' ','s','t','a','r','t',0x0A,' ',' ',' ',' ',' '};;
+	unsigned char Bufer[16]={0x49,0x6E,0x69,0x74,' ','s','t','a','r','t',0x0D,'A','B',' ',' ',' '};//0x0D-перевод строки
+	unsigned char Uart_Bufer_index=11, Uart_pointer = 0;
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
 
@@ -110,7 +111,7 @@ void USART0_Init(unsigned int ubrr)
 	UBRR0L = (unsigned char)ubrr;
 
 	/* Set frame format: 8-1-n */
-   UCSR0C |= (0<<UCSR0B)|(0<<UCSZ02)|(1<<UCSZ01)|(1<<UCSZ00);
+   UCSR0C |= (1<<UCSZ01)|(1<<UCSZ00);
    //Enable transmitter only
    //UCSR0B |= (1<<TXEN0)|(1<<TXCIE0)|(1<<UDRIE0);
    UCSR0B |= (1<<TXEN0);
@@ -402,7 +403,7 @@ ISR( TIMER2_COMPA_vect)
     RemainingFlowTime--; //уменьшаем оставшееся время потока
   }
 }
-#define USRTTEST
+//#define USRTTEST
 #ifndef USRTTEST
 ISR(ADC_vect)
 {
@@ -488,9 +489,24 @@ int main(void)
     currentRPM = (2400000 / OldTimer) / 8;
     ADCCorrection = charmap(RawADC2, 0, 255, 0, 30); //AdcCh2
     Adc1 = charmap(RawADC1, 0, 255, 0, 255); //AdcCh0
-if (Uart_Bufer_index !=0)
+	
+	if (Uart_Bufer_index == 0)
+	{
+	Bufer[0]=Adc1/100;
+	Bufer[1]=Adc1/10-Bufer[0];
+	Bufer[2]=Adc1/100-Adc1/10;
+	Bufer[3]=0x0D;
+	Uart_Bufer_index = 5;
+	//UDR0 = Bufer[0];
+	}
+if (Uart_Bufer_index != 0)
 {	
-UCSR0B |= (1<<UDRIE0);
+	if (Uart_pointer == 0)
+	{
+	UDR0 = Bufer[Uart_pointer];
+	Uart_pointer++;
+	}
+	UCSR0B |= (1<<UDRIE0);
 }
     //TODO: дрыгать форсункой в зависимости от того что у нас с "оставшимся временем потока"
     //TODO:: Please write your application code
