@@ -18,7 +18,7 @@
 
 #define MinOperationRPM 20000 // RPM = 2400000/this define (20000 = 125RPM 15000 = 160RPM  10000 = 240RPM)
 
-
+#ifndef NOLEDS
 #define LED4 4 //TODO: впрыск идет pb4
 #define LED1 5 //pb5 -arduino d13 we use as "software bug" 
 #define LED2 6 //TODO "не хватает времени потока топлива" pb6 
@@ -42,7 +42,9 @@
 #define ClearLed4 LED_PORT&= ~(1<<LED4);//clear
 #define SwitchLed4 LED_PORT = LED_PORT ^ (1<<LED4); //switch
 
+#endif
 
+#ifndef NOOUTPUT
 #define Out1 1 //TODO: ch1
 #define Out2 2 //TODO: ch1
 #define Out3 3 //TODO: ch1
@@ -53,7 +55,6 @@
 #define ClearOut1 Out_PORT&= ~(1<<Out1);//clear
 #define SwitchOut1 Out_PORT = Out_PORT ^ (1<<Out1); //switch
 
-
 #define SetTX PORTD|= 1<<1; //set
 #define ClearTX PORTD&= ~(1<<1);//clear
 #define SwitchTX PORTD = PORTD ^ (1<<1); //switch
@@ -62,9 +63,7 @@
 #define ClearRX PORTD&= ~(1<<0);//clear
 #define SwitchRX PORTD = PORTD ^ (1<<0); //switch
 
-
-
-
+#endif
 
 #ifdef Atmega8
 #define Timer2IntON TIMSK|= (1<<OCIE2);//|1<<TOIE2);//set bits
@@ -90,6 +89,7 @@ unsigned char DrocelPosition;
 #define StartDose 20 // time in 25us will added for fuelshot, when engine run on low RPM
 //
 unsigned char Coffs[8] = {0, StartDose, MinDrocel, MaxDrocel, 0, 0, IngectorActionTime};
+/*
 //0 - have BUG. anything though it
 //Coffs[1] - StartDose TODO: написать процедуру старта. 
 //Coffs[2] - min drocel position (fact by ADC),
@@ -97,7 +97,7 @@ unsigned char Coffs[8] = {0, StartDose, MinDrocel, MaxDrocel, 0, 0, IngectorActi
 //4 - drebezg flag
 //5 - ctc counter - now not need
 //6 - Ingector action time (use as "+ingector open time -ingector close time" (must be tested by fact)
-
+*/
 unsigned char RawADC2 = 0, RawADC1 = 0, RawADC0 = 0, AdcCH = 0, ADCCorrection = 0, Adc1 = 0;
 //RawADCH - channel 0, RawADC1 - channel 2, RawADC0 - channel 1
 
